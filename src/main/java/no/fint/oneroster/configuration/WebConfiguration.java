@@ -1,0 +1,37 @@
+package no.fint.oneroster.configuration;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import no.fint.oneroster.resolver.FieldSelection;
+import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.web.config.PageableHandlerMethodArgumentResolverCustomizer;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
+
+@Configuration
+public class WebConfiguration implements WebMvcConfigurer {
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new FieldSelection());
+    }
+
+    @Bean
+    public PageableHandlerMethodArgumentResolverCustomizer pageableCustomizer() {
+        return pageable -> {
+            pageable.setPageParameterName("offset");
+            pageable.setSizeParameterName("limit");
+            pageable.setFallbackPageable(PageRequest.of(0, 100));
+        };
+    }
+
+    @Bean
+    public Jackson2ObjectMapperBuilderCustomizer jacksonCustomizer() {
+        return objectMapper -> objectMapper.serializationInclusion(JsonInclude.Include.NON_NULL);
+    }
+}
+

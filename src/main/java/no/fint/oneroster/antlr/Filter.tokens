@@ -1,0 +1,26 @@
+T__0=1
+LOGICAL_OPERATOR=2
+ATTRNAME=3
+EQ=4
+NE=5
+GT=6
+LT=7
+GE=8
+LE=9
+CO=10
+BOOLEAN=11
+DATE=12
+INTEGER=13
+STRING=14
+WS=15
+SQ=16
+'.'=1
+'='=4
+'!='=5
+'>'=6
+'<'=7
+'>='=8
+'<='=9
+'~'=10
+' '=15
+'\''=16

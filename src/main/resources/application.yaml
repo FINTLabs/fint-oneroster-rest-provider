@@ -1,0 +1,31 @@
+fint:
+  organisations:
+    pwf:
+      registration: pwf
+      username: abc
+      password: def
+      environment: https://play-with-fint.felleskomponent.no
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          pwf:
+            client-id: abc
+            client-secret: def
+            authorization-grant-type: password
+            scope: fint-client
+            provider: fint
+        provider:
+          fint:
+            token-uri: https://idp.felleskomponent.no/nidp/oauth/nam/token
+
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+
+server:
+  servlet:
+    context-path: /ims/oneroster/v1p1
+
+
