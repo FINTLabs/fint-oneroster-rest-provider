@@ -3,6 +3,7 @@ package no.fint.oneroster.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import lombok.extern.slf4j.Slf4j;
+import no.fint.oneroster.exception.InvalidFilterException;
 import no.fint.oneroster.filter.FilterEvaluator;
 import no.fint.oneroster.model.Org;
 import no.fint.oneroster.service.OrgService;
@@ -40,8 +41,12 @@ public class OrgController {
         List<Org> filteredOrgs = orgs.stream()
                 .filter(org -> {
                     if (filter != null) {
-                        FilterEvaluator evaluator = new FilterEvaluator(org);
-                        return evaluator.visit(filter);
+                        try {
+                            return new FilterEvaluator(org).visit(filter);
+                        } catch (InvalidFilterException e) {
+                            log.error(e.getMessage());
+                            return false;
+                        }
                     }
                     return true;
                 })

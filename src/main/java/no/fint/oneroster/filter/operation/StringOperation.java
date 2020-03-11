@@ -7,10 +7,6 @@ import no.fint.oneroster.filter.operand.Operand;
 public class StringOperation implements Operation {
 
     public Boolean eq(Operand leftOperand, Operand rightOperand)  {
-        if (leftOperand.getObjectValue().getClass().isEnum()) {
-
-        }
-
         return ((String) leftOperand.getObjectValue()).equalsIgnoreCase(rightOperand.getStringValue());
     }
 

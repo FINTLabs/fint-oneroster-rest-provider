@@ -1,10 +1,8 @@
 grammar Filter;
 
-/*
 @header {
     package no.fint.oneroster.antlr;
 }
-*/
 
 query : attrPath op=( EQ | NE | GT | LT | GE | LE | CO ) value ;
 

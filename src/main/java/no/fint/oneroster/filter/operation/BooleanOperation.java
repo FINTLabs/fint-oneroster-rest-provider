@@ -13,22 +13,22 @@ public class BooleanOperation implements Operation {
     }
 
     public Boolean gt(Operand leftOperand, Operand rightOperand) {
-        throw new UnsupportedOperationException("gt is not a supported operator on booleans.");
+        return false;
     }
 
     public Boolean lt(Operand leftOperand, Operand rightOperand) {
-        throw new UnsupportedOperationException("lt is not a supported operator on booleans.");
+        return false;
     }
 
     public Boolean ge(Operand leftOperand, Operand rightOperand) {
-        throw new UnsupportedOperationException("ge is not a supported operator on booleans.");
+        return false;
     }
 
     public Boolean le(Operand leftOperand, Operand rightOperand) {
-        throw new UnsupportedOperationException("le is not a supported operator on booleans.");
+        return false;
     }
 
     public Boolean co(Operand leftOperand, Operand rightOperand) {
-        throw new UnsupportedOperationException("co is not a supported operator on booleans.");
+        return false;
     }
 }

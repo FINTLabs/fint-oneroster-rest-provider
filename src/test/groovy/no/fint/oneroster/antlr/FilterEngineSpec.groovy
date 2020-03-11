@@ -67,9 +67,21 @@ class FilterEngineSpec extends Specification {
         evaluate
     }
 
-    def "Simple date query"() {
+    def "Simple local date query"() {
         given:
-        def query = 'startDate<\'2020-03-05\''
+        def query = 'startDate=\'2020-01-01\''
+        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, 2020)
+
+        when:
+        def evaluate = filterEngine.execute(query, object)
+
+        then:
+        evaluate
+    }
+
+    def "Simple zoned date query"() {
+        given:
+        def query = 'dateLastModified>\'2020-01-01\''
         def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, 2020)
 
         when:

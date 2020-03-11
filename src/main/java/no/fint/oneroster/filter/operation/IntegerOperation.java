@@ -38,6 +38,6 @@ public class IntegerOperation implements Operation {
 
     @Override
     public Boolean co(Operand leftOperand, Operand rightOperand) {
-        return null;
+        return false;
     }
 }
