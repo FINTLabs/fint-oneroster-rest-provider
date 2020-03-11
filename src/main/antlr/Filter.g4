@@ -43,27 +43,10 @@ GE : '>=' ;
 LE : '<=' ;
 CO : '~' ;
 
-value
-   : BOOLEAN           #boolean
-   | DATE              #date
-   | INTEGER           #integer
-   | STRING            #string
-   ;
+value : ANY_CHAR ;
 
-BOOLEAN
-    : SQ ('true' | 'false') + SQ
-    ;
-
-DATE
-    : SQ ([0-9] [0-9] [0-9] [0-9] '-' [0-9] [0-9] '-' [0-9] [0-9]) + SQ
-    ;
-
-INTEGER
-    : SQ ([0-9]) + SQ
-    ;
-
-STRING
-    : SQ (.) +? SQ
+ANY_CHAR
+    : SQ (.)+? SQ
     ;
 
 WS

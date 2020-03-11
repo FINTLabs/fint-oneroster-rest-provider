@@ -1,6 +1,5 @@
 package no.fint.oneroster.antlr
 
-import no.fint.oneroster.exception.InvalidFilterException
 import no.fint.oneroster.filter.FilterEngine
 import no.fint.oneroster.model.AcademicSession
 import no.fint.oneroster.model.GUIDRef
@@ -79,9 +78,9 @@ class FilterEngineSpec extends Specification {
         evaluate
     }
 
-    def "Simple zoned date query"() {
+    def "Simple zoned date time query"() {
         given:
-        def query = 'dateLastModified>\'2020-01-01\''
+        def query = 'dateLastModified=\'2020-03-11\''
         def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, 2020)
 
         when:

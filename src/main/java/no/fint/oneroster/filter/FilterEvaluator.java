@@ -4,25 +4,22 @@ import lombok.extern.slf4j.Slf4j;
 import no.fint.oneroster.antlr.FilterBaseVisitor;
 import no.fint.oneroster.antlr.FilterParser;
 import no.fint.oneroster.exception.InvalidFilterException;
-import no.fint.oneroster.filter.operand.Operand;
-import no.fint.oneroster.filter.operation.*;
 import org.apache.commons.beanutils.NestedNullException;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.InvocationTargetException;
-import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
 public class FilterEvaluator extends FilterBaseVisitor<Boolean> {
-    private Object givenItem;
+    private Object object;
 
-    private Operation currentOperation;
-    private Operand leftOperand = new Operand();
-    private Operand rightOperand = new Operand();
+    private Object leftOperand;
+    private Object rightOperand;
 
     public FilterEvaluator(Object object) {
-        this.givenItem = object;
+        this.object = object;
     }
 
     @Override
@@ -33,28 +30,29 @@ public class FilterEvaluator extends FilterBaseVisitor<Boolean> {
         try {
             switch (ctx.op.getType()) {
                 case FilterParser.EQ:
-                    return currentOperation.eq(leftOperand, rightOperand);
+                    return Operation.eq(leftOperand, rightOperand);
 
                 case FilterParser.NE:
-                    return currentOperation.ne(leftOperand, rightOperand);
+                    return Operation.ne(leftOperand, rightOperand);
 
                 case FilterParser.GT:
-                    return currentOperation.gt(leftOperand, rightOperand);
+                    return Operation.gt(leftOperand, rightOperand);
 
                 case FilterParser.LT:
-                    return currentOperation.lt(leftOperand, rightOperand);
+                    return Operation.lt(leftOperand, rightOperand);
 
                 case FilterParser.GE:
-                    return currentOperation.ge(leftOperand, rightOperand);
+                    return Operation.ge(leftOperand, rightOperand);
 
                 case FilterParser.LE:
-                    return currentOperation.le(leftOperand, rightOperand);
+                    return Operation.le(leftOperand, rightOperand);
 
                 default:
-                    return currentOperation.co(leftOperand, rightOperand);
+                    return Operation.co(leftOperand, rightOperand);
             }
 
         } catch (Exception ex) {
+            ex.printStackTrace();
             throw new InvalidFilterException(ex.getMessage());
         }
     }
@@ -88,9 +86,7 @@ public class FilterEvaluator extends FilterBaseVisitor<Boolean> {
         Class<?> propertyType;
 
         try {
-            String[] split = ctx.getText().split("\\.");
-
-            propertyType = PropertyUtils.getPropertyType(givenItem, split[0]);
+            propertyType = PropertyUtils.getPropertyType(object, ctx.ATTRNAME().getText());
 
             if (propertyType == null) {
                 throw new InvalidFilterException("Unknown field: " + ctx.getText());
@@ -101,57 +97,26 @@ public class FilterEvaluator extends FilterBaseVisitor<Boolean> {
                 Do something...
                  */
             } else {
-                Object value = PropertyUtils.getProperty(givenItem, ctx.getText());
-                leftOperand.setObjectValue(value);
+                leftOperand = PropertyUtils.getProperty(object, ctx.getText());
             }
 
             return true;
 
-        } catch (NestedNullException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new InvalidFilterException("Unknown field: {}" + ctx.getText());
+        } catch (NestedNullException e) {
+            throw new InvalidFilterException("Null fields: {}" + ctx.getText());
         }
     }
 
     @Override
-    public Boolean visitBoolean(FilterParser.BooleanContext ctx) {
-        currentOperation = new BooleanOperation();
-
-        String text = ctx.getText();
-        Boolean value = Boolean.parseBoolean(text.substring(1, text.length() - 1));
-        rightOperand.setBooleanValue(value);
-
-        return true;
+    public Boolean visitSubAttr(FilterParser.SubAttrContext ctx) {
+        return super.visitSubAttr(ctx);
     }
 
     @Override
-    public Boolean visitDate(FilterParser.DateContext ctx) {
-        currentOperation = new DateOperation();
-
-        String text = ctx.getText();
-        LocalDate value = LocalDate.parse(text.substring(1, text.length() - 1));
-        rightOperand.setDateValue(value);
-
-        return true;
-    }
-
-    @Override
-    public Boolean visitInteger(FilterParser.IntegerContext ctx) {
-        currentOperation = new IntegerOperation();
-
-        String text = ctx.getText();
-        Integer value = Integer.parseInt(text.substring(1, text.length() - 1));
-        rightOperand.setIntegerValue(value);
-
-        return true;
-    }
-
-    @Override
-    public Boolean visitString(FilterParser.StringContext ctx) {
-        currentOperation = new StringOperation();
-
-        String text = ctx.getText();
-        String value = text.substring(1, text.length() - 1);
-        rightOperand.setStringValue(value);
+    public Boolean visitValue(FilterParser.ValueContext ctx) {
+        rightOperand = StringUtils.substringBetween(ctx.ANY_CHAR().getText(), "'");
 
         return true;
     }

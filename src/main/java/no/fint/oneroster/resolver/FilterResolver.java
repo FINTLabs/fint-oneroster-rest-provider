@@ -41,8 +41,7 @@ public class FilterResolver implements HandlerMethodArgumentResolver {
         parser.addErrorListener(FilterErrorListener.INSTANCE);
 
         try {
-            ParseTree parseTree = parser.logical();
-            return parseTree;
+            return parser.logical();
         } catch (InvalidFilterException e) {
             log.error(e.getMessage());
             return null;
