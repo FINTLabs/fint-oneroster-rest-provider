@@ -8,7 +8,7 @@ grammar Filter;
 
 query : attrPath op=( EQ | NE | GT | LT | GE | LE | CO ) value ;
 
-logical : query WS LOGICAL_OPERATOR WS query ;
+logical : ( query ( WS LOGICAL_OPERATOR WS query )? ) ;
 
 attrPath
    : ATTRNAME subAttr?

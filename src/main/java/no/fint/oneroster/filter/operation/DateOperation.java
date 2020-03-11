@@ -8,45 +8,33 @@ public class DateOperation implements Operation {
 
     @Override
     public Boolean eq(Operand leftOperand, Operand rightOperand) {
-        if (leftOperand.getValue() == null) return false;
-
-        return LocalDate.parse(leftOperand.getValue().toString()).isEqual(rightOperand.getDateValue());
+        return LocalDate.parse(leftOperand.getObjectValue().toString()).isEqual(rightOperand.getDateValue());
     }
 
     @Override
     public Boolean ne(Operand leftOperand, Operand rightOperand) {
-        if (leftOperand.getValue() == null) return false;
-
-        return !LocalDate.parse(leftOperand.getValue().toString()).isEqual(rightOperand.getDateValue());
+        return !LocalDate.parse(leftOperand.getObjectValue().toString()).isEqual(rightOperand.getDateValue());
 
     }
 
     @Override
     public Boolean gt(Operand leftOperand, Operand rightOperand) {
-        if (leftOperand.getValue() == null) return false;
-
-        return LocalDate.parse(leftOperand.getValue().toString()).compareTo(rightOperand.getDateValue()) > 0;
+        return LocalDate.parse(leftOperand.getObjectValue().toString()).compareTo(rightOperand.getDateValue()) > 0;
     }
 
     @Override
     public Boolean lt(Operand leftOperand, Operand rightOperand) {
-        if (leftOperand.getValue() == null) return false;
-
-        return LocalDate.parse(leftOperand.getValue().toString()).compareTo(rightOperand.getDateValue()) < 0;
+        return LocalDate.parse(leftOperand.getObjectValue().toString()).compareTo(rightOperand.getDateValue()) < 0;
     }
 
     @Override
     public Boolean ge(Operand leftOperand, Operand rightOperand) {
-        if (leftOperand.getValue() == null) return false;
-
-        return LocalDate.parse(leftOperand.getValue().toString()).compareTo(rightOperand.getDateValue()) >= 0;
+        return LocalDate.parse(leftOperand.getObjectValue().toString()).compareTo(rightOperand.getDateValue()) >= 0;
     }
 
     @Override
     public Boolean le(Operand leftOperand, Operand rightOperand) {
-        if (leftOperand.getValue() == null) return false;
-
-        return LocalDate.parse(leftOperand.getValue().toString()).compareTo(rightOperand.getDateValue()) <= 0;
+        return LocalDate.parse(leftOperand.getObjectValue().toString()).compareTo(rightOperand.getDateValue()) <= 0;
     }
 
     @Override

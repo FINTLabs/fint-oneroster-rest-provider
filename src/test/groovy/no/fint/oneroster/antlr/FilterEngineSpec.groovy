@@ -1,5 +1,6 @@
 package no.fint.oneroster.antlr
 
+import no.fint.oneroster.exception.InvalidFilterException
 import no.fint.oneroster.filter.FilterEngine
 import no.fint.oneroster.model.AcademicSession
 import no.fint.oneroster.model.GUIDRef
@@ -18,7 +19,6 @@ class FilterEngineSpec extends Specification {
 
     FilterEngine filterEngine = new FilterEngine();
 
-    @Ignore
     def "Simple string query"() {
         given:
         def query = 'sourcedId=\'sourcedId\''
@@ -31,7 +31,30 @@ class FilterEngineSpec extends Specification {
         evaluate
     }
 
-    @Ignore
+    def "Logical AND string query"() {
+        given:
+        def query = 'sourcedId=\'sourcedId\' AND name=\'name\''
+        def object = new Org('sourcedId', 'name', OrgType.SCHOOL)
+
+        when:
+        def evaluate = filterEngine.execute(query, object)
+
+        then:
+        evaluate
+    }
+
+    def "Logical OR string query"() {
+        given:
+        def query = 'sourcedId=\'sourcedId\' OR name=\'na\''
+        def object = new Org('sourcedId', 'name', OrgType.SCHOOL)
+
+        when:
+        def evaluate = filterEngine.execute(query, object)
+
+        then:
+        evaluate
+    }
+
     def "Simple boolean query"() {
         given:
         def query = 'enabledUser=\'true\''
@@ -44,7 +67,6 @@ class FilterEngineSpec extends Specification {
         evaluate
     }
 
-    @Ignore
     def "Simple date query"() {
         given:
         def query = 'startDate<\'2020-03-05\''
@@ -57,7 +79,6 @@ class FilterEngineSpec extends Specification {
         evaluate
     }
 
-    @Ignore
     def "Simple integer query"() {
         given:
         def query = 'schoolYear=\'2020\''
@@ -70,7 +91,6 @@ class FilterEngineSpec extends Specification {
         evaluate
     }
 
-    @Ignore
     def "Nested object simple string query"() {
         given:
         def query = 'parent.sourcedId=\'sourcedId\''
@@ -98,7 +118,6 @@ class FilterEngineSpec extends Specification {
         evaluate
     }
 
-    @Ignore
     def "Nested map simple string query"() {
         given:
         def query = 'metadata.key2=\'value2\''
@@ -110,10 +129,5 @@ class FilterEngineSpec extends Specification {
 
         then:
         evaluate
-    }
-
-    @Ignore
-    def "Complex query"() {
-
     }
 }

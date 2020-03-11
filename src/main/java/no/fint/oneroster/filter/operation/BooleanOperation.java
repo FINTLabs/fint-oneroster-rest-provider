@@ -5,15 +5,11 @@ import no.fint.oneroster.filter.operand.Operand;
 public class BooleanOperation implements Operation {
 
     public Boolean eq(Operand leftOperand, Operand rightOperand) {
-        if (leftOperand.getValue() == null) return false;
-
-        return leftOperand.getValue() == rightOperand.getBooleanValue();
+        return leftOperand.getObjectValue() == rightOperand.getBooleanValue();
     }
 
     public Boolean ne(Operand leftOperand, Operand rightOperand) {
-        if (leftOperand.getValue() == null) return false;
-
-        return leftOperand.getValue() != rightOperand.getBooleanValue();
+        return leftOperand.getObjectValue() != rightOperand.getBooleanValue();
     }
 
     public Boolean gt(Operand leftOperand, Operand rightOperand) {

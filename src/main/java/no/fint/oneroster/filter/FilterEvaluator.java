@@ -3,14 +3,20 @@ package no.fint.oneroster.filter;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.oneroster.antlr.FilterBaseVisitor;
 import no.fint.oneroster.antlr.FilterParser;
+import no.fint.oneroster.exception.InvalidFilterException;
 import no.fint.oneroster.filter.operand.Operand;
 import no.fint.oneroster.filter.operation.*;
+import org.apache.commons.beanutils.NestedNullException;
+import org.apache.commons.beanutils.PropertyUtils;
 
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
+import java.util.List;
 
 @Slf4j
 public class FilterEvaluator extends FilterBaseVisitor<Boolean> {
     private Object givenItem;
+
     private Operation currentOperation;
     private Operand leftOperand = new Operand();
     private Operand rightOperand = new Operand();
@@ -44,28 +50,66 @@ public class FilterEvaluator extends FilterBaseVisitor<Boolean> {
                 case FilterParser.LE:
                     return currentOperation.le(leftOperand, rightOperand);
 
-                case FilterParser.CO:
-                    return currentOperation.co(leftOperand, rightOperand);
-
                 default:
-                    throw new IllegalStateException("Unsupported operator detected.");
+                    return currentOperation.co(leftOperand, rightOperand);
             }
 
         } catch (Exception ex) {
-            throw new RuntimeException("Unable to execute the query.", ex);
+            throw new InvalidFilterException(ex.getMessage());
         }
     }
 
     @Override
     public Boolean visitLogical(FilterParser.LogicalContext ctx) {
-        return super.visitLogical(ctx);
+        Boolean leftExp = visit(ctx.query(0));
+
+        if (ctx.LOGICAL_OPERATOR() == null) {
+            return leftExp;
+        }
+
+        if (leftExp) {
+            if (ctx.LOGICAL_OPERATOR().getText().equals("OR")) {
+                return leftExp;
+            } else {
+                return visit(ctx.query(1));
+            }
+
+        } else {
+            if (ctx.LOGICAL_OPERATOR().getText().equals("AND")) {
+                return leftExp;
+            } else {
+                return visit(ctx.query(1));
+            }
+        }
     }
 
     @Override
     public Boolean visitAttrPath(FilterParser.AttrPathContext ctx) {
-        leftOperand.setValue(givenItem, ctx.getText());
+        Class<?> propertyType;
 
-        return true;
+        try {
+            String[] split = ctx.getText().split("\\.");
+
+            propertyType = PropertyUtils.getPropertyType(givenItem, split[0]);
+
+            if (propertyType == null) {
+                throw new InvalidFilterException("Unknown field: " + ctx.getText());
+            }
+
+            if (propertyType.equals(List.class)) {
+                /*
+                Do something...
+                 */
+            } else {
+                Object value = PropertyUtils.getProperty(givenItem, ctx.getText());
+                leftOperand.setObjectValue(value);
+            }
+
+            return true;
+
+        } catch (NestedNullException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new InvalidFilterException("Unknown field: {}" + ctx.getText());
+        }
     }
 
     @Override
@@ -73,7 +117,6 @@ public class FilterEvaluator extends FilterBaseVisitor<Boolean> {
         currentOperation = new BooleanOperation();
 
         String text = ctx.getText();
-
         Boolean value = Boolean.parseBoolean(text.substring(1, text.length() - 1));
         rightOperand.setBooleanValue(value);
 
@@ -85,16 +128,10 @@ public class FilterEvaluator extends FilterBaseVisitor<Boolean> {
         currentOperation = new DateOperation();
 
         String text = ctx.getText();
+        LocalDate value = LocalDate.parse(text.substring(1, text.length() - 1));
+        rightOperand.setDateValue(value);
 
-        if (text.length() > 2) {
-            LocalDate value = LocalDate.parse(text.substring(1, text.length() - 1));
-            rightOperand.setDateValue(value);
-
-        } else {
-            rightOperand.setStringValue("");
-        }
-
-        return super.visitDate(ctx);
+        return true;
     }
 
     @Override
@@ -102,16 +139,10 @@ public class FilterEvaluator extends FilterBaseVisitor<Boolean> {
         currentOperation = new IntegerOperation();
 
         String text = ctx.getText();
+        Integer value = Integer.parseInt(text.substring(1, text.length() - 1));
+        rightOperand.setIntegerValue(value);
 
-        if (text.length() > 2) {
-            Integer value = Integer.parseInt(text.substring(1, text.length() - 1));
-            rightOperand.setIntValue(value);
-
-        } else {
-            rightOperand.setStringValue("");
-        }
-
-        return super.visitInteger(ctx);
+        return true;
     }
 
     @Override
@@ -119,13 +150,8 @@ public class FilterEvaluator extends FilterBaseVisitor<Boolean> {
         currentOperation = new StringOperation();
 
         String text = ctx.getText();
-
-        if (text.length() > 2) {
-            rightOperand.setStringValue(text.substring(1, text.length() - 1));
-
-        } else {
-            rightOperand.setStringValue("");
-        }
+        String value = text.substring(1, text.length() - 1);
+        rightOperand.setStringValue(value);
 
         return true;
     }

@@ -4,17 +4,17 @@ import no.fint.oneroster.filter.operand.Operand;
 
 public interface Operation {
 
-    Boolean eq(Operand leftOperand, Operand rightOperand);
+    Boolean eq(Operand leftOperand, Operand rightOperand) throws ClassCastException;
 
-    Boolean ne(Operand leftOperand, Operand rightOperand);
+    Boolean ne(Operand leftOperand, Operand rightOperand) throws ClassCastException;
 
-    Boolean gt(Operand leftOperand, Operand rightOperand);
+    Boolean gt(Operand leftOperand, Operand rightOperand) throws ClassCastException;
 
-    Boolean lt(Operand leftOperand, Operand rightOperand);
+    Boolean lt(Operand leftOperand, Operand rightOperand) throws ClassCastException;
 
-    Boolean ge(Operand leftOperand, Operand rightOperand);
+    Boolean ge(Operand leftOperand, Operand rightOperand) throws ClassCastException;
 
-    Boolean le(Operand leftOperand, Operand rightOperand);
+    Boolean le(Operand leftOperand, Operand rightOperand) throws ClassCastException;
 
-    Boolean co(Operand leftOperand, Operand rightOperand);
+    Boolean co(Operand leftOperand, Operand rightOperand) throws ClassCastException;
 }

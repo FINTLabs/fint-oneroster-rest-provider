@@ -196,19 +196,30 @@ public class FilterParser extends Parser {
 	public final LogicalContext logical() throws RecognitionException {
 		LogicalContext _localctx = new LogicalContext(_ctx, getState());
 		enterRule(_localctx, 2, RULE_logical);
+		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
+			{
 			setState(14);
 			query();
-			setState(15);
-			match(WS);
-			setState(16);
-			match(LOGICAL_OPERATOR);
-			setState(17);
-			match(WS);
-			setState(18);
-			query();
+			setState(19);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			if (_la==WS) {
+				{
+				setState(15);
+				match(WS);
+				setState(16);
+				match(LOGICAL_OPERATOR);
+				setState(17);
+				match(WS);
+				setState(18);
+				query();
+				}
+			}
+
+			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -253,14 +264,14 @@ public class FilterParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(20);
+			setState(21);
 			match(ATTRNAME);
-			setState(22);
+			setState(23);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==T__0) {
 				{
-				setState(21);
+				setState(22);
 				subAttr();
 				}
 			}
@@ -305,9 +316,9 @@ public class FilterParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(24);
-			match(T__0);
 			setState(25);
+			match(T__0);
+			setState(26);
 			match(ATTRNAME);
 			}
 		}
@@ -406,14 +417,14 @@ public class FilterParser extends Parser {
 		ValueContext _localctx = new ValueContext(_ctx, getState());
 		enterRule(_localctx, 8, RULE_value);
 		try {
-			setState(31);
+			setState(32);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case BOOLEAN:
 				_localctx = new BooleanContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(27);
+				setState(28);
 				match(BOOLEAN);
 				}
 				break;
@@ -421,7 +432,7 @@ public class FilterParser extends Parser {
 				_localctx = new DateContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(28);
+				setState(29);
 				match(DATE);
 				}
 				break;
@@ -429,7 +440,7 @@ public class FilterParser extends Parser {
 				_localctx = new IntegerContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(29);
+				setState(30);
 				match(INTEGER);
 				}
 				break;
@@ -437,7 +448,7 @@ public class FilterParser extends Parser {
 				_localctx = new StringContext(_localctx);
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(30);
+				setState(31);
 				match(STRING);
 				}
 				break;
@@ -457,16 +468,16 @@ public class FilterParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\22$\4\2\t\2\4\3\t"+
-		"\3\4\4\t\4\4\5\t\5\4\6\t\6\3\2\3\2\3\2\3\2\3\3\3\3\3\3\3\3\3\3\3\3\3\4"+
-		"\3\4\5\4\31\n\4\3\5\3\5\3\5\3\6\3\6\3\6\3\6\5\6\"\n\6\3\6\2\2\7\2\4\6"+
-		"\b\n\2\3\3\2\6\f\2\"\2\f\3\2\2\2\4\20\3\2\2\2\6\26\3\2\2\2\b\32\3\2\2"+
-		"\2\n!\3\2\2\2\f\r\5\6\4\2\r\16\t\2\2\2\16\17\5\n\6\2\17\3\3\2\2\2\20\21"+
-		"\5\2\2\2\21\22\7\21\2\2\22\23\7\4\2\2\23\24\7\21\2\2\24\25\5\2\2\2\25"+
-		"\5\3\2\2\2\26\30\7\5\2\2\27\31\5\b\5\2\30\27\3\2\2\2\30\31\3\2\2\2\31"+
-		"\7\3\2\2\2\32\33\7\3\2\2\33\34\7\5\2\2\34\t\3\2\2\2\35\"\7\r\2\2\36\""+
-		"\7\16\2\2\37\"\7\17\2\2 \"\7\20\2\2!\35\3\2\2\2!\36\3\2\2\2!\37\3\2\2"+
-		"\2! \3\2\2\2\"\13\3\2\2\2\4\30!";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\22%\4\2\t\2\4\3\t"+
+		"\3\4\4\t\4\4\5\t\5\4\6\t\6\3\2\3\2\3\2\3\2\3\3\3\3\3\3\3\3\3\3\5\3\26"+
+		"\n\3\3\4\3\4\5\4\32\n\4\3\5\3\5\3\5\3\6\3\6\3\6\3\6\5\6#\n\6\3\6\2\2\7"+
+		"\2\4\6\b\n\2\3\3\2\6\f\2$\2\f\3\2\2\2\4\20\3\2\2\2\6\27\3\2\2\2\b\33\3"+
+		"\2\2\2\n\"\3\2\2\2\f\r\5\6\4\2\r\16\t\2\2\2\16\17\5\n\6\2\17\3\3\2\2\2"+
+		"\20\25\5\2\2\2\21\22\7\21\2\2\22\23\7\4\2\2\23\24\7\21\2\2\24\26\5\2\2"+
+		"\2\25\21\3\2\2\2\25\26\3\2\2\2\26\5\3\2\2\2\27\31\7\5\2\2\30\32\5\b\5"+
+		"\2\31\30\3\2\2\2\31\32\3\2\2\2\32\7\3\2\2\2\33\34\7\3\2\2\34\35\7\5\2"+
+		"\2\35\t\3\2\2\2\36#\7\r\2\2\37#\7\16\2\2 #\7\17\2\2!#\7\20\2\2\"\36\3"+
+		"\2\2\2\"\37\3\2\2\2\" \3\2\2\2\"!\3\2\2\2#\13\3\2\2\2\5\25\31\"";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
