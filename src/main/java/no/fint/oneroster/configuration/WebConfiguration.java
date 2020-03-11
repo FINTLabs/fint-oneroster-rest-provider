@@ -2,6 +2,7 @@ package no.fint.oneroster.configuration;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import no.fint.oneroster.resolver.FieldSelection;
+import no.fint.oneroster.resolver.FilterResolver;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +19,7 @@ public class WebConfiguration implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(new FieldSelection());
+        resolvers.add(new FilterResolver());
     }
 
     @Bean
