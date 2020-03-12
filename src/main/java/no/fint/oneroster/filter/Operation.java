@@ -25,10 +25,7 @@ public class Operation {
             return Integer.parseInt(leftOperand.toString()) == Integer.parseInt(rightOperand.toString());
 
         } else if (leftOperand instanceof Enum) {
-            /*
-            Do something...
-             */
-            return false;
+            return rightOperand.toString().equalsIgnoreCase(((Enum<?>) leftOperand).name());
 
         } else {
             return false;
@@ -52,10 +49,7 @@ public class Operation {
             return Integer.parseInt(leftOperand.toString()) != Integer.parseInt(rightOperand.toString());
 
         } else if (leftOperand instanceof Enum) {
-            /*
-            Do something...
-             */
-            return false;
+            return !rightOperand.toString().equalsIgnoreCase(((Enum<?>) leftOperand).name());
 
         } else {
             return false;
@@ -76,10 +70,7 @@ public class Operation {
             return Integer.parseInt(leftOperand.toString()) > Integer.parseInt(rightOperand.toString());
 
         } else if (leftOperand instanceof Enum) {
-            /*
-            Do something...
-             */
-            return false;
+            return rightOperand.toString().compareToIgnoreCase(((Enum<?>) leftOperand).name()) > 0;
 
         } else {
             return false;
@@ -100,10 +91,7 @@ public class Operation {
             return Integer.parseInt(leftOperand.toString()) < Integer.parseInt(rightOperand.toString());
 
         } else if (leftOperand instanceof Enum) {
-            /*
-            Do something...
-             */
-            return false;
+            return rightOperand.toString().compareToIgnoreCase(((Enum<?>) leftOperand).name()) < 0;
 
         } else {
             return false;
@@ -124,10 +112,7 @@ public class Operation {
             return Integer.parseInt(leftOperand.toString()) >= Integer.parseInt(rightOperand.toString());
 
         } else if (leftOperand instanceof Enum) {
-            /*
-            Do something...
-             */
-            return false;
+            return rightOperand.toString().compareToIgnoreCase(((Enum<?>) leftOperand).name()) >= 0;
 
         } else {
             return false;
@@ -148,10 +133,7 @@ public class Operation {
             return Integer.parseInt(leftOperand.toString()) <= Integer.parseInt(rightOperand.toString());
 
         } else if (leftOperand instanceof Enum) {
-            /*
-            Do something...
-             */
-            return false;
+            return rightOperand.toString().compareToIgnoreCase(((Enum<?>) leftOperand).name()) <= 0;
 
         } else {
             return false;

@@ -102,6 +102,78 @@ class FilterEngineSpec extends Specification {
         evaluate
     }
 
+    def "Simple enum eq query"() {
+        given:
+        def query = 'type=\'school\''
+        def object = new Org('sourcedId', 'name', OrgType.SCHOOL)
+
+        when:
+        def evaluate = filterEngine.execute(query, object)
+
+        then:
+        evaluate
+    }
+
+    def "Simple enum ne query"() {
+        given:
+        def query = 'type!=\'school\''
+        def object = new Org('sourcedId', 'name', OrgType.SCHOOL)
+
+        when:
+        def evaluate = filterEngine.execute(query, object)
+
+        then:
+        !evaluate
+    }
+
+    def "Simple enum gt query"() {
+        given:
+        def query = 'type>\'school\''
+        def object = new Org('sourcedId', 'name', OrgType.SCHOOL)
+
+        when:
+        def evaluate = filterEngine.execute(query, object)
+
+        then:
+        !evaluate
+    }
+
+    def "Simple enum lt query"() {
+        given:
+        def query = 'type<\'school\''
+        def object = new Org('sourcedId', 'name', OrgType.SCHOOL)
+
+        when:
+        def evaluate = filterEngine.execute(query, object)
+
+        then:
+        !evaluate
+    }
+
+    def "Simple enum ge query"() {
+        given:
+        def query = 'type>=\'school\''
+        def object = new Org('sourcedId', 'name', OrgType.SCHOOL)
+
+        when:
+        def evaluate = filterEngine.execute(query, object)
+
+        then:
+        evaluate
+    }
+
+    def "Simple enum le query"() {
+        given:
+        def query = 'type<=\'school\''
+        def object = new Org('sourcedId', 'name', OrgType.SCHOOL)
+
+        when:
+        def evaluate = filterEngine.execute(query, object)
+
+        then:
+        evaluate
+    }
+
     def "Simple boolean eq query"() {
         given:
         def query = 'enabledUser=\'true\''
