@@ -1,5 +1,6 @@
 package no.fint.oneroster.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import no.fint.oneroster.model.vocab.RoleType;
@@ -25,5 +26,10 @@ public class Enrollment extends Base {
         this.clazz = clazz;
         this.school = school;
         this.role = role;
+    }
+
+    @JsonProperty("class")
+    public GUIDRef getClazz() {
+        return clazz;
     }
 }

@@ -13,7 +13,7 @@ import java.util.List;
 @Getter @Setter
 public class Clazz extends Base {
     private final String title;
-    private final ClazzType clazzType;
+    private final ClazzType classType;
     private final GUIDRef course;
     private final GUIDRef school;
     private final List<GUIDRef> terms;
@@ -24,10 +24,10 @@ public class Clazz extends Base {
     private List<String> subjectCodes;
     private List<String> periods;
 
-    public Clazz(String sourcedId, String title, ClazzType clazzType, GUIDRef course, GUIDRef school, List<GUIDRef> terms) {
+    public Clazz(String sourcedId, String title, ClazzType classType, GUIDRef course, GUIDRef school, List<GUIDRef> terms) {
         super(sourcedId, StatusType.ACTIVE, ZonedDateTime.now(ZoneId.of("Z")));
         this.title = title;
-        this.clazzType = clazzType;
+        this.classType = classType;
         this.course = course;
         this.school = school;
         this.terms = new ArrayList<>(terms);
