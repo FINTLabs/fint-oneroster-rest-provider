@@ -3,8 +3,11 @@ package no.fint.oneroster.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import lombok.extern.slf4j.Slf4j;
+import no.fint.oneroster.exception.InvalidFilterException;
+import no.fint.oneroster.filter.FilterEvaluator;
 import no.fint.oneroster.model.Org;
 import no.fint.oneroster.service.OrgService;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.beanutils.BeanComparator;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +30,7 @@ public class OrgController {
     }
 
     @GetMapping("/orgs")
-    public Map<String, List<Org>> getAllOrgs(@RequestHeader String orgId, FilterProvider fields, Pageable pageable) {
+    public Map<String, List<Org>> getAllOrgs(@RequestHeader String orgId, FilterProvider fields, ParseTree filter, Pageable pageable) {
         List<Org> orgs = orgService.getAllOrgs(orgId);
 
         pageable.getSort().get().findFirst().ifPresent(sort -> {
@@ -36,6 +39,17 @@ public class OrgController {
         });
 
         List<Org> filteredOrgs = orgs.stream()
+                .filter(org -> {
+                    if (filter != null) {
+                        try {
+                            return new FilterEvaluator(org).visit(filter);
+                        } catch (InvalidFilterException e) {
+                            log.error(e.getMessage());
+                            return false;
+                        }
+                    }
+                    return true;
+                })
                 .skip(pageable.getPageNumber())
                 .limit(pageable.getPageSize())
                 .collect(Collectors.toList());

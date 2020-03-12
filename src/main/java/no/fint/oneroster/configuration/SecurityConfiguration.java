@@ -26,16 +26,11 @@ import java.util.function.Function;
 @Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    /*
-    TODO - configure - change from permitAll to something more restrictive or remove all together in production,
-     if no need for TestController
-     */
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .requestMatchers(EndpointRequest.to("health")).permitAll()
+                //.requestMatchers(EndpointRequest.to("health")).permitAll()
                 .anyRequest()
                 .permitAll();
     }
