@@ -7,7 +7,9 @@ import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilde
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.config.PageableHandlerMethodArgumentResolverCustomizer;
+import org.springframework.data.web.config.SortHandlerMethodArgumentResolverCustomizer;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -29,6 +31,11 @@ public class WebConfiguration implements WebMvcConfigurer {
             pageable.setSizeParameterName("limit");
             pageable.setFallbackPageable(PageRequest.of(0, 100));
         };
+    }
+
+    @Bean
+    public SortHandlerMethodArgumentResolverCustomizer sortCustomizer() {
+        return sort -> sort.setFallbackSort(Sort.by("sourcedId"));
     }
 
     @Bean

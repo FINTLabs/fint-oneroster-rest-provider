@@ -355,10 +355,10 @@ class FilterEngineSpec extends Specification {
         evaluate
     }
 
-    def "Nested object simple string query"() {
+    def "Nested object simple string eq query"() {
         given:
         def query = 'parent.sourcedId=\'sourcedId\''
-        def object = new Org('sourcedI', 'name', OrgType.SCHOOL)
+        def object = new Org('sourcedId', 'name', OrgType.SCHOOL)
         object.setParent(GUIDRef.of(GUIDType.ORG, 'sourcedId'))
 
         when:
@@ -369,7 +369,7 @@ class FilterEngineSpec extends Specification {
     }
 
     @Ignore
-    def "Nested list simple string query"() {
+    def "Nested primitive list simple string eq query"() {
         given:
         def query = 'children.sourcedId=\'sourcedId\''
         def object = new Org('sourcedId', 'name', OrgType.SCHOOL)
@@ -382,7 +382,21 @@ class FilterEngineSpec extends Specification {
         evaluate
     }
 
-    def "Logical AND string query"() {
+    @Ignore
+    def "Nested object list simple string eq query"() {
+        given:
+        def query = 'children.sourcedId=\'sourcedId\''
+        def object = new Org('sourcedId', 'name', OrgType.SCHOOL)
+        object.setChildren([GUIDRef.of(GUIDType.ORG, 'sourcedId')])
+
+        when:
+        def evaluate = filterEngine.execute(query, object)
+
+        then:
+        evaluate
+    }
+
+    def "Logical AND simple string eq query"() {
         given:
         def query = 'sourcedId=\'sourcedId\' AND name=\'name\''
         def object = new Org('sourcedId', 'name', OrgType.SCHOOL)
@@ -394,7 +408,7 @@ class FilterEngineSpec extends Specification {
         evaluate
     }
 
-    def "Logical OR string query"() {
+    def "Logical OR simple string eq query"() {
         given:
         def query = 'sourcedId=\'sourcedId\' OR name=\'na\''
         def object = new Org('sourcedId', 'name', OrgType.SCHOOL)
