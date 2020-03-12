@@ -12,7 +12,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import java.util.Set;
 
-public class FieldSelection implements HandlerMethodArgumentResolver {
+public class FieldResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -21,9 +21,15 @@ public class FieldSelection implements HandlerMethodArgumentResolver {
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        Set<String> fields = StringUtils.commaDelimitedListToSet(StringUtils.trimAllWhitespace(webRequest.getParameter("fields")));
+        String fields = webRequest.getParameter("fields");
 
-        SimpleBeanPropertyFilter propertyFilter = fields.isEmpty() ? SimpleBeanPropertyFilter.serializeAll() : SimpleBeanPropertyFilter.filterOutAllExcept(fields);
+        SimpleBeanPropertyFilter propertyFilter;
+
+        if (fields == null || fields.isEmpty()) {
+            propertyFilter = SimpleBeanPropertyFilter.serializeAll();
+        } else {
+            propertyFilter = SimpleBeanPropertyFilter.filterOutAllExcept(StringUtils.commaDelimitedListToSet(StringUtils.trimAllWhitespace(fields)));
+        }
 
         return new SimpleFilterProvider()
                 .setFailOnUnknownId(false)
