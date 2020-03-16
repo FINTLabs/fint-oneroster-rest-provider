@@ -78,9 +78,6 @@ public class Operation {
         } else if (leftOperand instanceof Integer) {
             return Integer.parseInt(leftOperand.toString()) > Integer.parseInt(rightOperand.toString());
 
-        } else if (leftOperand instanceof Enum) {
-            return rightOperand.toString().compareToIgnoreCase(((Enum<?>) leftOperand).name()) > 0;
-
         } else {
             return false;
         }
@@ -98,9 +95,6 @@ public class Operation {
 
         } else if (leftOperand instanceof Integer) {
             return Integer.parseInt(leftOperand.toString()) < Integer.parseInt(rightOperand.toString());
-
-        } else if (leftOperand instanceof Enum) {
-            return rightOperand.toString().compareToIgnoreCase(((Enum<?>) leftOperand).name()) < 0;
 
         } else {
             return false;
@@ -120,9 +114,6 @@ public class Operation {
         } else if (leftOperand instanceof Integer) {
             return Integer.parseInt(leftOperand.toString()) >= Integer.parseInt(rightOperand.toString());
 
-        } else if (leftOperand instanceof Enum) {
-            return rightOperand.toString().compareToIgnoreCase(((Enum<?>) leftOperand).name()) >= 0;
-
         } else {
             return false;
         }
@@ -141,9 +132,6 @@ public class Operation {
         } else if (leftOperand instanceof Integer) {
             return Integer.parseInt(leftOperand.toString()) <= Integer.parseInt(rightOperand.toString());
 
-        } else if (leftOperand instanceof Enum) {
-            return rightOperand.toString().compareToIgnoreCase(((Enum<?>) leftOperand).name()) <= 0;
-
         } else {
             return false;
         }
@@ -151,7 +139,7 @@ public class Operation {
 
     public static Boolean co(Object leftOperand, Object rightOperand) {
         if (leftOperand instanceof String) {
-            return leftOperand.toString().contains(rightOperand.toString());
+            return leftOperand.toString().toLowerCase().contains(rightOperand.toString().toLowerCase());
 
         } else if (leftOperand instanceof List) {
             return ((List<?>) leftOperand).stream()

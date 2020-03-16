@@ -1,7 +1,6 @@
 package no.fint.oneroster.repository
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import no.fint.model.resource.administrasjon.personal.PersonalressursResources
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResources
 import no.fint.oneroster.properties.OrganisationProperties
 import no.fint.oneroster.util.FintObjectFactory

@@ -11,7 +11,6 @@ import no.fint.oneroster.model.vocab.GUIDType
 import no.fint.oneroster.model.vocab.OrgType
 import no.fint.oneroster.model.vocab.RoleType
 import no.fint.oneroster.model.vocab.SessionType
-import spock.lang.Ignore
 import spock.lang.Specification
 
 import java.time.LocalDate
@@ -126,54 +125,6 @@ class FilterEngineSpec extends Specification {
 
         then:
         !evaluate
-    }
-
-    def "Simple enum gt query"() {
-        given:
-        def query = 'type>\'school\''
-        def object = new Org('sourcedId', 'name', OrgType.SCHOOL)
-
-        when:
-        def evaluate = filterEngine.execute(query, object)
-
-        then:
-        !evaluate
-    }
-
-    def "Simple enum lt query"() {
-        given:
-        def query = 'type<\'school\''
-        def object = new Org('sourcedId', 'name', OrgType.SCHOOL)
-
-        when:
-        def evaluate = filterEngine.execute(query, object)
-
-        then:
-        !evaluate
-    }
-
-    def "Simple enum ge query"() {
-        given:
-        def query = 'type>=\'school\''
-        def object = new Org('sourcedId', 'name', OrgType.SCHOOL)
-
-        when:
-        def evaluate = filterEngine.execute(query, object)
-
-        then:
-        evaluate
-    }
-
-    def "Simple enum le query"() {
-        given:
-        def query = 'type<=\'school\''
-        def object = new Org('sourcedId', 'name', OrgType.SCHOOL)
-
-        when:
-        def evaluate = filterEngine.execute(query, object)
-
-        then:
-        evaluate
     }
 
     def "Simple boolean eq query"() {
@@ -470,7 +421,7 @@ class FilterEngineSpec extends Specification {
 
     def "Primitive list simple string co query"() {
         given:
-        def query = 'grades~\'e,f\''
+        def query = 'grades~\'a,b\''
         def object = new Course('sourcedId', 'title', GUIDRef.of(GUIDType.COURSE, 'sourcedId'))
         object.setGrades(['a', 'b', 'c'])
 
@@ -541,6 +492,4 @@ class FilterEngineSpec extends Specification {
         then:
         !evaluate
     }
-
-
 }

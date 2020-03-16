@@ -42,7 +42,6 @@ public class FilterResolver implements HandlerMethodArgumentResolver {
         try {
             return parser.logical();
         } catch (InvalidSyntaxException e) {
-            log.error(e.getMessage());
             return null;
         }
     }
