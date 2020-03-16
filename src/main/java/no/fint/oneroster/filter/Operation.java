@@ -1,9 +1,11 @@
 package no.fint.oneroster.filter;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.util.List;
 
 @Slf4j
 public class Operation {
@@ -27,9 +29,13 @@ public class Operation {
         } else if (leftOperand instanceof Enum) {
             return rightOperand.toString().equalsIgnoreCase(((Enum<?>) leftOperand).name());
 
+        } else if (leftOperand instanceof List) {
+            return ((List<?>) leftOperand).containsAll(StringUtils.commaDelimitedListToSet(rightOperand.toString()));
+
         } else {
             return false;
         }
+
     }
 
     public static Boolean ne(Object leftOperand, Object rightOperand) {

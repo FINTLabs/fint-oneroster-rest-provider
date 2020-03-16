@@ -1,10 +1,9 @@
-package no.fint.oneroster.resolver;
+package no.fint.oneroster.filter;
 
 import lombok.extern.slf4j.Slf4j;
 import no.fint.oneroster.antlr.FilterLexer;
 import no.fint.oneroster.antlr.FilterParser;
-import no.fint.oneroster.exception.InvalidFilterException;
-import no.fint.oneroster.filter.FilterErrorListener;
+import no.fint.oneroster.exception.InvalidSyntaxException;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -42,7 +41,7 @@ public class FilterResolver implements HandlerMethodArgumentResolver {
 
         try {
             return parser.logical();
-        } catch (InvalidFilterException e) {
+        } catch (InvalidSyntaxException e) {
             log.error(e.getMessage());
             return null;
         }

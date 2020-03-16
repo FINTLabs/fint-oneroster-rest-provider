@@ -3,17 +3,16 @@ package no.fint.oneroster.filter;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.oneroster.antlr.FilterBaseVisitor;
 import no.fint.oneroster.antlr.FilterParser;
-import no.fint.oneroster.exception.InvalidFilterException;
+import no.fint.oneroster.exception.NoSuchFieldException;
 import org.apache.commons.beanutils.NestedNullException;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 
 @Slf4j
 public class FilterEvaluator extends FilterBaseVisitor<Boolean> {
-    private Object object;
+    private final Object object;
 
     private Object leftOperand;
     private Object rightOperand;
@@ -51,9 +50,8 @@ public class FilterEvaluator extends FilterBaseVisitor<Boolean> {
                     return Operation.co(leftOperand, rightOperand);
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new InvalidFilterException(ex.getMessage());
+        } catch (Exception e) {
+            return false;
         }
     }
 
@@ -67,14 +65,14 @@ public class FilterEvaluator extends FilterBaseVisitor<Boolean> {
 
         if (leftExp) {
             if (ctx.LOGICAL_OPERATOR().getText().equals("OR")) {
-                return leftExp;
+                return true;
             } else {
                 return visit(ctx.query(1));
             }
 
         } else {
             if (ctx.LOGICAL_OPERATOR().getText().equals("AND")) {
-                return leftExp;
+                return false;
             } else {
                 return visit(ctx.query(1));
             }
@@ -83,29 +81,15 @@ public class FilterEvaluator extends FilterBaseVisitor<Boolean> {
 
     @Override
     public Boolean visitAttrPath(FilterParser.AttrPathContext ctx) {
-        Class<?> propertyType;
-
         try {
-            propertyType = PropertyUtils.getPropertyType(object, ctx.ATTRNAME().getText());
+            leftOperand = PropertyUtils.getProperty(object, ctx.getText());
 
-            if (propertyType == null) {
-                throw new InvalidFilterException("Unknown field: " + ctx.getText());
-            }
-
-            if (propertyType.equals(List.class)) {
-                /*
-                Do something...
-                 */
-            } else {
-                leftOperand = PropertyUtils.getProperty(object, ctx.getText());
-            }
-
-            return true;
+            return leftOperand != null;
 
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new InvalidFilterException("Unknown field: {}" + ctx.getText());
+            throw new NoSuchFieldException();
         } catch (NestedNullException e) {
-            throw new InvalidFilterException("Null fields: {}" + ctx.getText());
+            return false;
         }
     }
 
@@ -116,7 +100,7 @@ public class FilterEvaluator extends FilterBaseVisitor<Boolean> {
 
     @Override
     public Boolean visitValue(FilterParser.ValueContext ctx) {
-        rightOperand = StringUtils.substringBetween(ctx.ANY_CHAR().getText(), "'");
+        rightOperand = StringUtils.substringBetween(ctx.getText(), "'");
 
         return true;
     }

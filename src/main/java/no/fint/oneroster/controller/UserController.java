@@ -1,120 +1,116 @@
 package no.fint.oneroster.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ser.FilterProvider;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.oneroster.model.User;
 import no.fint.oneroster.service.UserService;
-import org.apache.commons.beanutils.BeanComparator;
+import no.fint.oneroster.util.OneRosterResponse;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
 public class UserController {
 
     private final UserService userService;
-    private final ObjectMapper objectMapper;
 
-    public UserController(UserService userService, ObjectMapper objectMapper) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.objectMapper = objectMapper;
     }
 
     @GetMapping("/users")
-    public Map<String, List<User>> getAllUsers(@RequestHeader String orgId, FilterProvider fields, Pageable pageable) {
+    public ResponseEntity<?> getAllUsers(@RequestHeader String orgId, ParseTree filter, Pageable pageable,
+                                         @RequestParam(value = "fields", required = false) String fields) {
         List<User> users = userService.getAllUsers(orgId);
 
-        pageable.getSort().get().findFirst().ifPresent(sort -> {
-            BeanComparator<User> comparator = new BeanComparator<>(sort.getProperty());
-            users.sort(comparator);
-        });
+        List<User> modifiedUsers = new OneRosterResponse.Builder<>(users)
+                .filter(filter)
+                .sort(pageable.getSort())
+                .page(pageable)
+                .build();
 
-        List<User> filteredUsers = users.stream()
-                .skip(pageable.getPageNumber())
-                .limit(pageable.getPageSize())
-                .collect(Collectors.toList());
+        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("users", modifiedUsers));
+        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(User.class, fields)));
 
-        objectMapper.setFilterProvider(fields);
-
-        return Collections.singletonMap("users", filteredUsers);
+        return ResponseEntity.ok()
+                .header("X-Total-Count", String.valueOf(users.size()))
+                .body(body);
     }
 
     @GetMapping("/users/{sourcedId}")
-    public Map<String, User> getUser(@RequestHeader String orgId, @PathVariable String sourcedId, FilterProvider fields) {
+    public ResponseEntity<?> getUser(@RequestHeader String orgId, @PathVariable String sourcedId,
+                                     @RequestParam(value = "fields", required = false) String fields) {
         User user = userService.getUser(orgId, sourcedId);
 
-        objectMapper.setFilterProvider(fields);
+        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("user", user));
+        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(User.class, fields)));
 
-        return Collections.singletonMap("user", user);
+        return ResponseEntity.ok(body);
     }
 
     @GetMapping("/students")
-    public Map<String, List<User>> getAllStudents(@RequestHeader String orgId, FilterProvider fields, Pageable pageable) {
+    public ResponseEntity<?> getAllStudents(@RequestHeader String orgId, ParseTree filter, Pageable pageable,
+                                            @RequestParam(value = "fields", required = false) String fields) {
         List<User> students = userService.getAllStudents(orgId);
 
-        pageable.getSort().get().findFirst().ifPresent(sort -> {
-            BeanComparator<User> comparator = new BeanComparator<>(sort.getProperty());
-            students.sort(comparator);
-        });
+        List<User> modifiedstudents = new OneRosterResponse.Builder<>(students)
+                .filter(filter)
+                .sort(pageable.getSort())
+                .page(pageable)
+                .build();
 
-        List<User> filteredStudents = students.stream()
-                .skip(pageable.getPageNumber())
-                .limit(pageable.getPageSize())
-                .collect(Collectors.toList());
+        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("users", modifiedstudents));
+        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(User.class, fields)));
 
-        objectMapper.setFilterProvider(fields);
-
-        return Collections.singletonMap("users", filteredStudents);
+        return ResponseEntity.ok()
+                .header("X-Total-Count", String.valueOf(students.size()))
+                .body(body);
     }
 
     @GetMapping("/students/{sourcedId}")
-    public Map<String, User> getStudent(@RequestHeader String orgId, @PathVariable String sourcedId, FilterProvider fields) {
+    public ResponseEntity<?> getStudent(@RequestHeader String orgId, @PathVariable String sourcedId,
+                                        @RequestParam(value = "fields", required = false) String fields) {
         User student = userService.getStudent(orgId, sourcedId);
 
-        objectMapper.setFilterProvider(fields);
+        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("user", student));
+        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(User.class, fields)));
 
-        return Collections.singletonMap("user", student);
+        return ResponseEntity.ok(body);
     }
 
     @GetMapping("/teachers")
-    public Map<String, List<User>> getAllTeachers(@RequestHeader String orgId, FilterProvider fields, Pageable pageable) {
+    public ResponseEntity<?> getAllTeachers(@RequestHeader String orgId, ParseTree filter, Pageable pageable,
+                                            @RequestParam(value = "fields", required = false) String fields) {
         List<User> teachers = userService.getAllTeachers(orgId);
 
-        pageable.getSort().get().findFirst().ifPresent(sort -> {
-            BeanComparator<User> comparator = new BeanComparator<>(sort.getProperty());
-            teachers.sort(comparator);
-        });
+        List<User> modifiedTeachers = new OneRosterResponse.Builder<>(teachers)
+                .filter(filter)
+                .sort(pageable.getSort())
+                .page(pageable)
+                .build();
 
-        List<User> filteredTeachers = teachers.stream()
-                .skip(pageable.getPageNumber())
-                .limit(pageable.getPageSize())
-                .collect(Collectors.toList());
+        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("users", modifiedTeachers));
+        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(User.class, fields)));
 
-        objectMapper.setFilterProvider(fields);
-
-        return Collections.singletonMap("users", filteredTeachers);
+        return ResponseEntity.ok()
+                .header("X-Total-Count", String.valueOf(teachers.size()))
+                .body(body);
     }
 
     @GetMapping("/teachers/{sourcedId}")
-    public Map<String, User> getTeacher(@RequestHeader String orgId, @PathVariable String sourcedId, FilterProvider fields) {
+    public ResponseEntity<?> getTeacher(@RequestHeader String orgId, @PathVariable String sourcedId,
+                                        @RequestParam(value = "fields", required = false) String fields) {
         User teacher = userService.getTeacher(orgId, sourcedId);
 
-        objectMapper.setFilterProvider(fields);
+        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("user", teacher));
+        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(User.class, fields)));
 
-        return Collections.singletonMap("user", teacher);
-    }
-
-    @ExceptionHandler(WebClientResponseException.class)
-    public ResponseEntity<String> handleWebClientResponseException(WebClientResponseException ex) {
-        log.error("WebClientException - Status: {}, Body: {}", ex.getRawStatusCode(), ex.getResponseBodyAsString());
-        return ResponseEntity.status(ex.getRawStatusCode()).body(ex.getResponseBodyAsString());
+        return ResponseEntity.ok(body);
     }
 }

@@ -1,7 +1,7 @@
 package no.fint.oneroster.filter;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fint.oneroster.exception.InvalidFilterException;
+import no.fint.oneroster.exception.InvalidSyntaxException;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
@@ -13,6 +13,6 @@ public class FilterErrorListener extends BaseErrorListener {
 
     @Override
     public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
-        throw new InvalidFilterException("line " + line + ":" + charPositionInLine + " " + msg);
+        throw new InvalidSyntaxException("line " + line + ":" + charPositionInLine + " " + msg);
     }
 }

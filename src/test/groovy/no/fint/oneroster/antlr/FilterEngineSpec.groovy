@@ -1,7 +1,9 @@
 package no.fint.oneroster.antlr
 
+import no.fint.oneroster.exception.BadRequestException
 import no.fint.oneroster.filter.FilterEngine
 import no.fint.oneroster.model.AcademicSession
+import no.fint.oneroster.model.Course
 import no.fint.oneroster.model.GUIDRef
 import no.fint.oneroster.model.Org
 import no.fint.oneroster.model.User
@@ -16,7 +18,7 @@ import java.time.LocalDate
 
 class FilterEngineSpec extends Specification {
 
-    FilterEngine filterEngine = new FilterEngine();
+    FilterEngine filterEngine = new FilterEngine()
 
     def "Simple string eq query"() {
         given:
@@ -440,26 +442,11 @@ class FilterEngineSpec extends Specification {
         evaluate
     }
 
-    @Ignore
-    def "Nested primitive list simple string eq query"() {
+    def "Primitive list simple string eq query"() {
         given:
-        def query = 'children.sourcedId=\'sourcedId\''
-        def object = new Org('sourcedId', 'name', OrgType.SCHOOL)
-        object.setChildren([GUIDRef.of(GUIDType.ORG, 'sourcedId')])
-
-        when:
-        def evaluate = filterEngine.execute(query, object)
-
-        then:
-        evaluate
-    }
-
-    @Ignore
-    def "Nested object list simple string eq query"() {
-        given:
-        def query = 'children.sourcedId=\'sourcedId\''
-        def object = new Org('sourcedId', 'name', OrgType.SCHOOL)
-        object.setChildren([GUIDRef.of(GUIDType.ORG, 'sourcedId')])
+        def query = 'grades=\'a,b,c\''
+        def object = new Course('sourcedId', 'title', GUIDRef.of(GUIDType.COURSE, 'sourcedId'))
+        object.setGrades(['a', 'b', 'c'])
 
         when:
         def evaluate = filterEngine.execute(query, object)
@@ -491,4 +478,43 @@ class FilterEngineSpec extends Specification {
         then:
         evaluate
     }
+
+    def "Non-existent field throws exception"() {
+        given:
+        def query = 'sourcedI=\'sourcedId\''
+        def object = new Org('sourcedId', 'name', OrgType.SCHOOL)
+
+        when:
+        filterEngine.execute(query, object)
+
+        then:
+        thrown(BadRequestException)
+    }
+
+    def "Wrong datatype/format of query input returns false"() {
+        given:
+        def query = 'dateLastModified=\'yesterYear\''
+        def object = new Org('sourcedId', 'name', OrgType.SCHOOL)
+
+        when:
+        def evaluate = filterEngine.execute(query, object)
+
+        then:
+        !evaluate
+    }
+
+    def "Null value returns false"() {
+        given:
+        def query = 'parent.sourcedId=\'sourcedId\''
+        def object = new Org('sourcedId', null, OrgType.SCHOOL)
+        object.setParent(GUIDRef.of(GUIDType.ORG, null))
+
+        when:
+        def evaluate = filterEngine.execute(query, object)
+
+        then:
+        !evaluate
+    }
+
+
 }

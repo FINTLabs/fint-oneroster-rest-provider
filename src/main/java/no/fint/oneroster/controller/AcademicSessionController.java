@@ -1,115 +1,117 @@
 package no.fint.oneroster.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ser.FilterProvider;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.oneroster.model.AcademicSession;
+import no.fint.oneroster.model.Clazz;
 import no.fint.oneroster.service.AcademicSessionService;
-import org.apache.commons.beanutils.BeanComparator;
+import no.fint.oneroster.util.OneRosterResponse;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJacksonValue;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
 public class AcademicSessionController {
 
     private final AcademicSessionService academicSessionService;
-    private final ObjectMapper objectMapper;
 
-    public AcademicSessionController(AcademicSessionService academicSessionService, ObjectMapper objectMapper) {
+    public AcademicSessionController(AcademicSessionService academicSessionService) {
         this.academicSessionService = academicSessionService;
-        this.objectMapper = objectMapper;
     }
 
     @GetMapping("/academicSessions")
-    public Map<String, List<AcademicSession>> getAllUsers(@RequestHeader String orgId, FilterProvider fields, Pageable pageable) {
+    public ResponseEntity<?> getAllUsers(@RequestHeader String orgId, ParseTree filter, Pageable pageable,
+                                                          @RequestParam(value = "fields", required = false) String fields) {
         List<AcademicSession> academicSessions = academicSessionService.getAllAcademicSessions(orgId);
 
-        pageable.getSort().get().findFirst().ifPresent(sort -> {
-            BeanComparator<AcademicSession> comparator = new BeanComparator<>(sort.getProperty());
-            academicSessions.sort(comparator);
-        });
+        List<AcademicSession> modifiedAcademicSessions = new OneRosterResponse.Builder<>(academicSessions)
+                .filter(filter)
+                .sort(pageable.getSort())
+                .page(pageable)
+                .build();
 
-        List<AcademicSession> filteredAcademicSession = academicSessions.stream()
-                .skip(pageable.getPageNumber())
-                .limit(pageable.getPageSize())
-                .collect(Collectors.toList());
+        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("academicSessions", modifiedAcademicSessions));
+        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(AcademicSession.class, fields)));
 
-        objectMapper.setFilterProvider(fields);
-
-        return Collections.singletonMap("academicSessions", filteredAcademicSession);
+        return ResponseEntity.ok()
+                .header("X-Total-Count", String.valueOf(academicSessions.size()))
+                .body(body);
     }
 
     @GetMapping("/academicSessions/{sourcedId}")
-    public Map<String, AcademicSession> getAcademicSession(@RequestHeader String orgId, @PathVariable String sourcedId, FilterProvider fields) {
+    public ResponseEntity<?> getAcademicSession(@RequestHeader String orgId, @PathVariable String sourcedId,
+                                                           @RequestParam(value = "fields", required = false) String fields) {
         AcademicSession academicSession = academicSessionService.getAcademicSession(orgId, sourcedId);
 
-        objectMapper.setFilterProvider(fields);
+        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("academicSession", academicSession));
+        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(Clazz.class, fields)));
 
-        return Collections.singletonMap("academicSession", academicSession);
+        return ResponseEntity.ok(body);
     }
 
     @GetMapping("/terms")
-    public Map<String, List<AcademicSession>> getAllTerms(@RequestHeader String orgId, FilterProvider fields, Pageable pageable) {
+    public ResponseEntity<?> getAllTerms(@RequestHeader String orgId, ParseTree filter, Pageable pageable,
+                                                          @RequestParam(value = "fields", required = false) String fields) {
         List<AcademicSession> terms = academicSessionService.getAllTerms(orgId);
 
-        pageable.getSort().get().findFirst().ifPresent(sort -> {
-            BeanComparator<AcademicSession> comparator = new BeanComparator<>(sort.getProperty());
-            terms.sort(comparator);
-        });
+        List<AcademicSession> modifiedAcademicSessions = new OneRosterResponse.Builder<>(terms)
+                .filter(filter)
+                .sort(pageable.getSort())
+                .page(pageable)
+                .build();
 
-        List<AcademicSession> filteredTerms = terms.stream()
-                .skip(pageable.getPageNumber())
-                .limit(pageable.getPageSize())
-                .collect(Collectors.toList());
+        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("academicSessions", modifiedAcademicSessions));
+        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(AcademicSession.class, fields)));
 
-        objectMapper.setFilterProvider(fields);
-
-        return Collections.singletonMap("academicSessions", filteredTerms);
+        return ResponseEntity.ok()
+                .header("X-Total-Count", String.valueOf(terms.size()))
+                .body(body);
     }
 
     @GetMapping("/terms/{sourcedId}")
-    public Map<String, AcademicSession> getTerm(@RequestHeader String orgId, @PathVariable String sourcedId, FilterProvider fields) {
+    public ResponseEntity<?> getTerm(@RequestHeader String orgId, @PathVariable String sourcedId,
+                                                @RequestParam(value = "fields", required = false) String fields) {
         AcademicSession term = academicSessionService.getTerm(orgId, sourcedId);
 
-        objectMapper.setFilterProvider(fields);
+        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("academicSession", term));
+        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(Clazz.class, fields)));
 
-        return Collections.singletonMap("academicSession", term);
+        return ResponseEntity.ok(body);
     }
 
     @GetMapping("/gradingPeriods")
-    public Map<String, List<AcademicSession>> getAllGradingPeriods(@RequestHeader String orgId, FilterProvider fields, Pageable pageable) {
+    public ResponseEntity<?> getAllGradingPeriods(@RequestHeader String orgId, ParseTree filter, Pageable pageable,
+                                                                   @RequestParam(value = "fields", required = false) String fields) {
         List<AcademicSession> gradingPeriods = academicSessionService.getAllGradingPeriods(orgId);
 
-        pageable.getSort().get().findFirst().ifPresent(sort -> {
-            BeanComparator<AcademicSession> comparator = new BeanComparator<>(sort.getProperty());
-            gradingPeriods.sort(comparator);
-        });
+        List<AcademicSession> modifiedAcademicSessions = new OneRosterResponse.Builder<>(gradingPeriods)
+                .filter(filter)
+                .sort(pageable.getSort())
+                .page(pageable)
+                .build();
 
-        List<AcademicSession> filteredGradingPeriods = gradingPeriods.stream()
-                .skip(pageable.getPageNumber())
-                .limit(pageable.getPageSize())
-                .collect(Collectors.toList());
+        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("academicSessions", modifiedAcademicSessions));
+        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(AcademicSession.class, fields)));
 
-        objectMapper.setFilterProvider(fields);
-
-        return Collections.singletonMap("academicSessions", filteredGradingPeriods);
+        return ResponseEntity.ok()
+                .header("X-Total-Count", String.valueOf(gradingPeriods.size()))
+                .body(body);
     }
 
     @GetMapping("/gradingPeriods/{sourcedId}")
-    public Map<String, AcademicSession> getGradingPeriod(@RequestHeader String orgId, @PathVariable String sourcedId, FilterProvider fields) {
+    public ResponseEntity<?> getGradingPeriod(@RequestHeader String orgId, @PathVariable String sourcedId,
+                                                         @RequestParam(value = "fields", required = false) String fields) {
         AcademicSession gradingPeriod = academicSessionService.getGradingPeriod(orgId, sourcedId);
 
-        objectMapper.setFilterProvider(fields);
+        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("academicSession", gradingPeriod));
+        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(AcademicSession.class, fields)));
 
-        return Collections.singletonMap("academicSession", gradingPeriod);
+        return ResponseEntity.ok(body);
     }
 }

@@ -1,4 +1,4 @@
-package no.fint.oneroster.serializer;
+package no.fint.oneroster.util;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;

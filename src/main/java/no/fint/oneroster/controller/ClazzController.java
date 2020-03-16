@@ -1,20 +1,18 @@
 package no.fint.oneroster.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ser.FilterProvider;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.oneroster.model.Clazz;
 import no.fint.oneroster.service.ClazzService;
-import org.apache.commons.beanutils.BeanComparator;
+import no.fint.oneroster.util.OneRosterResponse;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -22,44 +20,38 @@ import java.util.stream.Collectors;
 public class ClazzController {
 
     private final ClazzService clazzService;
-    private final ObjectMapper objectMapper;
 
-    public ClazzController(ClazzService clazzService, ObjectMapper objectMapper) {
+    public ClazzController(ClazzService clazzService) {
         this.clazzService = clazzService;
-        this.objectMapper = objectMapper;
     }
 
     @GetMapping
-    public Map<String, List<Clazz>> getAllClazzes(@RequestHeader String orgId, FilterProvider fields, Pageable pageable) {
+    public ResponseEntity<?> getAllClazzes(@RequestHeader String orgId, ParseTree filter, Pageable pageable,
+                                           @RequestParam(value = "fields", required = false) String fields) {
         List<Clazz> clazzes = clazzService.getAllClazzes(orgId);
 
-        pageable.getSort().get().findFirst().ifPresent(sort -> {
-            BeanComparator<Clazz> comparator = new BeanComparator<>(sort.getProperty());
-            clazzes.sort(comparator);
-        });
+        List<Clazz> modifiedClazzes = new OneRosterResponse.Builder<>(clazzes)
+                .filter(filter)
+                .sort(pageable.getSort())
+                .page(pageable)
+                .build();
 
-        List<Clazz> filteredClazzes = clazzes.stream()
-                .skip(pageable.getPageNumber())
-                .limit(pageable.getPageSize())
-                .collect(Collectors.toList());
+        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("classes", modifiedClazzes));
+        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(Clazz.class, fields)));
 
-        objectMapper.setFilterProvider(fields);
-
-        return Collections.singletonMap("classes", filteredClazzes);
+        return ResponseEntity.ok()
+                .header("X-Total-Count", String.valueOf(clazzes.size()))
+                .body(body);
     }
 
     @GetMapping("/{sourcedId}")
-    public Map<String, Clazz> getClazz(@RequestHeader String orgId, @PathVariable String sourcedId, FilterProvider fields) {
+    public ResponseEntity<?> getClazz(@RequestHeader String orgId, @PathVariable String sourcedId,
+                                       @RequestParam(value = "fields", required = false) String fields) {
         Clazz clazz = clazzService.getClazz(orgId, sourcedId);
 
-        objectMapper.setFilterProvider(fields);
+        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("class", clazz));
+        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(Clazz.class, fields)));
 
-        return Collections.singletonMap("class", clazz);
-    }
-
-    @ExceptionHandler(WebClientResponseException.class)
-    public ResponseEntity<String> handleWebClientResponseException(WebClientResponseException ex) {
-        log.error("WebClientException - Status: {}, Body: {}", ex.getRawStatusCode(), ex.getResponseBodyAsString());
-        return ResponseEntity.status(ex.getRawStatusCode()).body(ex.getResponseBodyAsString());
+        return ResponseEntity.ok(body);
     }
 }

@@ -1,104 +1,85 @@
 package no.fint.oneroster.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ser.FilterProvider;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import lombok.extern.slf4j.Slf4j;
-import no.fint.oneroster.exception.InvalidFilterException;
-import no.fint.oneroster.filter.FilterEvaluator;
 import no.fint.oneroster.model.Org;
 import no.fint.oneroster.service.OrgService;
+import no.fint.oneroster.util.OneRosterResponse;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.apache.commons.beanutils.BeanComparator;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
 public class OrgController {
 
     private final OrgService orgService;
-    private final ObjectMapper objectMapper;
 
-    public OrgController(OrgService orgService, ObjectMapper objectMapper) {
+    public OrgController(OrgService orgService) {
         this.orgService = orgService;
-        this.objectMapper = objectMapper;
     }
 
     @GetMapping("/orgs")
-    public Map<String, List<Org>> getAllOrgs(@RequestHeader String orgId, FilterProvider fields, ParseTree filter, Pageable pageable) {
+    public ResponseEntity<?> getAllOrgs(@RequestHeader String orgId, ParseTree filter, Pageable pageable,
+                                        @RequestParam(value = "fields", required = false) String fields) {
         List<Org> orgs = orgService.getAllOrgs(orgId);
 
-        pageable.getSort().get().findFirst().ifPresent(sort -> {
-            BeanComparator<Org> comparator = new BeanComparator<>(sort.getProperty());
-            orgs.sort(comparator);
-        });
+        List<Org> modifiedOrgs = new OneRosterResponse.Builder<>(orgs)
+                .filter(filter)
+                .sort(pageable.getSort())
+                .page(pageable)
+                .build();
 
-        List<Org> filteredOrgs = orgs.stream()
-                .filter(org -> {
-                    if (filter != null) {
-                        try {
-                            return new FilterEvaluator(org).visit(filter);
-                        } catch (InvalidFilterException e) {
-                            log.error(e.getMessage());
-                            return false;
-                        }
-                    }
-                    return true;
-                })
-                .skip(pageable.getPageNumber())
-                .limit(pageable.getPageSize())
-                .collect(Collectors.toList());
+        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("orgs", modifiedOrgs));
+        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(Org.class, fields)));
 
-        objectMapper.setFilterProvider(fields);
-
-        return Collections.singletonMap("orgs", filteredOrgs);
+        return ResponseEntity.ok()
+                .header("X-Total-Count", String.valueOf(orgs.size()))
+                .body(body);
     }
 
     @GetMapping("/orgs/{sourcedId}")
-    public Map<String, Org> getOrg(@RequestHeader String orgId, @PathVariable String sourcedId, FilterProvider fields) {
+    public ResponseEntity<?> getOrg(@RequestHeader String orgId, @PathVariable String sourcedId,
+                                    @RequestParam(value = "fields", required = false) String fields) {
         Org org = orgService.getOrg(orgId, sourcedId);
 
-        objectMapper.setFilterProvider(fields);
+        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("org", org));
+        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(Org.class, fields)));
 
-        return Collections.singletonMap("org", org);
+        return ResponseEntity.ok(body);
     }
 
     @GetMapping("/schools")
-    public Map<String, List<Org>> getAllSchools(@RequestHeader String orgId, FilterProvider fields, Pageable pageable) {
+    public ResponseEntity<?> getAllSchools(@RequestHeader String orgId, ParseTree filter, Pageable pageable,
+                                           @RequestParam(value = "fields", required = false) String fields) {
         List<Org> schools = orgService.getAllSchools(orgId);
 
-        pageable.getSort().get().findFirst().ifPresent(sort -> {
-            BeanComparator<Org> comparator = new BeanComparator<>(sort.getProperty());
-            schools.sort(comparator);
-        });
+        List<Org> modifiedSchools = new OneRosterResponse.Builder<>(schools)
+                .filter(filter)
+                .sort(pageable.getSort())
+                .page(pageable)
+                .build();
 
-        List<Org> filteredSchools = orgService.getAllSchools(orgId).stream()
-                .skip(pageable.getPageNumber())
-                .limit(pageable.getPageSize())
-                .collect(Collectors.toList());
+        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("orgs", modifiedSchools));
+        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(Org.class, fields)));
 
-        objectMapper.setFilterProvider(fields);
-
-        return Collections.singletonMap("orgs", filteredSchools);
+        return ResponseEntity.ok()
+                .header("X-Total-Count", String.valueOf(schools.size()))
+                .body(body);
     }
 
     @GetMapping("/schools/{sourcedId}")
-    public Map<String, Org> getSchool(@RequestHeader String orgId, @PathVariable String sourcedId, FilterProvider fields) {
+    public ResponseEntity<?> getSchool(@RequestHeader String orgId, @PathVariable String sourcedId,
+                                       @RequestParam(value = "fields", required = false) String fields) {
         Org school = orgService.getSchool(orgId, sourcedId);
 
-        objectMapper.setFilterProvider(fields);
+        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("org", school));
+        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(Org.class, fields)));
 
-        return Collections.singletonMap("org", school);
-    }
-
-    @ExceptionHandler(WebClientResponseException.class)
-    public ResponseEntity<String> handleWebClientResponseException(WebClientResponseException ex) {
-        log.error("WebClientException - Status: {}, Body: {}", ex.getRawStatusCode(), ex.getResponseBodyAsString());
-        return ResponseEntity.status(ex.getRawStatusCode()).body(ex.getResponseBodyAsString());
+        return ResponseEntity.ok(body);
     }
 }

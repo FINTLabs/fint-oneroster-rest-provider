@@ -22,12 +22,15 @@ import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResources;
 import no.fint.oneroster.properties.OrganisationProperties;
 import no.fint.oneroster.util.LinkUtil;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.util.*;
@@ -246,5 +249,11 @@ public class FintRepository {
                 .map(LinkUtil::normalize)
                 .findFirst()
                 .orElse(null);
+    }
+
+    @ExceptionHandler(WebClientResponseException.class)
+    public ResponseEntity<String> handleWebClientResponseException(WebClientResponseException ex) {
+        log.error("WebClientException - Status: {}, Body: {}", ex.getRawStatusCode(), ex.getResponseBodyAsString());
+        return ResponseEntity.status(ex.getRawStatusCode()).body(ex.getResponseBodyAsString());
     }
 }

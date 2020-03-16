@@ -20,7 +20,7 @@ import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource
 class FintObjectFactory {
 
     static OrganisasjonselementResource newSchoolOwner() {
-        OrganisasjonselementResource resource = OrganisasjonselementResource.newInstance()
+        OrganisasjonselementResource resource = new OrganisasjonselementResource()
         resource.setOrganisasjonsId(Identifikator.newInstance(identifikatorverdi: 'school-owner-sourced-id'))
         resource.setNavn('SchoolOwner')
         resource.setOrganisasjonsnummer(Identifikator.newInstance(identifikatorverdi: 'identifier'))
@@ -30,7 +30,7 @@ class FintObjectFactory {
     }
 
     static SkoleResource newSchool() {
-        SkoleResource resource = SkoleResource.newInstance()
+        SkoleResource resource = new SkoleResource()
         resource.setSystemId(Identifikator.newInstance(identifikatorverdi: 'school-sourced-id'))
         resource.setNavn('School')
         resource.setSkolenummer(Identifikator.newInstance(identifikatorverdi: ''))
@@ -40,8 +40,8 @@ class FintObjectFactory {
     }
 
     static PersonResource newPerson() {
-        PersonResource resource = PersonResource.newInstance()
-        Personnavn name = Personnavn.newInstance()
+        PersonResource resource = new PersonResource()
+        Personnavn name = new Personnavn()
         name.setFornavn('given-name')
         name.setMellomnavn('middle-name')
         name.setEtternavn('family-name')
@@ -52,12 +52,12 @@ class FintObjectFactory {
     }
 
     static ElevResource newStudent() {
-        ElevResource resource = ElevResource.newInstance()
+        ElevResource resource = new ElevResource()
         resource.setSystemId(Identifikator.newInstance(identifikatorverdi: 'student-sourced-id'))
         resource.setBrukernavn(Identifikator.newInstance(identifikatorverdi: 'username'))
         resource.setElevnummer(Identifikator.newInstance(identifikatorverdi: 'identifier'))
         resource.setFeidenavn(Identifikator.newInstance(identifikatorverdi: 'feide'))
-        Kontaktinformasjon contactInformation = Kontaktinformasjon.newInstance()
+        Kontaktinformasjon contactInformation = new Kontaktinformasjon()
         contactInformation.setEpostadresse('email')
         contactInformation.setMobiltelefonnummer('sms')
         contactInformation.setTelefonnummer('phone')
@@ -69,7 +69,7 @@ class FintObjectFactory {
     }
 
     static ElevforholdResource newStudentRelation() {
-        ElevforholdResource resource = ElevforholdResource.newInstance()
+        ElevforholdResource resource = new ElevforholdResource()
         resource.setSystemId(Identifikator.newInstance(identifikatorverdi: 'student-relation-sourced-id'))
         resource.addElev(Link.with('/student-sourced-id'))
         resource.addBasisgruppe(Link.with('/basis-group-sourced-id'))
@@ -80,7 +80,7 @@ class FintObjectFactory {
     }
 
     static SkoleressursResource newTeacher() {
-        SkoleressursResource resource = SkoleressursResource.newInstance()
+        SkoleressursResource resource = new SkoleressursResource()
         resource.setSystemId(Identifikator.newInstance(identifikatorverdi: 'teacher-sourced-id'))
         resource.setFeidenavn(Identifikator.newInstance(identifikatorverdi: 'feide'))
         resource.addPersonalressurs(Link.with('/personnel-resource-sourced-id'))
@@ -90,10 +90,10 @@ class FintObjectFactory {
     }
 
     static PersonalressursResource newPersonnelResource() {
-        PersonalressursResource resource = PersonalressursResource.newInstance()
+        PersonalressursResource resource = new PersonalressursResource()
         resource.setBrukernavn(Identifikator.newInstance(identifikatorverdi: 'username'))
         resource.setAnsattnummer(Identifikator.newInstance(identifikatorverdi: 'identifier'))
-        Kontaktinformasjon contactInformation = Kontaktinformasjon.newInstance()
+        Kontaktinformasjon contactInformation = new Kontaktinformasjon()
         contactInformation.setEpostadresse('email')
         contactInformation.setMobiltelefonnummer('sms')
         contactInformation.setTelefonnummer('phone')
@@ -104,7 +104,7 @@ class FintObjectFactory {
     }
 
     static UndervisningsforholdResource newTeachingRelation() {
-        UndervisningsforholdResource resource = UndervisningsforholdResource.newInstance()
+        UndervisningsforholdResource resource = new UndervisningsforholdResource()
         resource.setSystemId(Identifikator.newInstance(identifikatorverdi: 'teaching-relation-sourced-id'))
         resource.addSkoleressurs(Link.with('/teacher-sourced-id'))
         resource.addBasisgruppe(Link.with('/basis-group-sourced-id'))
@@ -115,7 +115,7 @@ class FintObjectFactory {
     }
 
     static BasisgruppeResource newBasisGroup() {
-        BasisgruppeResource resource = BasisgruppeResource.newInstance()
+        BasisgruppeResource resource = new BasisgruppeResource()
         resource.setSystemId(Identifikator.newInstance(identifikatorverdi: 'basis-group-sourced-id'))
         resource.setPeriode([])
         resource.setNavn('Basis group')
@@ -127,7 +127,7 @@ class FintObjectFactory {
     }
 
     static UndervisningsgruppeResource newTeachingGroup() {
-        UndervisningsgruppeResource resource = UndervisningsgruppeResource.newInstance()
+        UndervisningsgruppeResource resource = new UndervisningsgruppeResource()
         resource.setSystemId(Identifikator.newInstance(identifikatorverdi: 'teaching-group-sourced-id'))
         resource.setPeriode([])
         resource.setNavn('Teaching group')
@@ -139,7 +139,7 @@ class FintObjectFactory {
     }
 
     static ArstrinnResource newLevel() {
-        ArstrinnResource resource = ArstrinnResource.newInstance()
+        ArstrinnResource resource = new ArstrinnResource()
         resource.setSystemId(Identifikator.newInstance(identifikatorverdi: 'level-sourced-id'))
         resource.setPeriode([])
         resource.setNavn('Level')
@@ -150,7 +150,7 @@ class FintObjectFactory {
     }
 
     static FagResource newSubject() {
-        FagResource resource = FagResource.newInstance()
+        FagResource resource = new FagResource()
         resource.setSystemId(Identifikator.newInstance(identifikatorverdi: 'subject-sourced-id'))
         resource.setPeriode([])
         resource.setNavn('Subject')

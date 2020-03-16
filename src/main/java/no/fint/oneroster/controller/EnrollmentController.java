@@ -1,20 +1,18 @@
 package no.fint.oneroster.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ser.FilterProvider;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.oneroster.model.Enrollment;
 import no.fint.oneroster.service.EnrollmentService;
-import org.apache.commons.beanutils.BeanComparator;
+import no.fint.oneroster.util.OneRosterResponse;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -22,44 +20,38 @@ import java.util.stream.Collectors;
 public class EnrollmentController {
 
     private final EnrollmentService enrollmentService;
-    private final ObjectMapper objectMapper;
 
-    public EnrollmentController(EnrollmentService enrollmentService, ObjectMapper objectMapper) {
+    public EnrollmentController(EnrollmentService enrollmentService) {
         this.enrollmentService = enrollmentService;
-        this.objectMapper = objectMapper;
     }
 
     @GetMapping
-    public Map<String, List<Enrollment>> getAllEnrollments(@RequestHeader String orgId, FilterProvider fields, Pageable pageable) {
+    public ResponseEntity<?> getAllEnrollments(@RequestHeader String orgId, ParseTree filter, Pageable pageable,
+                                               @RequestParam(value = "fields", required = false) String fields) {
         List<Enrollment> enrollments = enrollmentService.getAllEnrollments(orgId);
 
-        pageable.getSort().get().findFirst().ifPresent(sort -> {
-            BeanComparator<Enrollment> comparator = new BeanComparator<>(sort.getProperty());
-            enrollments.sort(comparator);
-        });
+        List<Enrollment> modifiedEnrollments = new OneRosterResponse.Builder<>(enrollments)
+                .filter(filter)
+                .sort(pageable.getSort())
+                .page(pageable)
+                .build();
 
-        List<Enrollment> filteredEnrollments = enrollments.stream()
-                .skip(pageable.getPageNumber())
-                .limit(pageable.getPageSize())
-                .collect(Collectors.toList());
+        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("enrollments", modifiedEnrollments));
+        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(Enrollment.class, fields)));
 
-        objectMapper.setFilterProvider(fields);
-
-        return Collections.singletonMap("enrollments", filteredEnrollments);
+        return ResponseEntity.ok()
+                .header("X-Total-Count", String.valueOf(enrollments.size()))
+                .body(body);
     }
 
     @GetMapping("/{sourcedId}")
-    public Map<String, Enrollment> getEnrollment(@RequestHeader String orgId, @PathVariable String sourcedId, FilterProvider fields) {
-        Enrollment  enrollment = enrollmentService.getEnrollment(orgId, sourcedId);
+    public ResponseEntity<?> getEnrollment(@RequestHeader String orgId, @PathVariable String sourcedId,
+                                           @RequestParam(value = "fields", required = false) String fields) {
+        Enrollment enrollment = enrollmentService.getEnrollment(orgId, sourcedId);
 
-        objectMapper.setFilterProvider(fields);
+        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("enrollment", enrollment));
+        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(Enrollment.class, fields)));
 
-        return Collections.singletonMap("enrollment", enrollment);
-    }
-
-    @ExceptionHandler(WebClientResponseException.class)
-    public ResponseEntity<String> handleWebClientResponseException(WebClientResponseException ex) {
-        log.error("WebClientException - Status: {}, Body: {}", ex.getRawStatusCode(), ex.getResponseBodyAsString());
-        return ResponseEntity.status(ex.getRawStatusCode()).body(ex.getResponseBodyAsString());
+        return ResponseEntity.ok(body);
     }
 }
