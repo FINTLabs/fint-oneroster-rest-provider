@@ -455,6 +455,32 @@ class FilterEngineSpec extends Specification {
         evaluate
     }
 
+    def "Primitive list simple string ne query"() {
+        given:
+        def query = 'grades!=\'a,b,c\''
+        def object = new Course('sourcedId', 'title', GUIDRef.of(GUIDType.COURSE, 'sourcedId'))
+        object.setGrades(['a', 'b', 'c'])
+
+        when:
+        def evaluate = filterEngine.execute(query, object)
+
+        then:
+        !evaluate
+    }
+
+    def "Primitive list simple string co query"() {
+        given:
+        def query = 'grades~\'e,f\''
+        def object = new Course('sourcedId', 'title', GUIDRef.of(GUIDType.COURSE, 'sourcedId'))
+        object.setGrades(['a', 'b', 'c'])
+
+        when:
+        def evaluate = filterEngine.execute(query, object)
+
+        then:
+        evaluate
+    }
+
     def "Logical AND simple string eq query"() {
         given:
         def query = 'sourcedId=\'sourcedId\' AND name=\'name\''

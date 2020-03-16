@@ -57,6 +57,9 @@ public class Operation {
         } else if (leftOperand instanceof Enum) {
             return !rightOperand.toString().equalsIgnoreCase(((Enum<?>) leftOperand).name());
 
+        } else if (leftOperand instanceof List) {
+            return !((List<?>) leftOperand).containsAll(StringUtils.commaDelimitedListToSet(rightOperand.toString()));
+
         } else {
             return false;
         }
@@ -149,6 +152,10 @@ public class Operation {
     public static Boolean co(Object leftOperand, Object rightOperand) {
         if (leftOperand instanceof String) {
             return leftOperand.toString().contains(rightOperand.toString());
+
+        } else if (leftOperand instanceof List) {
+            return ((List<?>) leftOperand).stream()
+                    .anyMatch(item -> StringUtils.commaDelimitedListToSet(rightOperand.toString()).contains(item.toString()));
 
         } else {
             return false;
