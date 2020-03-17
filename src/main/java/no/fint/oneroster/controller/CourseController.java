@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.fint.oneroster.model.Course;
 import no.fint.oneroster.service.CourseService;
 import no.fint.oneroster.util.OneRosterResponse;
-import org.antlr.v4.runtime.tree.ParseTree;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
@@ -26,7 +25,8 @@ public class CourseController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllCourses(@RequestHeader String orgId, ParseTree filter, Pageable pageable,
+    public ResponseEntity<?> getAllCourses(@RequestHeader String orgId, Pageable pageable,
+                                           @RequestParam(value = "filter", required = false) String filter,
                                            @RequestParam(value = "fields", required = false) String fields) {
         List<Course> courses = courseService.getAllCourses(orgId);
 

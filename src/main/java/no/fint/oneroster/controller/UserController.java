@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.fint.oneroster.model.User;
 import no.fint.oneroster.service.UserService;
 import no.fint.oneroster.util.OneRosterResponse;
-import org.antlr.v4.runtime.tree.ParseTree;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
@@ -25,7 +24,8 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<?> getAllUsers(@RequestHeader String orgId, ParseTree filter, Pageable pageable,
+    public ResponseEntity<?> getAllUsers(@RequestHeader String orgId, Pageable pageable,
+                                         @RequestParam(value = "filter", required = false) String filter,
                                          @RequestParam(value = "fields", required = false) String fields) {
         List<User> users = userService.getAllUsers(orgId);
 
@@ -55,7 +55,8 @@ public class UserController {
     }
 
     @GetMapping("/students")
-    public ResponseEntity<?> getAllStudents(@RequestHeader String orgId, ParseTree filter, Pageable pageable,
+    public ResponseEntity<?> getAllStudents(@RequestHeader String orgId, Pageable pageable,
+                                            @RequestParam(value = "filter", required = false) String filter,
                                             @RequestParam(value = "fields", required = false) String fields) {
         List<User> students = userService.getAllStudents(orgId);
 
@@ -85,7 +86,8 @@ public class UserController {
     }
 
     @GetMapping("/teachers")
-    public ResponseEntity<?> getAllTeachers(@RequestHeader String orgId, ParseTree filter, Pageable pageable,
+    public ResponseEntity<?> getAllTeachers(@RequestHeader String orgId, Pageable pageable,
+                                            @RequestParam(value = "filter", required = false) String filter,
                                             @RequestParam(value = "fields", required = false) String fields) {
         List<User> teachers = userService.getAllTeachers(orgId);
 

@@ -6,7 +6,6 @@ import no.fint.oneroster.model.AcademicSession;
 import no.fint.oneroster.model.Clazz;
 import no.fint.oneroster.service.AcademicSessionService;
 import no.fint.oneroster.util.OneRosterResponse;
-import org.antlr.v4.runtime.tree.ParseTree;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
@@ -26,8 +25,9 @@ public class AcademicSessionController {
     }
 
     @GetMapping("/academicSessions")
-    public ResponseEntity<?> getAllUsers(@RequestHeader String orgId, ParseTree filter, Pageable pageable,
-                                                          @RequestParam(value = "fields", required = false) String fields) {
+    public ResponseEntity<?> getAllUsers(@RequestHeader String orgId, Pageable pageable,
+                                         @RequestParam(value = "filter", required = false) String filter,
+                                         @RequestParam(value = "fields", required = false) String fields) {
         List<AcademicSession> academicSessions = academicSessionService.getAllAcademicSessions(orgId);
 
         List<AcademicSession> modifiedAcademicSessions = new OneRosterResponse.Builder<>(academicSessions)
@@ -46,7 +46,7 @@ public class AcademicSessionController {
 
     @GetMapping("/academicSessions/{sourcedId}")
     public ResponseEntity<?> getAcademicSession(@RequestHeader String orgId, @PathVariable String sourcedId,
-                                                           @RequestParam(value = "fields", required = false) String fields) {
+                                                @RequestParam(value = "fields", required = false) String fields) {
         AcademicSession academicSession = academicSessionService.getAcademicSession(orgId, sourcedId);
 
         MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("academicSession", academicSession));
@@ -56,8 +56,9 @@ public class AcademicSessionController {
     }
 
     @GetMapping("/terms")
-    public ResponseEntity<?> getAllTerms(@RequestHeader String orgId, ParseTree filter, Pageable pageable,
-                                                          @RequestParam(value = "fields", required = false) String fields) {
+    public ResponseEntity<?> getAllTerms(@RequestHeader String orgId, Pageable pageable,
+                                         @RequestParam(value = "filter", required = false) String filter,
+                                         @RequestParam(value = "fields", required = false) String fields) {
         List<AcademicSession> terms = academicSessionService.getAllTerms(orgId);
 
         List<AcademicSession> modifiedAcademicSessions = new OneRosterResponse.Builder<>(terms)
@@ -76,7 +77,7 @@ public class AcademicSessionController {
 
     @GetMapping("/terms/{sourcedId}")
     public ResponseEntity<?> getTerm(@RequestHeader String orgId, @PathVariable String sourcedId,
-                                                @RequestParam(value = "fields", required = false) String fields) {
+                                     @RequestParam(value = "fields", required = false) String fields) {
         AcademicSession term = academicSessionService.getTerm(orgId, sourcedId);
 
         MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("academicSession", term));
@@ -86,8 +87,9 @@ public class AcademicSessionController {
     }
 
     @GetMapping("/gradingPeriods")
-    public ResponseEntity<?> getAllGradingPeriods(@RequestHeader String orgId, ParseTree filter, Pageable pageable,
-                                                                   @RequestParam(value = "fields", required = false) String fields) {
+    public ResponseEntity<?> getAllGradingPeriods(@RequestHeader String orgId, Pageable pageable,
+                                                  @RequestParam(value = "filter", required = false) String filter,
+                                                  @RequestParam(value = "fields", required = false) String fields) {
         List<AcademicSession> gradingPeriods = academicSessionService.getAllGradingPeriods(orgId);
 
         List<AcademicSession> modifiedAcademicSessions = new OneRosterResponse.Builder<>(gradingPeriods)
@@ -106,7 +108,7 @@ public class AcademicSessionController {
 
     @GetMapping("/gradingPeriods/{sourcedId}")
     public ResponseEntity<?> getGradingPeriod(@RequestHeader String orgId, @PathVariable String sourcedId,
-                                                         @RequestParam(value = "fields", required = false) String fields) {
+                                              @RequestParam(value = "fields", required = false) String fields) {
         AcademicSession gradingPeriod = academicSessionService.getGradingPeriod(orgId, sourcedId);
 
         MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("academicSession", gradingPeriod));

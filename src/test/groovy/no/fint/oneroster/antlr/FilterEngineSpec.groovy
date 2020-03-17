@@ -1,6 +1,7 @@
 package no.fint.oneroster.antlr
 
 import no.fint.oneroster.exception.BadRequestException
+import no.fint.oneroster.exception.InvalidSyntaxException
 import no.fint.oneroster.filter.FilterEngine
 import no.fint.oneroster.model.AcademicSession
 import no.fint.oneroster.model.Course
@@ -18,6 +19,18 @@ import java.time.LocalDate
 class FilterEngineSpec extends Specification {
 
     FilterEngine filterEngine = new FilterEngine()
+
+    def "Invalid syntax throws exception"() {
+        given:
+        def query = 'sourcedId?\'sourcedId\''
+        def object = new Org('sourcedId', 'name', OrgType.SCHOOL)
+
+        when:
+        filterEngine.execute(query, object)
+
+        then:
+        thrown(InvalidSyntaxException)
+    }
 
     def "Simple string eq query"() {
         given:

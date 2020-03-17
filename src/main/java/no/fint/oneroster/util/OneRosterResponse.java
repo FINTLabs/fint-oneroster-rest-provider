@@ -3,10 +3,18 @@ package no.fint.oneroster.util;
 import com.fasterxml.jackson.databind.ser.PropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import lombok.extern.slf4j.Slf4j;
+import no.fint.oneroster.antlr.FilterLexer;
+import no.fint.oneroster.antlr.FilterParser;
 import no.fint.oneroster.exception.BadRequestException;
+import no.fint.oneroster.exception.InvalidSyntaxException;
 import no.fint.oneroster.exception.NoSuchFieldException;
+import no.fint.oneroster.filter.FilterErrorListener;
 import no.fint.oneroster.filter.FilterEvaluator;
 import no.fint.oneroster.model.*;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.ConsoleErrorListener;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -49,20 +57,36 @@ public class OneRosterResponse {
             return this;
         }
 
-        public Builder<T> filter(ParseTree filter) {
-            if (filter == null) {
+        public Builder<T> filter(String filter) {
+            if (filter == null || filter.isEmpty()) {
+                return this;
+            }
+
+            CharStream stream = CharStreams.fromString(filter.trim());
+            FilterLexer lexer = new FilterLexer(stream);
+            CommonTokenStream tokens = new CommonTokenStream(lexer);
+
+            FilterParser parser = new FilterParser(tokens);
+            parser.removeErrorListener(ConsoleErrorListener.INSTANCE);
+            parser.addErrorListener(FilterErrorListener.INSTANCE);
+
+            ParseTree parseTree;
+
+            try {
+                parseTree = parser.logical();
+            } catch (InvalidSyntaxException e) {
                 return this;
             }
 
             entities = entities.stream()
                     .filter(entity -> {
                         try {
-                            return new FilterEvaluator(entity).visit(filter);
+                            return new FilterEvaluator(entity).visit(parseTree);
                         } catch (NoSuchFieldException e) {
                             throw new BadRequestException();
                         }
-
-                    }).collect(Collectors.toList());
+                    })
+                    .collect(Collectors.toList());
 
             return this;
         }
