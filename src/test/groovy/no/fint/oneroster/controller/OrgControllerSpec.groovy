@@ -1,6 +1,5 @@
 package no.fint.oneroster.controller
 
-
 import no.fint.oneroster.model.Org
 import no.fint.oneroster.model.vocab.OrgType
 import no.fint.oneroster.service.OrgService
@@ -17,9 +16,16 @@ class OrgControllerSpec extends Specification {
 
     OrgService orgService = Mock()
     OrgController orgController = new OrgController(orgService)
-    MockMvc mockMvc = MockMvcBuilders.standaloneSetup(orgController)
-            .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
-            .build()
+    MockMvc mockMvc
+    PageableHandlerMethodArgumentResolver pageableHandlerMethodArgumentResolver = new PageableHandlerMethodArgumentResolver()
+
+    void setup() {
+        pageableHandlerMethodArgumentResolver.setPageParameterName("offset")
+        pageableHandlerMethodArgumentResolver.setSizeParameterName("limit")
+        mockMvc = MockMvcBuilders.standaloneSetup(orgController)
+                .setCustomArgumentResolvers(pageableHandlerMethodArgumentResolver)
+                .build()
+    }
 
     def "Given valid orgId return list of orgs"() {
         when:
@@ -42,11 +48,51 @@ class OrgControllerSpec extends Specification {
                 .andExpect(jsonPath('$.orgs[0].name').doesNotHaveJsonPath())
     }
 
+    def "Given offset parameter returns sublist of orgs"() {
+        when:
+        def response = mockMvc.perform(get("/orgs").header('orgId', '12345').param('offset', '0'))
+
+        then:
+        1 * orgService.getAllOrgs('12345') >> getOrgs()
+        response.andExpect(status().isOk())
+                .andExpect(jsonPath('$.orgs.length()').value('4'))
+    }
+
+    def "Given limit parameter returns sublist of orgs"() {
+        when:
+        def response = mockMvc.perform(get("/orgs").header('orgId', '12345').param('limit', '1'))
+
+        then:
+        1 * orgService.getAllOrgs('12345') >> getOrgs()
+        response.andExpect(status().isOk())
+                .andExpect(jsonPath('$.orgs.length()').value('1'))
+    }
+
+    def "Given sort parameter return sorted list of orgs"() {
+        when:
+        def response = mockMvc.perform(get("/orgs").header('orgId', '12345').param('sort', 'name'))
+
+        then:
+        1 * orgService.getAllOrgs('12345') >> getOrgs()
+        response.andExpect(status().isOk())
+                .andExpect(jsonPath('$.orgs[0].name').value('abc'))
+    }
+
+    def "Given filter parameter return sublist of orgs meeting criteria"() {
+        when:
+        def response = mockMvc.perform(get("/orgs").header('orgId', '12345').param('filter', 'name~\'b\''))
+
+        then:
+        1 * orgService.getAllOrgs('12345') >> getOrgs()
+        response.andExpect(status().isOk())
+                .andExpect(jsonPath('$.orgs.length()').value('1'))
+                .andExpect(jsonPath('$.orgs[0].name').value('abc'))
+    }
 
     List<Org> getOrgs() {
-        return [new Org('12', 'abc', OrgType.SCHOOL),
-                new Org('34', 'def', OrgType.SCHOOL),
-                new Org('56', 'ghi', OrgType.SCHOOL),
-                new Org('78', 'jkl', OrgType.SCHOOL)]
+        return [new Org('12', 'jkl', OrgType.SCHOOL),
+                new Org('34', 'ghi', OrgType.SCHOOL),
+                new Org('56', 'def', OrgType.SCHOOL),
+                new Org('78', 'abc', OrgType.SCHOOL)]
     }
 }
