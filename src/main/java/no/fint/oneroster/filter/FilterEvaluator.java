@@ -82,7 +82,13 @@ public class FilterEvaluator extends FilterBaseVisitor<Boolean> {
     @Override
     public Boolean visitAttrPath(FilterParser.AttrPathContext ctx) {
         try {
-            leftOperand = PropertyUtils.getProperty(object, ctx.getText());
+            String property = ctx.getText();
+
+            if (ctx.ATTRNAME().getText().equalsIgnoreCase("class")) {
+                property = ctx.getText().replaceFirst("class", "clazz");
+            }
+
+            leftOperand = PropertyUtils.getProperty(object, property);
 
             return leftOperand != null;
 
