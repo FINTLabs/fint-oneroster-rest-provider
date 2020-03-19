@@ -84,7 +84,7 @@ public class FilterEvaluator extends FilterBaseVisitor<Boolean> {
         try {
             String property = ctx.getText();
 
-            if (ctx.ATTRNAME().getText().equalsIgnoreCase("class")) {
+            if (ctx.ATTRNAME().getText().equals("class")) {
                 property = ctx.getText().replaceFirst("class", "clazz");
             }
 
