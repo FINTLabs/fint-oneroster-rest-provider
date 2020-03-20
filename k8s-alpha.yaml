@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
         - name: oneroster-rest-provider
-          image: fintlabs.azurecr.io/oneroster-rest-provider:build.1
+          image: fintlabs.azurecr.io/oneroster-rest-provider:build.3
           resources:
             limits:
               cpu: '500m'

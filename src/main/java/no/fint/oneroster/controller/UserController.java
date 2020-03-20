@@ -24,7 +24,7 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<?> getAllUsers(@RequestHeader(required = false) String orgId, Pageable pageable,
+    public ResponseEntity<?> getAllUsers(@RequestHeader(defaultValue = "pwf") String orgId, Pageable pageable,
                                          @RequestParam(value = "filter", required = false) String filter,
                                          @RequestParam(value = "fields", required = false) String fields) {
         List<User> users = userService.getAllUsers(orgId);
@@ -44,7 +44,7 @@ public class UserController {
     }
 
     @GetMapping("/users/{sourcedId}")
-    public ResponseEntity<?> getUser(@RequestHeader(required = false) String orgId, @PathVariable String sourcedId,
+    public ResponseEntity<?> getUser(@RequestHeader(defaultValue = "pwf") String orgId, @PathVariable String sourcedId,
                                      @RequestParam(value = "fields", required = false) String fields) {
         User user = userService.getUser(orgId, sourcedId);
 
@@ -55,7 +55,7 @@ public class UserController {
     }
 
     @GetMapping("/students")
-    public ResponseEntity<?> getAllStudents(@RequestHeader(required = false) String orgId, Pageable pageable,
+    public ResponseEntity<?> getAllStudents(@RequestHeader(defaultValue = "pwf") String orgId, Pageable pageable,
                                             @RequestParam(value = "filter", required = false) String filter,
                                             @RequestParam(value = "fields", required = false) String fields) {
         List<User> students = userService.getAllStudents(orgId);
@@ -75,7 +75,7 @@ public class UserController {
     }
 
     @GetMapping("/students/{sourcedId}")
-    public ResponseEntity<?> getStudent(@RequestHeader(required = false) String orgId, @PathVariable String sourcedId,
+    public ResponseEntity<?> getStudent(@RequestHeader(defaultValue = "pwf") String orgId, @PathVariable String sourcedId,
                                         @RequestParam(value = "fields", required = false) String fields) {
         User student = userService.getStudent(orgId, sourcedId);
 
@@ -86,7 +86,7 @@ public class UserController {
     }
 
     @GetMapping("/teachers")
-    public ResponseEntity<?> getAllTeachers(@RequestHeader(required = false) String orgId, Pageable pageable,
+    public ResponseEntity<?> getAllTeachers(@RequestHeader(defaultValue = "pwf") String orgId, Pageable pageable,
                                             @RequestParam(value = "filter", required = false) String filter,
                                             @RequestParam(value = "fields", required = false) String fields) {
         List<User> teachers = userService.getAllTeachers(orgId);
@@ -106,7 +106,7 @@ public class UserController {
     }
 
     @GetMapping("/teachers/{sourcedId}")
-    public ResponseEntity<?> getTeacher(@RequestHeader(required = false) String orgId, @PathVariable String sourcedId,
+    public ResponseEntity<?> getTeacher(@RequestHeader(defaultValue = "pwf") String orgId, @PathVariable String sourcedId,
                                         @RequestParam(value = "fields", required = false) String fields) {
         User teacher = userService.getTeacher(orgId, sourcedId);
 
