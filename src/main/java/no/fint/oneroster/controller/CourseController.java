@@ -25,7 +25,7 @@ public class CourseController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllCourses(@RequestHeader String orgId, Pageable pageable,
+    public ResponseEntity<?> getAllCourses(@RequestHeader(required = false) String orgId, Pageable pageable,
                                            @RequestParam(value = "filter", required = false) String filter,
                                            @RequestParam(value = "fields", required = false) String fields) {
         List<Course> courses = courseService.getAllCourses(orgId);
@@ -45,7 +45,7 @@ public class CourseController {
     }
 
     @GetMapping("/{sourcedId}")
-    public ResponseEntity<?> getCourse(@RequestHeader String orgId, @PathVariable String sourcedId,
+    public ResponseEntity<?> getCourse(@RequestHeader(required = false) String orgId, @PathVariable String sourcedId,
                                          @RequestParam(value = "fields", required = false) String fields) {
         Course course = courseService.getCourse(orgId, sourcedId);
 

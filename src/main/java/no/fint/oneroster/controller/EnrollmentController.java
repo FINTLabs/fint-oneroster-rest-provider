@@ -25,7 +25,7 @@ public class EnrollmentController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllEnrollments(@RequestHeader String orgId, Pageable pageable,
+    public ResponseEntity<?> getAllEnrollments(@RequestHeader(required = false) String orgId, Pageable pageable,
                                                @RequestParam(value = "filter", required = false) String filter,
                                                @RequestParam(value = "fields", required = false) String fields) {
         List<Enrollment> enrollments = enrollmentService.getAllEnrollments(orgId);
@@ -45,7 +45,7 @@ public class EnrollmentController {
     }
 
     @GetMapping("/{sourcedId}")
-    public ResponseEntity<?> getEnrollment(@RequestHeader String orgId, @PathVariable String sourcedId,
+    public ResponseEntity<?> getEnrollment(@RequestHeader(required = false) String orgId, @PathVariable String sourcedId,
                                            @RequestParam(value = "fields", required = false) String fields) {
         Enrollment enrollment = enrollmentService.getEnrollment(orgId, sourcedId);
 

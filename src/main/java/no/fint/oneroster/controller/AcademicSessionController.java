@@ -25,7 +25,7 @@ public class AcademicSessionController {
     }
 
     @GetMapping("/academicSessions")
-    public ResponseEntity<?> getAllUsers(@RequestHeader String orgId, Pageable pageable,
+    public ResponseEntity<?> getAllUsers(@RequestHeader(required = false) String orgId, Pageable pageable,
                                          @RequestParam(value = "filter", required = false) String filter,
                                          @RequestParam(value = "fields", required = false) String fields) {
         List<AcademicSession> academicSessions = academicSessionService.getAllAcademicSessions(orgId);
@@ -45,7 +45,7 @@ public class AcademicSessionController {
     }
 
     @GetMapping("/academicSessions/{sourcedId}")
-    public ResponseEntity<?> getAcademicSession(@RequestHeader String orgId, @PathVariable String sourcedId,
+    public ResponseEntity<?> getAcademicSession(@RequestHeader(required = false) String orgId, @PathVariable String sourcedId,
                                                 @RequestParam(value = "fields", required = false) String fields) {
         AcademicSession academicSession = academicSessionService.getAcademicSession(orgId, sourcedId);
 
@@ -56,7 +56,7 @@ public class AcademicSessionController {
     }
 
     @GetMapping("/terms")
-    public ResponseEntity<?> getAllTerms(@RequestHeader String orgId, Pageable pageable,
+    public ResponseEntity<?> getAllTerms(@RequestHeader(required = false) String orgId, Pageable pageable,
                                          @RequestParam(value = "filter", required = false) String filter,
                                          @RequestParam(value = "fields", required = false) String fields) {
         List<AcademicSession> terms = academicSessionService.getAllTerms(orgId);
@@ -76,7 +76,7 @@ public class AcademicSessionController {
     }
 
     @GetMapping("/terms/{sourcedId}")
-    public ResponseEntity<?> getTerm(@RequestHeader String orgId, @PathVariable String sourcedId,
+    public ResponseEntity<?> getTerm(@RequestHeader(required = false) String orgId, @PathVariable String sourcedId,
                                      @RequestParam(value = "fields", required = false) String fields) {
         AcademicSession term = academicSessionService.getTerm(orgId, sourcedId);
 
@@ -87,7 +87,7 @@ public class AcademicSessionController {
     }
 
     @GetMapping("/gradingPeriods")
-    public ResponseEntity<?> getAllGradingPeriods(@RequestHeader String orgId, Pageable pageable,
+    public ResponseEntity<?> getAllGradingPeriods(@RequestHeader(required = false) String orgId, Pageable pageable,
                                                   @RequestParam(value = "filter", required = false) String filter,
                                                   @RequestParam(value = "fields", required = false) String fields) {
         List<AcademicSession> gradingPeriods = academicSessionService.getAllGradingPeriods(orgId);
@@ -107,7 +107,7 @@ public class AcademicSessionController {
     }
 
     @GetMapping("/gradingPeriods/{sourcedId}")
-    public ResponseEntity<?> getGradingPeriod(@RequestHeader String orgId, @PathVariable String sourcedId,
+    public ResponseEntity<?> getGradingPeriod(@RequestHeader(required = false) String orgId, @PathVariable String sourcedId,
                                               @RequestParam(value = "fields", required = false) String fields) {
         AcademicSession gradingPeriod = academicSessionService.getGradingPeriod(orgId, sourcedId);
 

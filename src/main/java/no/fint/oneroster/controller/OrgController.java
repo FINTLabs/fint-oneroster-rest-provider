@@ -23,7 +23,7 @@ public class OrgController {
     }
 
     @GetMapping("/orgs")
-    public ResponseEntity<?> getAllOrgs(@RequestHeader String orgId, Pageable pageable,
+    public ResponseEntity<?> getAllOrgs(@RequestHeader(required = false) String orgId, Pageable pageable,
                                         @RequestParam(value = "filter", required = false) String filter,
                                         @RequestParam(value = "fields", required = false) String fields) {
         List<Org> orgs = orgService.getAllOrgs(orgId);
@@ -43,7 +43,7 @@ public class OrgController {
     }
 
     @GetMapping("/orgs/{sourcedId}")
-    public ResponseEntity<?> getOrg(@RequestHeader String orgId, @PathVariable String sourcedId,
+    public ResponseEntity<?> getOrg(@RequestHeader(required = false) String orgId, @PathVariable String sourcedId,
                                     @RequestParam(value = "fields", required = false) String fields) {
         Org org = orgService.getOrg(orgId, sourcedId);
 
@@ -54,7 +54,7 @@ public class OrgController {
     }
 
     @GetMapping("/schools")
-    public ResponseEntity<?> getAllSchools(@RequestHeader String orgId, Pageable pageable,
+    public ResponseEntity<?> getAllSchools(@RequestHeader(required = false) String orgId, Pageable pageable,
                                            @RequestParam(value = "filter", required = false) String filter,
                                            @RequestParam(value = "fields", required = false) String fields) {
         List<Org> schools = orgService.getAllSchools(orgId);
@@ -74,7 +74,7 @@ public class OrgController {
     }
 
     @GetMapping("/schools/{sourcedId}")
-    public ResponseEntity<?> getSchool(@RequestHeader String orgId, @PathVariable String sourcedId,
+    public ResponseEntity<?> getSchool(@RequestHeader(required = false) String orgId, @PathVariable String sourcedId,
                                        @RequestParam(value = "fields", required = false) String fields) {
         Org school = orgService.getSchool(orgId, sourcedId);
 

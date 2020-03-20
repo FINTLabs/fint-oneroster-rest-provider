@@ -25,7 +25,7 @@ public class ClazzController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllClazzes(@RequestHeader String orgId, Pageable pageable,
+    public ResponseEntity<?> getAllClazzes(@RequestHeader(required = false) String orgId, Pageable pageable,
                                            @RequestParam(value = "filter", required = false) String filter,
                                            @RequestParam(value = "fields", required = false) String fields) {
         List<Clazz> clazzes = clazzService.getAllClazzes(orgId);
@@ -45,7 +45,7 @@ public class ClazzController {
     }
 
     @GetMapping("/{sourcedId}")
-    public ResponseEntity<?> getClazz(@RequestHeader String orgId, @PathVariable String sourcedId,
+    public ResponseEntity<?> getClazz(@RequestHeader(required = false) String orgId, @PathVariable String sourcedId,
                                        @RequestParam(value = "fields", required = false) String fields) {
         Clazz clazz = clazzService.getClazz(orgId, sourcedId);
 
