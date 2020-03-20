@@ -25,15 +25,15 @@ class AcademicSessionServiceSpec extends Specification {
 
         academicSessions.first().sourcedId == 'orgId-1-termin-' + schoolYear.begin + schoolYear.end
         academicSessions.first().title == '1. termin ' + schoolYear.begin + '/' + schoolYear.end
-        academicSessions.first().startDate == LocalDate.of(schoolYear.begin, 8, 1)
-        academicSessions.first().endDate == LocalDate.of(schoolYear.begin, 12, 31)
+        academicSessions.first().startDate == LocalDate.of(schoolYear.begin.value, 8, 1)
+        academicSessions.first().endDate == LocalDate.of(schoolYear.begin.value, 12, 31)
         academicSessions.first().type == SessionType.TERM
         academicSessions.first().schoolYear == schoolYear.end
 
         academicSessions.last().sourcedId == 'orgId-2-termin-' + schoolYear.begin + schoolYear.end
         academicSessions.last().title == '2. termin ' + schoolYear.begin + '/' + schoolYear.end
-        academicSessions.last().startDate == LocalDate.of(schoolYear.end, 1, 1)
-        academicSessions.last().endDate == LocalDate.of(schoolYear.end, 7, 31)
+        academicSessions.last().startDate == LocalDate.of(schoolYear.end.value, 1, 1)
+        academicSessions.last().endDate == LocalDate.of(schoolYear.end.value, 7, 31)
         academicSessions.last().type == SessionType.TERM
         academicSessions.last().schoolYear == schoolYear.end
     }
@@ -48,8 +48,8 @@ class AcademicSessionServiceSpec extends Specification {
         then:
         academicSession.sourcedId == 'orgId-1-termin-' + schoolYear.begin + schoolYear.end
         academicSession.title == '1. termin ' + schoolYear.begin + '/' + schoolYear.end
-        academicSession.startDate == LocalDate.of(schoolYear.begin, 8, 1)
-        academicSession.endDate == LocalDate.of(schoolYear.begin, 12, 31)
+        academicSession.startDate == LocalDate.of(schoolYear.begin.value, 8, 1)
+        academicSession.endDate == LocalDate.of(schoolYear.begin.value, 12, 31)
         academicSession.type == SessionType.TERM
         academicSession.schoolYear == schoolYear.end
     }
@@ -63,15 +63,15 @@ class AcademicSessionServiceSpec extends Specification {
 
         terms.first().sourcedId == 'orgId-1-termin-' + schoolYear.begin + schoolYear.end
         terms.first().title == '1. termin ' + schoolYear.begin + '/' + schoolYear.end
-        terms.first().startDate == LocalDate.of(schoolYear.begin, 8, 1)
-        terms.first().endDate == LocalDate.of(schoolYear.begin, 12, 31)
+        terms.first().startDate == LocalDate.of(schoolYear.begin.value, 8, 1)
+        terms.first().endDate == LocalDate.of(schoolYear.begin.value, 12, 31)
         terms.first().type == SessionType.TERM
         terms.first().schoolYear == schoolYear.end
 
         terms.last().sourcedId == 'orgId-2-termin-' + schoolYear.begin + schoolYear.end
         terms.last().title == '2. termin ' + schoolYear.begin + '/' + schoolYear.end
-        terms.last().startDate == LocalDate.of(schoolYear.end, 1, 1)
-        terms.last().endDate == LocalDate.of(schoolYear.end, 7, 31)
+        terms.last().startDate == LocalDate.of(schoolYear.end.value, 1, 1)
+        terms.last().endDate == LocalDate.of(schoolYear.end.value, 7, 31)
         terms.last().type == SessionType.TERM
         terms.last().schoolYear == schoolYear.end
     }
@@ -86,8 +86,8 @@ class AcademicSessionServiceSpec extends Specification {
         then:
         academicSession.sourcedId == 'orgId-1-termin-' + schoolYear.begin + schoolYear.end
         academicSession.title == '1. termin ' + schoolYear.begin + '/' + schoolYear.end
-        academicSession.startDate == LocalDate.of(schoolYear.begin, 8, 1)
-        academicSession.endDate == LocalDate.of(schoolYear.begin, 12, 31)
+        academicSession.startDate == LocalDate.of(schoolYear.begin.value, 8, 1)
+        academicSession.endDate == LocalDate.of(schoolYear.begin.value, 12, 31)
         academicSession.type == SessionType.TERM
         academicSession.schoolYear == schoolYear.end
     }

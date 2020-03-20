@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
+import java.time.Year;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -23,8 +24,8 @@ public class Operation {
         } else if (leftOperand instanceof ZonedDateTime) {
             return ZonedDateTime.parse(leftOperand.toString()).toLocalDate().isEqual(LocalDate.parse(rightOperand.toString()));
 
-        } else if (leftOperand instanceof Integer) {
-            return Integer.parseInt(leftOperand.toString()) == Integer.parseInt(rightOperand.toString());
+        } else if (leftOperand instanceof Year) {
+            return Year.parse(leftOperand.toString()).equals(Year.parse(rightOperand.toString()));
 
         } else if (leftOperand instanceof Enum) {
             return rightOperand.toString().equalsIgnoreCase(((Enum<?>) leftOperand).name());
@@ -51,8 +52,8 @@ public class Operation {
         } else if (leftOperand instanceof ZonedDateTime) {
             return !ZonedDateTime.parse(leftOperand.toString()).toLocalDate().isEqual(LocalDate.parse(rightOperand.toString()));
 
-        } else if (leftOperand instanceof Integer) {
-            return Integer.parseInt(leftOperand.toString()) != Integer.parseInt(rightOperand.toString());
+        } else if (leftOperand instanceof Year) {
+            return !Year.parse(leftOperand.toString()).equals(Year.parse(rightOperand.toString()));
 
         } else if (leftOperand instanceof Enum) {
             return !rightOperand.toString().equalsIgnoreCase(((Enum<?>) leftOperand).name());
@@ -75,8 +76,8 @@ public class Operation {
         } else if (leftOperand instanceof ZonedDateTime) {
             return ZonedDateTime.parse(leftOperand.toString()).toLocalDate().compareTo(LocalDate.parse(rightOperand.toString())) > 0;
 
-        } else if (leftOperand instanceof Integer) {
-            return Integer.parseInt(leftOperand.toString()) > Integer.parseInt(rightOperand.toString());
+        } else if (leftOperand instanceof Year) {
+            return Year.parse(leftOperand.toString()).compareTo(Year.parse(rightOperand.toString())) > 0;
 
         } else {
             return false;
@@ -93,8 +94,8 @@ public class Operation {
         } else if (leftOperand instanceof ZonedDateTime) {
             return ZonedDateTime.parse(leftOperand.toString()).toLocalDate().compareTo(LocalDate.parse(rightOperand.toString())) < 0;
 
-        } else if (leftOperand instanceof Integer) {
-            return Integer.parseInt(leftOperand.toString()) < Integer.parseInt(rightOperand.toString());
+        } else if (leftOperand instanceof Year) {
+            return Year.parse(leftOperand.toString()).compareTo(Year.parse(rightOperand.toString())) < 0;
 
         } else {
             return false;
@@ -111,8 +112,8 @@ public class Operation {
         } else if (leftOperand instanceof ZonedDateTime) {
             return ZonedDateTime.parse(leftOperand.toString()).toLocalDate().compareTo(LocalDate.parse(rightOperand.toString())) >= 0;
 
-        } else if (leftOperand instanceof Integer) {
-            return Integer.parseInt(leftOperand.toString()) >= Integer.parseInt(rightOperand.toString());
+        } else if (leftOperand instanceof Year) {
+            return Year.parse(leftOperand.toString()).compareTo(Year.parse(rightOperand.toString())) >= 0;
 
         } else {
             return false;
@@ -129,8 +130,8 @@ public class Operation {
         } else if (leftOperand instanceof ZonedDateTime) {
             return ZonedDateTime.parse(leftOperand.toString()).toLocalDate().compareTo(LocalDate.parse(rightOperand.toString())) <= 0;
 
-        } else if (leftOperand instanceof Integer) {
-            return Integer.parseInt(leftOperand.toString()) <= Integer.parseInt(rightOperand.toString());
+        } else if (leftOperand instanceof Year) {
+            return Year.parse(leftOperand.toString()).compareTo(Year.parse(rightOperand.toString())) <= 0;
 
         } else {
             return false;

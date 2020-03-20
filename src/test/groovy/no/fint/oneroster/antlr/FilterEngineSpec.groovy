@@ -15,6 +15,7 @@ import no.fint.oneroster.model.vocab.SessionType
 import spock.lang.Specification
 
 import java.time.LocalDate
+import java.time.Year
 
 class FilterEngineSpec extends Specification {
 
@@ -167,7 +168,7 @@ class FilterEngineSpec extends Specification {
     def "Simple local date eq query"() {
         given:
         def query = 'startDate=\'2020-01-01\''
-        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, 2020)
+        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, Year.of(2020))
 
         when:
         def evaluate = filterEngine.execute(query, object)
@@ -179,7 +180,7 @@ class FilterEngineSpec extends Specification {
     def "Simple local date ne query"() {
         given:
         def query = 'startDate!=\'2020-01-01\''
-        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, 2020)
+        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, Year.of(2020))
 
         when:
         def evaluate = filterEngine.execute(query, object)
@@ -191,7 +192,7 @@ class FilterEngineSpec extends Specification {
     def "Simple local date gt query"() {
         given:
         def query = 'startDate>\'2020-01-01\''
-        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, 2020)
+        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, Year.of(2020))
 
         when:
         def evaluate = filterEngine.execute(query, object)
@@ -203,7 +204,7 @@ class FilterEngineSpec extends Specification {
     def "Simple local date lt query"() {
         given:
         def query = 'startDate<\'2020-01-01\''
-        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, 2020)
+        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, Year.of(2020))
 
         when:
         def evaluate = filterEngine.execute(query, object)
@@ -215,7 +216,7 @@ class FilterEngineSpec extends Specification {
     def "Simple local date ge query"() {
         given:
         def query = 'startDate>=\'2020-01-01\''
-        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, 2020)
+        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, Year.of(2020))
 
         when:
         def evaluate = filterEngine.execute(query, object)
@@ -227,7 +228,7 @@ class FilterEngineSpec extends Specification {
     def "Simple local date le query"() {
         given:
         def query = 'startDate<=\'2020-01-01\''
-        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, 2020)
+        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, Year.of(2020))
 
         when:
         def evaluate = filterEngine.execute(query, object)
@@ -239,7 +240,7 @@ class FilterEngineSpec extends Specification {
     def "Simple zoned date time eq query"() {
         given:
         def query = 'dateLastModified=\'1900-01-01\''
-        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, 2020)
+        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, Year.of(2020))
 
         when:
         def evaluate = filterEngine.execute(query, object)
@@ -251,7 +252,7 @@ class FilterEngineSpec extends Specification {
     def "Simple zoned date time ne query"() {
         given:
         def query = 'dateLastModified!=\'1900-01-01\''
-        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, 2020)
+        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, Year.of(2020))
 
         when:
         def evaluate = filterEngine.execute(query, object)
@@ -263,7 +264,7 @@ class FilterEngineSpec extends Specification {
     def "Simple zoned date time gt query"() {
         given:
         def query = 'dateLastModified>\'1900-01-01\''
-        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, 2020)
+        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, Year.of(2020))
 
         when:
         def evaluate = filterEngine.execute(query, object)
@@ -275,7 +276,7 @@ class FilterEngineSpec extends Specification {
     def "Simple zoned date time lt query"() {
         given:
         def query = 'dateLastModified<\'1900-01-01\''
-        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, 2020)
+        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, Year.of(2020))
 
         when:
         def evaluate = filterEngine.execute(query, object)
@@ -287,7 +288,7 @@ class FilterEngineSpec extends Specification {
     def "Simple zoned date time ge query"() {
         given:
         def query = 'dateLastModified>=\'1900-01-01\''
-        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, 2020)
+        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, Year.of(2020))
 
         when:
         def evaluate = filterEngine.execute(query, object)
@@ -299,7 +300,7 @@ class FilterEngineSpec extends Specification {
     def "Simple zoned date time le query"() {
         given:
         def query = 'dateLastModified<=\'1900-01-01\''
-        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, 2020)
+        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, Year.of(2020))
 
         when:
         def evaluate = filterEngine.execute(query, object)
@@ -308,10 +309,10 @@ class FilterEngineSpec extends Specification {
         !evaluate
     }
 
-    def "Simple integer eq query"() {
+    def "Simple year eq query"() {
         given:
         def query = 'schoolYear=\'2020\''
-        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, 2020)
+        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, Year.of(2020))
 
         when:
         def evaluate = filterEngine.execute(query, object)
@@ -320,10 +321,10 @@ class FilterEngineSpec extends Specification {
         evaluate
     }
 
-    def "Simple integer ne query"() {
+    def "Simple year ne query"() {
         given:
         def query = 'schoolYear!=\'2020\''
-        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, 2020)
+        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, Year.of(2020))
 
         when:
         def evaluate = filterEngine.execute(query, object)
@@ -332,10 +333,10 @@ class FilterEngineSpec extends Specification {
         !evaluate
     }
 
-    def "Simple integer gt query"() {
+    def "Simple year gt query"() {
         given:
         def query = 'schoolYear>\'2020\''
-        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, 2020)
+        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, Year.of(2020))
 
         when:
         def evaluate = filterEngine.execute(query, object)
@@ -344,10 +345,10 @@ class FilterEngineSpec extends Specification {
         !evaluate
     }
 
-    def "Simple integer lt query"() {
+    def "Simple year lt query"() {
         given:
         def query = 'schoolYear<\'2020\''
-        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, 2020)
+        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, Year.of(2020))
 
         when:
         def evaluate = filterEngine.execute(query, object)
@@ -356,10 +357,10 @@ class FilterEngineSpec extends Specification {
         !evaluate
     }
 
-    def "Simple integer ge query"() {
+    def "Simple year ge query"() {
         given:
         def query = 'schoolYear>=\'2020\''
-        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, 2020)
+        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, Year.of(2020))
 
         when:
         def evaluate = filterEngine.execute(query, object)
@@ -368,10 +369,10 @@ class FilterEngineSpec extends Specification {
         evaluate
     }
 
-    def "Simple integer le query"() {
+    def "Simple year le query"() {
         given:
         def query = 'schoolYear<=\'2020\''
-        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, 2020)
+        def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, Year.of(2020))
 
         when:
         def evaluate = filterEngine.execute(query, object)

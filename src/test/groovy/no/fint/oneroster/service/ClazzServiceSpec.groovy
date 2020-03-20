@@ -68,8 +68,8 @@ class ClazzServiceSpec extends Specification {
         AcademicSession fall = new AcademicSession(
                 'orgId-1-termin-' + schoolYear.begin + schoolYear.end,
                 '1. termin ' + schoolYear.begin + '/' + schoolYear.end,
-                LocalDate.of(schoolYear.begin, 8, 1),
-                LocalDate.of(schoolYear.begin, 12, 31),
+                LocalDate.of(schoolYear.begin.value, 8, 1),
+                LocalDate.of(schoolYear.begin.value, 12, 31),
                 SessionType.TERM,
                 schoolYear.end
         )
@@ -77,8 +77,8 @@ class ClazzServiceSpec extends Specification {
         AcademicSession spring = new AcademicSession(
                 'orgId-2-termin-' + schoolYear.begin + schoolYear.end,
                 '2. termin ' + schoolYear.begin + '/' + schoolYear.end,
-                LocalDate.of(schoolYear.end, 1, 1),
-                LocalDate.of(schoolYear.end, 7, 31),
+                LocalDate.of(schoolYear.end.value, 1, 1),
+                LocalDate.of(schoolYear.end.value, 7, 31),
                 SessionType.TERM,
                 schoolYear.end
         )

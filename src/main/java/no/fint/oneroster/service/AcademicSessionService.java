@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.Year;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -28,16 +29,16 @@ public class AcademicSessionService {
         AcademicSession fallTerm = new AcademicSession(
                 orgId + "-1-termin-" + schoolYear.getBegin() + schoolYear.getEnd(),
                 "1. termin " + schoolYear.getBegin()  + "/" + schoolYear.getEnd(),
-                LocalDate.of(schoolYear.getBegin(),8,1),
-                LocalDate.of(schoolYear.getBegin(),12,31),
+                LocalDate.of(schoolYear.getBegin().getValue(),8,1),
+                LocalDate.of(schoolYear.getBegin().getValue(),12,31),
                 SessionType.TERM,
                 schoolYear.getEnd());
 
         AcademicSession springTerm = new AcademicSession(
                 orgId + "-2-termin-" + schoolYear.getBegin() + schoolYear.getEnd(),
                 "2. termin " + schoolYear.getBegin() + "/" + schoolYear.getEnd(),
-                LocalDate.of(schoolYear.getEnd(),1,1),
-                LocalDate.of(schoolYear.getEnd(),7,31),
+                LocalDate.of(schoolYear.getEnd().getValue(),1,1),
+                LocalDate.of(schoolYear.getEnd().getValue(),7,31),
                 SessionType.TERM,
                 schoolYear.getEnd());
 
@@ -89,12 +90,12 @@ public class AcademicSessionService {
 
     @Getter @Setter
     public static class SchoolYear {
-        private final int begin;
-        private final int end;
+        private final Year begin;
+        private final Year end;
 
         public SchoolYear(int begin, int end) {
-            this.begin = begin;
-            this.end = end;
+            this.begin = Year.of(begin);
+            this.end = Year.of(end);
         }
     }
 }
