@@ -8,7 +8,10 @@ import no.fint.model.resource.utdanning.elev.UndervisningsforholdResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
 import no.fint.oneroster.exception.NotFoundException;
 import no.fint.oneroster.factory.UserFactory;
+import no.fint.oneroster.model.GUIDRef;
+import no.fint.oneroster.model.Org;
 import no.fint.oneroster.model.User;
+import no.fint.oneroster.model.vocab.OrgType;
 import no.fint.oneroster.model.vocab.RoleType;
 import no.fint.oneroster.repository.FintRepository;
 import no.fint.oneroster.util.LinkUtil;
@@ -127,6 +130,13 @@ public class UserService {
                 .orElseThrow(NotFoundException::new);
     }
 
+    public List<User> getStudentsForSchool(String orgId, String sourcedId) {
+        return getAllStudents(orgId)
+                .stream()
+                .filter(student -> student.getOrgs().stream().map(GUIDRef::getSourcedId).anyMatch(sourcedId::equals))
+                .collect(Collectors.toList());
+    }
+
     public List<User> getAllTeachers(String orgId) {
         return getAllUsers(orgId)
                 .stream()
@@ -139,5 +149,12 @@ public class UserService {
                 .filter(teacher -> teacher.getSourcedId().equals(sourcedId))
                 .findAny()
                 .orElseThrow(NotFoundException::new);
+    }
+
+    public List<User> getTeachersForSchool(String orgId, String sourcedId) {
+        return getAllTeachers(orgId)
+                .stream()
+                .filter(teacher -> teacher.getOrgs().stream().map(GUIDRef::getSourcedId).anyMatch(sourcedId::equals))
+                .collect(Collectors.toList());
     }
 }

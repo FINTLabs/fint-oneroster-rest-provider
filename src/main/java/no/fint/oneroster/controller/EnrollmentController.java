@@ -3,6 +3,7 @@ package no.fint.oneroster.controller;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.oneroster.model.Enrollment;
+import no.fint.oneroster.model.Org;
 import no.fint.oneroster.service.EnrollmentService;
 import no.fint.oneroster.util.OneRosterResponse;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +16,6 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/enrollments")
 public class EnrollmentController {
 
     private final EnrollmentService enrollmentService;
@@ -24,7 +24,7 @@ public class EnrollmentController {
         this.enrollmentService = enrollmentService;
     }
 
-    @GetMapping
+    @GetMapping("/enrollments")
     public ResponseEntity<?> getAllEnrollments(@RequestHeader(defaultValue = "pwf") String orgId, Pageable pageable,
                                                @RequestParam(value = "filter", required = false) String filter,
                                                @RequestParam(value = "fields", required = false) String fields) {
@@ -44,7 +44,7 @@ public class EnrollmentController {
                 .body(body);
     }
 
-    @GetMapping("/{sourcedId}")
+    @GetMapping("/enrollments/{sourcedId}")
     public ResponseEntity<?> getEnrollment(@RequestHeader(defaultValue = "pwf") String orgId, @PathVariable String sourcedId,
                                            @RequestParam(value = "fields", required = false) String fields) {
         Enrollment enrollment = enrollmentService.getEnrollment(orgId, sourcedId);
@@ -53,5 +53,26 @@ public class EnrollmentController {
         body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(Enrollment.class, fields)));
 
         return ResponseEntity.ok(body);
+    }
+
+    @GetMapping("/schools/{sourcedId}/enrollments")
+    public ResponseEntity<?> getEnrollmentsForSchool(@RequestHeader(defaultValue = "pwf") String orgId, Pageable pageable,
+                                                     @PathVariable String sourcedId,
+                                                     @RequestParam(value = "filter", required = false) String filter,
+                                                     @RequestParam(value = "fields", required = false) String fields) {
+        List<Enrollment> enrollments = enrollmentService.getEnrollmentsForSchool(orgId, sourcedId);
+
+        List<Enrollment> modifiedEnrollments = new OneRosterResponse.Builder<>(enrollments)
+                .filter(filter)
+                .sort(pageable.getSort())
+                .page(pageable)
+                .build();
+
+        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("enrollments", modifiedEnrollments));
+        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(Enrollment.class, fields)));
+
+        return ResponseEntity.ok()
+                .header("X-Total-Count", String.valueOf(enrollments.size()))
+                .body(body);
     }
 }

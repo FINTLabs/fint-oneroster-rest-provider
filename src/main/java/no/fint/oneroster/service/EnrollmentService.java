@@ -9,11 +9,14 @@ import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
 import no.fint.oneroster.exception.NotFoundException;
 import no.fint.oneroster.factory.EnrollmentFactory;
 import no.fint.oneroster.model.Enrollment;
+import no.fint.oneroster.model.Org;
+import no.fint.oneroster.model.vocab.OrgType;
 import no.fint.oneroster.repository.FintRepository;
 import no.fint.oneroster.util.LinkUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -124,5 +127,12 @@ public class EnrollmentService {
                 .filter(enrollment -> enrollment.getSourcedId().equals(sourcedId))
                 .findAny()
                 .orElseThrow(NotFoundException::new);
+    }
+
+    public List<Enrollment> getEnrollmentsForSchool(String orgId, String sourcedId) {
+        return getAllEnrollments(orgId)
+                .stream()
+                .filter(enrollment -> enrollment.getSchool().getSourcedId().equals(sourcedId))
+                .collect(Collectors.toList());
     }
 }

@@ -15,7 +15,6 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/classes")
 public class ClazzController {
 
     private final ClazzService clazzService;
@@ -24,7 +23,7 @@ public class ClazzController {
         this.clazzService = clazzService;
     }
 
-    @GetMapping
+    @GetMapping("/classes")
     public ResponseEntity<?> getAllClazzes(@RequestHeader(defaultValue = "pwf") String orgId, Pageable pageable,
                                            @RequestParam(value = "filter", required = false) String filter,
                                            @RequestParam(value = "fields", required = false) String fields) {
@@ -44,7 +43,7 @@ public class ClazzController {
                 .body(body);
     }
 
-    @GetMapping("/{sourcedId}")
+    @GetMapping("/classes/{sourcedId}")
     public ResponseEntity<?> getClazz(@RequestHeader(defaultValue = "pwf") String orgId, @PathVariable String sourcedId,
                                        @RequestParam(value = "fields", required = false) String fields) {
         Clazz clazz = clazzService.getClazz(orgId, sourcedId);
@@ -53,5 +52,26 @@ public class ClazzController {
         body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(Clazz.class, fields)));
 
         return ResponseEntity.ok(body);
+    }
+
+    @GetMapping("/schools/{sourcedId}/classes")
+    public ResponseEntity<?> getClassesForSchool(@RequestHeader(defaultValue = "pwf") String orgId, Pageable pageable,
+                                                 @PathVariable String sourcedId,
+                                                 @RequestParam(value = "filter", required = false) String filter,
+                                                 @RequestParam(value = "fields", required = false) String fields) {
+        List<Clazz> clazzes = clazzService.getClazzesForSchool(orgId, sourcedId);
+
+        List<Clazz> modifiedClazzes = new OneRosterResponse.Builder<>(clazzes)
+                .filter(filter)
+                .sort(pageable.getSort())
+                .page(pageable)
+                .build();
+
+        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("classes", modifiedClazzes));
+        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(Clazz.class, fields)));
+
+        return ResponseEntity.ok()
+                .header("X-Total-Count", String.valueOf(clazzes.size()))
+                .body(body);
     }
 }

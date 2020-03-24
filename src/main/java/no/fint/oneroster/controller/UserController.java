@@ -2,6 +2,7 @@ package no.fint.oneroster.controller;
 
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import lombok.extern.slf4j.Slf4j;
+import no.fint.oneroster.model.Org;
 import no.fint.oneroster.model.User;
 import no.fint.oneroster.service.UserService;
 import no.fint.oneroster.util.OneRosterResponse;
@@ -85,6 +86,27 @@ public class UserController {
         return ResponseEntity.ok(body);
     }
 
+    @GetMapping("/schools/{sourcedId}/students")
+    public ResponseEntity<?> getStudentsForSchool(@RequestHeader(defaultValue = "pwf") String orgId, Pageable pageable,
+                                                  @PathVariable String sourcedId,
+                                                  @RequestParam(value = "filter", required = false) String filter,
+                                                  @RequestParam(value = "fields", required = false) String fields) {
+        List<User> students = userService.getStudentsForSchool(orgId, sourcedId);
+
+        List<User> modifiedStudents = new OneRosterResponse.Builder<>(students)
+                .filter(filter)
+                .sort(pageable.getSort())
+                .page(pageable)
+                .build();
+
+        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("users", modifiedStudents));
+        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(User.class, fields)));
+
+        return ResponseEntity.ok()
+                .header("X-Total-Count", String.valueOf(students.size()))
+                .body(body);
+    }
+
     @GetMapping("/teachers")
     public ResponseEntity<?> getAllTeachers(@RequestHeader(defaultValue = "pwf") String orgId, Pageable pageable,
                                             @RequestParam(value = "filter", required = false) String filter,
@@ -114,5 +136,26 @@ public class UserController {
         body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(User.class, fields)));
 
         return ResponseEntity.ok(body);
+    }
+
+    @GetMapping("/schools/{sourcedId}/teachers")
+    public ResponseEntity<?> getTeachersForSchool(@RequestHeader(defaultValue = "pwf") String orgId, Pageable pageable,
+                                                  @PathVariable String sourcedId,
+                                                  @RequestParam(value = "filter", required = false) String filter,
+                                                  @RequestParam(value = "fields", required = false) String fields) {
+        List<User> teachers = userService.getTeachersForSchool(orgId, sourcedId);
+
+        List<User> modifiedTeachers = new OneRosterResponse.Builder<>(teachers)
+                .filter(filter)
+                .sort(pageable.getSort())
+                .page(pageable)
+                .build();
+
+        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("users", modifiedTeachers));
+        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(User.class, fields)));
+
+        return ResponseEntity.ok()
+                .header("X-Total-Count", String.valueOf(teachers.size()))
+                .body(body);
     }
 }

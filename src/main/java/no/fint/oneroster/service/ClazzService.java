@@ -8,11 +8,13 @@ import no.fint.oneroster.exception.NotFoundException;
 import no.fint.oneroster.factory.ClazzFactory;
 import no.fint.oneroster.model.AcademicSession;
 import no.fint.oneroster.model.Clazz;
+import no.fint.oneroster.model.vocab.OrgType;
 import no.fint.oneroster.repository.FintRepository;
 import no.fint.oneroster.util.LinkUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -88,5 +90,12 @@ public class ClazzService {
                 .filter(clazz -> clazz.getSourcedId().equals(sourcedId))
                 .findAny()
                 .orElseThrow(NotFoundException::new);
+    }
+
+    public List<Clazz> getClazzesForSchool(String orgId, String sourcedId) {
+        return getAllClazzes(orgId)
+                .stream()
+                .filter(clazz -> clazz.getSchool().getSourcedId().equals(sourcedId))
+                .collect(Collectors.toList());
     }
 }

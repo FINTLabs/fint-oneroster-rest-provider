@@ -3,6 +3,7 @@ package no.fint.oneroster.service;
 import no.fint.model.resource.administrasjon.organisasjon.OrganisasjonselementResource;
 import no.fint.oneroster.exception.NotFoundException;
 import no.fint.oneroster.factory.OrgFactory;
+import no.fint.oneroster.model.Clazz;
 import no.fint.oneroster.model.GUIDRef;
 import no.fint.oneroster.model.Org;
 import no.fint.oneroster.model.vocab.GUIDType;
