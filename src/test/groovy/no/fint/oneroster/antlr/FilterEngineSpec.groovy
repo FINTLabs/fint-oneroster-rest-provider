@@ -239,7 +239,7 @@ class FilterEngineSpec extends Specification {
 
     def "Simple zoned date time eq query"() {
         given:
-        def query = 'dateLastModified=\'1900-01-01\''
+        def query = 'dateLastModified=\'2020-03-18T08:03:14.945Z\''
         def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, Year.of(2020))
 
         when:
@@ -251,7 +251,7 @@ class FilterEngineSpec extends Specification {
 
     def "Simple zoned date time ne query"() {
         given:
-        def query = 'dateLastModified!=\'1900-01-01\''
+        def query = 'dateLastModified!=\'2020-03-18T08:03:14.945Z\''
         def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, Year.of(2020))
 
         when:
@@ -263,7 +263,7 @@ class FilterEngineSpec extends Specification {
 
     def "Simple zoned date time gt query"() {
         given:
-        def query = 'dateLastModified>\'1900-01-01\''
+        def query = 'dateLastModified>\'2020-03-18T08:03:14.945Z\''
         def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, Year.of(2020))
 
         when:
@@ -275,7 +275,7 @@ class FilterEngineSpec extends Specification {
 
     def "Simple zoned date time lt query"() {
         given:
-        def query = 'dateLastModified<\'1900-01-01\''
+        def query = 'dateLastModified<\'2020-03-18T08:03:14.945Z\''
         def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, Year.of(2020))
 
         when:
@@ -287,7 +287,7 @@ class FilterEngineSpec extends Specification {
 
     def "Simple zoned date time ge query"() {
         given:
-        def query = 'dateLastModified>=\'1900-01-01\''
+        def query = 'dateLastModified>=\'2020-03-18T08:03:14.945Z\''
         def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, Year.of(2020))
 
         when:
@@ -299,7 +299,7 @@ class FilterEngineSpec extends Specification {
 
     def "Simple zoned date time le query"() {
         given:
-        def query = 'dateLastModified<=\'1900-01-01\''
+        def query = 'dateLastModified<=\'2020-03-18T08:03:14.945Z\''
         def object = new AcademicSession('sourcedId', 'title', LocalDate.of(2020, 1, 1), LocalDate.of(2020, 7, 31), SessionType.TERM, Year.of(2020))
 
         when:

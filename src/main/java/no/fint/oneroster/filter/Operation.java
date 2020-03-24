@@ -22,7 +22,7 @@ public class Operation {
             return LocalDate.parse(leftOperand.toString()).isEqual(LocalDate.parse(rightOperand.toString()));
 
         } else if (leftOperand instanceof ZonedDateTime) {
-            return ZonedDateTime.parse(leftOperand.toString()).toLocalDate().isEqual(LocalDate.parse(rightOperand.toString()));
+            return ZonedDateTime.parse(leftOperand.toString()).isEqual(ZonedDateTime.parse(rightOperand.toString()));
 
         } else if (leftOperand instanceof Year) {
             return Year.parse(leftOperand.toString()).equals(Year.parse(rightOperand.toString()));
@@ -50,7 +50,7 @@ public class Operation {
             return !LocalDate.parse(leftOperand.toString()).isEqual(LocalDate.parse(rightOperand.toString()));
 
         } else if (leftOperand instanceof ZonedDateTime) {
-            return !ZonedDateTime.parse(leftOperand.toString()).toLocalDate().isEqual(LocalDate.parse(rightOperand.toString()));
+            return !ZonedDateTime.parse(leftOperand.toString()).isEqual(ZonedDateTime.parse(rightOperand.toString()));
 
         } else if (leftOperand instanceof Year) {
             return !Year.parse(leftOperand.toString()).equals(Year.parse(rightOperand.toString()));
@@ -74,7 +74,7 @@ public class Operation {
             return LocalDate.parse(leftOperand.toString()).compareTo(LocalDate.parse(rightOperand.toString())) > 0;
 
         } else if (leftOperand instanceof ZonedDateTime) {
-            return ZonedDateTime.parse(leftOperand.toString()).toLocalDate().compareTo(LocalDate.parse(rightOperand.toString())) > 0;
+            return ZonedDateTime.parse(leftOperand.toString()).compareTo(ZonedDateTime.parse(rightOperand.toString())) > 0;
 
         } else if (leftOperand instanceof Year) {
             return Year.parse(leftOperand.toString()).compareTo(Year.parse(rightOperand.toString())) > 0;
@@ -92,7 +92,7 @@ public class Operation {
             return LocalDate.parse(leftOperand.toString()).compareTo(LocalDate.parse(rightOperand.toString())) < 0;
 
         } else if (leftOperand instanceof ZonedDateTime) {
-            return ZonedDateTime.parse(leftOperand.toString()).toLocalDate().compareTo(LocalDate.parse(rightOperand.toString())) < 0;
+            return ZonedDateTime.parse(leftOperand.toString()).compareTo(ZonedDateTime.parse(rightOperand.toString())) < 0;
 
         } else if (leftOperand instanceof Year) {
             return Year.parse(leftOperand.toString()).compareTo(Year.parse(rightOperand.toString())) < 0;
@@ -110,7 +110,7 @@ public class Operation {
             return LocalDate.parse(leftOperand.toString()).compareTo(LocalDate.parse(rightOperand.toString())) >= 0;
 
         } else if (leftOperand instanceof ZonedDateTime) {
-            return ZonedDateTime.parse(leftOperand.toString()).toLocalDate().compareTo(LocalDate.parse(rightOperand.toString())) >= 0;
+            return ZonedDateTime.parse(leftOperand.toString()).compareTo(ZonedDateTime.parse(rightOperand.toString())) >= 0;
 
         } else if (leftOperand instanceof Year) {
             return Year.parse(leftOperand.toString()).compareTo(Year.parse(rightOperand.toString())) >= 0;
@@ -128,7 +128,7 @@ public class Operation {
             return LocalDate.parse(leftOperand.toString()).compareTo(LocalDate.parse(rightOperand.toString())) <= 0;
 
         } else if (leftOperand instanceof ZonedDateTime) {
-            return ZonedDateTime.parse(leftOperand.toString()).toLocalDate().compareTo(LocalDate.parse(rightOperand.toString())) <= 0;
+            return ZonedDateTime.parse(leftOperand.toString()).compareTo(ZonedDateTime.parse(rightOperand.toString())) <= 0;
 
         } else if (leftOperand instanceof Year) {
             return Year.parse(leftOperand.toString()).compareTo(Year.parse(rightOperand.toString())) <= 0;
