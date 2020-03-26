@@ -1,47 +1,48 @@
 package no.fint.oneroster.service;
 
-import no.fint.model.resource.administrasjon.organisasjon.OrganisasjonselementResource;
 import no.fint.oneroster.exception.NotFoundException;
 import no.fint.oneroster.factory.OrgFactory;
-import no.fint.oneroster.model.Clazz;
 import no.fint.oneroster.model.GUIDRef;
 import no.fint.oneroster.model.Org;
 import no.fint.oneroster.model.vocab.GUIDType;
 import no.fint.oneroster.model.vocab.OrgType;
+import no.fint.oneroster.properties.OrganisationProperties;
 import no.fint.oneroster.repository.FintRepository;
-import no.fint.oneroster.util.LinkUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
 public class OrgService {
 
     private final FintRepository fintRepository;
+    private final OrganisationProperties organisationProperties;
 
-    public OrgService(FintRepository fintRepository) {
+    public OrgService(FintRepository fintRepository, OrganisationProperties organisationProperties) {
         this.fintRepository = fintRepository;
+        this.organisationProperties = organisationProperties;
     }
 
     public List<Org> getAllOrgs(String orgId) {
-        Optional<Org> schoolOwner = getSchoolOwner(orgId);
+        OrganisationProperties.Organisation organisation = organisationProperties.getOrganisations().get(orgId);
+
+        Org schoolOwner = OrgFactory.schoolOwner(organisation);
 
         List<Org> orgs = fintRepository.getSchools(orgId)
                 .values()
                 .stream()
                 .map(OrgFactory::school)
-                .peek(school -> schoolOwner.ifPresent(owner -> {
-                    if (owner.getChildren() == null) {
-                        owner.setChildren(new ArrayList<>());
+                .peek(school -> {
+                    if (schoolOwner.getChildren() == null) {
+                        schoolOwner.setChildren(new ArrayList<>());
                     }
-                    school.setParent(GUIDRef.of(GUIDType.ORG, owner.getSourcedId()));
-                    owner.getChildren().add(GUIDRef.of(GUIDType.ORG, school.getSourcedId()));
-                }))
+                    school.setParent(GUIDRef.of(GUIDType.ORG, schoolOwner.getSourcedId()));
+                    schoolOwner.getChildren().add(GUIDRef.of(GUIDType.ORG, school.getSourcedId()));
+                })
                 .collect(Collectors.toList());
 
-        schoolOwner.ifPresent(orgs::add);
+        orgs.add(schoolOwner);
 
         return orgs;
     }
@@ -67,6 +68,7 @@ public class OrgService {
                 .orElseThrow(NotFoundException::new);
     }
 
+    /*
     public Optional<Org> getSchoolOwner(String orgId) {
         return fintRepository.getOrganisationalElements(orgId)
                 .values()
@@ -91,4 +93,5 @@ public class OrgService {
                     .orElse(false);
         };
     }
+     */
 }

@@ -1,41 +1,38 @@
 package no.fint.oneroster.service;
 
-import no.fint.model.resource.administrasjon.organisasjon.OrganisasjonselementResource;
 import no.fint.oneroster.exception.NotFoundException;
 import no.fint.oneroster.factory.CourseFactory;
 import no.fint.oneroster.model.Course;
+import no.fint.oneroster.properties.OrganisationProperties;
 import no.fint.oneroster.repository.FintRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CourseService {
 
     private final FintRepository fintRepository;
+    private final OrganisationProperties organisationProperties;
 
-    public CourseService(FintRepository fintRepository) {
+    public CourseService(FintRepository fintRepository, OrganisationProperties organisationProperties) {
         this.fintRepository = fintRepository;
+        this.organisationProperties = organisationProperties;
     }
 
     public List<Course> getAllCourses(String orgId) {
-        List<Course> courses = new ArrayList<>();
+        OrganisationProperties.Organisation organisation = organisationProperties.getOrganisations().get(orgId);
 
-        Optional<OrganisasjonselementResource> schoolOwner = fintRepository.getOrganisationalElements(orgId)
-                .values()
-                .stream()
-                .filter(OrgService.isSchoolOwner())
-                .findAny();
+        List<Course> courses = new ArrayList<>();
 
         fintRepository.getLevels(orgId)
                 .values()
-                .forEach(level -> schoolOwner.ifPresent(owner -> courses.add(CourseFactory.level(level, owner))));
+                .forEach(level -> courses.add(CourseFactory.level(level, organisation)));
 
         fintRepository.getSubjects(orgId)
                 .values()
-                .forEach(subject -> schoolOwner.ifPresent(owner -> courses.add(CourseFactory.subject(subject, owner))));
+                .forEach(subject -> courses.add(CourseFactory.subject(subject, organisation)));
 
         return courses;
     }

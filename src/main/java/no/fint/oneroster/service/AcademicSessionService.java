@@ -1,15 +1,13 @@
 package no.fint.oneroster.service;
 
-import lombok.Getter;
-import lombok.Setter;
 import no.fint.oneroster.exception.NotFoundException;
 import no.fint.oneroster.model.AcademicSession;
+import no.fint.oneroster.model.GUIDRef;
+import no.fint.oneroster.model.vocab.GUIDType;
 import no.fint.oneroster.model.vocab.SessionType;
-import no.fint.oneroster.repository.FintRepository;
+import no.fint.oneroster.properties.OrganisationProperties;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.Month;
 import java.time.Year;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,32 +15,50 @@ import java.util.stream.Collectors;
 @Service
 public class AcademicSessionService {
 
-    private final FintRepository fintRepository;
+    private final OrganisationProperties organisationProperties;
 
-    public AcademicSessionService(FintRepository fintRepository) {
-        this.fintRepository = fintRepository;
+    public AcademicSessionService(OrganisationProperties organisationProperties) {
+        this.organisationProperties = organisationProperties;
     }
 
     public List<AcademicSession> getAllAcademicSessions(String orgId) {
-        SchoolYear schoolYear = getSchoolYear(LocalDate.now());
+        OrganisationProperties.Organisation organisation = organisationProperties.getOrganisations().get(orgId);
 
-        AcademicSession fallTerm = new AcademicSession(
-                orgId + "-1-termin-" + schoolYear.getBegin() + schoolYear.getEnd(),
-                "1. termin " + schoolYear.getBegin()  + "/" + schoolYear.getEnd(),
-                LocalDate.of(schoolYear.getBegin().getValue(),8,1),
-                LocalDate.of(schoolYear.getBegin().getValue(),12,31),
+        Year endYear = Year.of(organisation.getSchoolYear().getEndDate().getYear());
+
+        AcademicSession schoolYear = new AcademicSession(
+                orgId + SessionType.SCHOOLYEAR.getSessionType() + organisation.getSchoolYear().getBeginDate() + organisation.getSchoolYear().getEndDate(),
+                organisation.getSchoolYear().getName(),
+                organisation.getSchoolYear().getBeginDate(),
+                organisation.getSchoolYear().getEndDate(),
+                SessionType.SCHOOLYEAR,
+                endYear
+        );
+
+        AcademicSession firstTerm = new AcademicSession(
+                orgId + SessionType.TERM.getSessionType() + organisation.getSchoolYear().getFirstTerm().getBeginDate() + organisation.getSchoolYear().getFirstTerm().getEndDate(),
+                organisation.getSchoolYear().getFirstTerm().getName(),
+                organisation.getSchoolYear().getFirstTerm().getBeginDate(),
+                organisation.getSchoolYear().getFirstTerm().getEndDate(),
                 SessionType.TERM,
-                schoolYear.getEnd());
+                endYear);
 
-        AcademicSession springTerm = new AcademicSession(
-                orgId + "-2-termin-" + schoolYear.getBegin() + schoolYear.getEnd(),
-                "2. termin " + schoolYear.getBegin() + "/" + schoolYear.getEnd(),
-                LocalDate.of(schoolYear.getEnd().getValue(),1,1),
-                LocalDate.of(schoolYear.getEnd().getValue(),7,31),
+        firstTerm.setParent(GUIDRef.of(GUIDType.ACADEMICSESSION, schoolYear.getSourcedId()));
+
+        AcademicSession secondTerm = new AcademicSession(
+                orgId + SessionType.TERM.getSessionType() + organisation.getSchoolYear().getSecondTerm().getBeginDate() + organisation.getSchoolYear().getSecondTerm().getEndDate(),
+                organisation.getSchoolYear().getSecondTerm().getName(),
+                organisation.getSchoolYear().getSecondTerm().getBeginDate(),
+                organisation.getSchoolYear().getSecondTerm().getEndDate(),
                 SessionType.TERM,
-                schoolYear.getEnd());
+                endYear);
 
-        return Arrays.asList(fallTerm, springTerm);
+        secondTerm.setParent(GUIDRef.of(GUIDType.ACADEMICSESSION, secondTerm.getSourcedId()));
+
+        schoolYear.setChildren(Arrays.asList(GUIDRef.of(GUIDType.ACADEMICSESSION, firstTerm.getSourcedId()),
+                GUIDRef.of(GUIDType.ACADEMICSESSION, secondTerm.getSourcedId())));
+
+        return Arrays.asList(schoolYear, firstTerm, secondTerm);
     }
 
     public AcademicSession getAcademicSession(String orgId, String sourcedId) {
@@ -78,6 +94,7 @@ public class AcademicSessionService {
                 .orElseThrow(NotFoundException::new);
     }
 
+    /*
     public static SchoolYear getSchoolYear(LocalDate date) {
         LocalDate fall = LocalDate.of(date.getYear(), Month.AUGUST, 1);
 
@@ -98,4 +115,5 @@ public class AcademicSessionService {
             this.end = Year.of(end);
         }
     }
+     */
 }

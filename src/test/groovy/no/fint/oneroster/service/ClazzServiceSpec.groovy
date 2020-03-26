@@ -8,6 +8,7 @@ import no.fint.oneroster.util.FintObjectFactory
 import spock.lang.Specification
 
 import java.time.LocalDate
+import java.time.Year
 
 class ClazzServiceSpec extends Specification {
 
@@ -20,8 +21,6 @@ class ClazzServiceSpec extends Specification {
     }
 
     AcademicSessionService academicSessionService = Mock()
-
-    AcademicSessionService.SchoolYear schoolYear = academicSessionService.getSchoolYear(LocalDate.now())
 
     ClazzService clazzService = new ClazzService(fintRepository, academicSessionService)
 
@@ -39,14 +38,16 @@ class ClazzServiceSpec extends Specification {
         clazzes.first().classType == ClazzType.HOMEROOM
         clazzes.first().course.sourcedId == 'level-sourced-id'
         clazzes.first().school.sourcedId == 'school-sourced-id'
-        clazzes.first().terms.first().sourcedId == 'orgId-1-termin-' + schoolYear.begin + schoolYear.end
+        clazzes.first().terms.size() == 2
+        clazzes.first().terms.first().sourcedId == 'orgIdterm2019-08-012019-12-31'
 
         clazzes.last().sourcedId == 'teaching-group-sourced-id'
         clazzes.last().title == 'Teaching group'
         clazzes.last().classType == ClazzType.SCHEDULED
         clazzes.last().course.sourcedId == 'subject-sourced-id'
         clazzes.last().school.sourcedId == 'school-sourced-id'
-        clazzes.last().terms.last().sourcedId == 'orgId-2-termin-' + schoolYear.begin + schoolYear.end
+        clazzes.last().terms.size() == 2
+        clazzes.last().terms.last().sourcedId == 'orgIdterm2020-01-012020-07-31'
     }
 
     def "getClazz returns a clazz given valid orgId and sourcedId"() {
@@ -61,28 +62,29 @@ class ClazzServiceSpec extends Specification {
         clazz.classType == ClazzType.HOMEROOM
         clazz.course.sourcedId == 'level-sourced-id'
         clazz.school.sourcedId == 'school-sourced-id'
-        clazz.terms.first().sourcedId == 'orgId-1-termin-' + schoolYear.begin + schoolYear.end
+        clazz.terms.size() == 2
+        clazz.terms.first().sourcedId == 'orgIdterm2019-08-012019-12-31'
     }
 
     List<AcademicSession> getAcademicSession() {
-        AcademicSession fall = new AcademicSession(
-                'orgId-1-termin-' + schoolYear.begin + schoolYear.end,
-                '1. termin ' + schoolYear.begin + '/' + schoolYear.end,
-                LocalDate.of(schoolYear.begin.value, 8, 1),
-                LocalDate.of(schoolYear.begin.value, 12, 31),
+        AcademicSession firstTerm = new AcademicSession(
+                'orgIdterm2019-08-012019-12-31',
+                '1 termin 2019/2020',
+                LocalDate.of(2019, 8, 1),
+                LocalDate.of(2010, 12, 31),
                 SessionType.TERM,
-                schoolYear.end
+                Year.of(2020)
         )
 
-        AcademicSession spring = new AcademicSession(
-                'orgId-2-termin-' + schoolYear.begin + schoolYear.end,
-                '2. termin ' + schoolYear.begin + '/' + schoolYear.end,
-                LocalDate.of(schoolYear.end.value, 1, 1),
-                LocalDate.of(schoolYear.end.value, 7, 31),
+        AcademicSession secondTerm = new AcademicSession(
+                'orgIdterm2020-01-012020-07-31',
+                '2 termin 2019/2020',
+                LocalDate.of(2020, 1, 1),
+                LocalDate.of(2020, 7, 31),
                 SessionType.TERM,
-                schoolYear.end
+                Year.of(2020)
         )
 
-        return [fall, spring]
+        return [firstTerm, secondTerm]
     }
 }

@@ -3,7 +3,6 @@ package no.fint.oneroster.controller;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.oneroster.model.Enrollment;
-import no.fint.oneroster.model.Org;
 import no.fint.oneroster.service.EnrollmentService;
 import no.fint.oneroster.util.OneRosterResponse;
 import org.springframework.data.domain.Pageable;

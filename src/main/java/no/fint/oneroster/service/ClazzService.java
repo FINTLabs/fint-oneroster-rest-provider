@@ -8,7 +8,6 @@ import no.fint.oneroster.exception.NotFoundException;
 import no.fint.oneroster.factory.ClazzFactory;
 import no.fint.oneroster.model.AcademicSession;
 import no.fint.oneroster.model.Clazz;
-import no.fint.oneroster.model.vocab.OrgType;
 import no.fint.oneroster.repository.FintRepository;
 import no.fint.oneroster.util.LinkUtil;
 import org.springframework.stereotype.Service;

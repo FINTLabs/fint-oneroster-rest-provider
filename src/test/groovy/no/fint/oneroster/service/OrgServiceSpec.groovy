@@ -1,22 +1,33 @@
 package no.fint.oneroster.service
 
 import no.fint.oneroster.model.vocab.OrgType
+import no.fint.oneroster.properties.OrganisationProperties
 import no.fint.oneroster.repository.FintRepository
 import no.fint.oneroster.util.FintObjectFactory
+import spock.lang.Ignore
 import spock.lang.Specification
 
 class OrgServiceSpec extends Specification {
 
-    FintRepository fintRepository = Mock()
-    OrgService orgService = new OrgService(fintRepository)
+    FintRepository fintRepository = Mock {
+        getSchools(_ as String) >> [('/school-sourced-id'): FintObjectFactory.newSchool()]
+    }
+
+    OrganisationProperties organisationProperties = Mock {
+        getOrganisations() >> [(_ as String): new OrganisationProperties.Organisation(
+                sourcedId: 'school-owner-sourced-id',
+                name: 'SchoolOwner',
+                identifier: '0123456789'
+        )]
+    }
+
+    OrgService orgService = new OrgService(fintRepository, organisationProperties)
 
     def "getAllOrgs returns a list of orgs given valid orgId"() {
         when:
         def orgs = orgService.getAllOrgs(_ as String)
 
         then:
-        1 * fintRepository.getOrganisationalElements(_ as String) >> [('/school-owner-sourced-id'): FintObjectFactory.newSchoolOwner()]
-        1 * fintRepository.getSchools(_ as String) >> [('/school-sourced-id'): FintObjectFactory.newSchool()]
         orgs.size() == 2
     }
 
@@ -25,12 +36,10 @@ class OrgServiceSpec extends Specification {
         def org = orgService.getOrg(_ as String, 'school-owner-sourced-id')
 
         then:
-        1 * fintRepository.getOrganisationalElements(_ as String) >> [('/school-owner-sourced-id'): FintObjectFactory.newSchoolOwner()]
-        1 * fintRepository.getSchools(_ as String) >> [('/school-sourced-id'): FintObjectFactory.newSchool()]
         org.sourcedId == 'school-owner-sourced-id'
         org.name == 'SchoolOwner'
         org.type == OrgType.DISTRICT
-        org.identifier == 'identifier'
+        org.identifier == '0123456789'
         org.children.first().sourcedId == 'school-sourced-id'
     }
 
@@ -39,8 +48,6 @@ class OrgServiceSpec extends Specification {
         def schools = orgService.getAllSchools(_ as String)
 
         then:
-        1 * fintRepository.getOrganisationalElements(_ as String) >> [('/school-owner-sourced-id'): FintObjectFactory.newSchoolOwner()]
-        1 * fintRepository.getSchools(_ as String) >> [('/school-sourced-id'): FintObjectFactory.newSchool()]
         schools.size() == 1
     }
 
@@ -49,29 +56,10 @@ class OrgServiceSpec extends Specification {
         def school = orgService.getSchool(_ as String, 'school-sourced-id')
 
         then:
-        1 * fintRepository.getOrganisationalElements(_ as String) >> [('/school-owner-sourced-id'): FintObjectFactory.newSchoolOwner()]
-        1 * fintRepository.getSchools(_ as String) >> [('/school-sourced-id'): FintObjectFactory.newSchool()]
         school.sourcedId == 'school-sourced-id'
         school.name == 'School'
         school.type == OrgType.SCHOOL
         school.identifier == 'identifier'
         school.parent.sourcedId == 'school-owner-sourced-id'
-    }
-
-    def "isSchoolOwner returns true when self link is contained in parent link"() {
-        when:
-        def schoolOwner = orgService.isSchoolOwner().test(FintObjectFactory.newSchoolOwner())
-
-        then:
-        schoolOwner
-    }
-
-    def "getSchoolOwner returns a school owner when an organisation element is school owner and contains required fields"() {
-        when:
-        def schoolOwner = orgService.getSchoolOwner(_ as String)
-
-        then:
-        1 * fintRepository.getOrganisationalElements(_ as String) >> [(_ as String): FintObjectFactory.newSchoolOwner()]
-        schoolOwner.isPresent()
     }
 }

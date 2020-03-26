@@ -9,8 +9,6 @@ import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
 import no.fint.oneroster.exception.NotFoundException;
 import no.fint.oneroster.factory.EnrollmentFactory;
 import no.fint.oneroster.model.Enrollment;
-import no.fint.oneroster.model.Org;
-import no.fint.oneroster.model.vocab.OrgType;
 import no.fint.oneroster.repository.FintRepository;
 import no.fint.oneroster.util.LinkUtil;
 import org.springframework.stereotype.Service;

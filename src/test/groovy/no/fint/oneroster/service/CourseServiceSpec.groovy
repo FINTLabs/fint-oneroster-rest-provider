@@ -1,5 +1,6 @@
 package no.fint.oneroster.service
 
+import no.fint.oneroster.properties.OrganisationProperties
 import no.fint.oneroster.repository.FintRepository
 import no.fint.oneroster.util.FintObjectFactory
 import spock.lang.Specification
@@ -9,10 +10,17 @@ class CourseServiceSpec extends Specification {
     FintRepository fintRepository = Mock {
         getLevels(_ as String) >> [('/level-sourced-id'): FintObjectFactory.newLevel()]
         getSubjects(_ as String) >> [('/subject-sourced-id'): FintObjectFactory.newSubject()]
-        getOrganisationalElements(_ as String) >> [('/school-owner-sourced-id'): FintObjectFactory.newSchoolOwner()]
     }
 
-    CourseService courseService = new CourseService(fintRepository)
+    OrganisationProperties organisationProperties = Mock {
+        getOrganisations() >> [(_ as String): new OrganisationProperties.Organisation(
+                sourcedId: 'school-owner-sourced-id',
+                name: 'Org',
+                identifier: '0123456789'
+        )]
+    }
+
+    CourseService courseService = new CourseService(fintRepository, organisationProperties)
 
     def "getAllCourses returns a list of courses given valid orgId"() {
         when:

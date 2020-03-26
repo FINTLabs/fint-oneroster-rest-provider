@@ -4,8 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.fint.model.felles.kompleksedatatyper.Identifikator;
 import no.fint.model.felles.kompleksedatatyper.Personnavn;
 import no.fint.model.resource.FintLinks;
-import no.fint.model.resource.administrasjon.organisasjon.OrganisasjonselementResource;
-import no.fint.model.resource.administrasjon.organisasjon.OrganisasjonselementResources;
 import no.fint.model.resource.administrasjon.personal.PersonalressursResource;
 import no.fint.model.resource.administrasjon.personal.PersonalressursResources;
 import no.fint.model.resource.felles.PersonResource;
@@ -55,25 +53,6 @@ public class FintRepository {
     /*
     TODO - scheduling and updating
      */
-
-    @Cacheable(value = "organisationalElements")
-    public Map<String, OrganisasjonselementResource> getOrganisationalElements(String orgId) {
-        Map<String, OrganisasjonselementResource> resources = new HashMap<>();
-
-        getResources(orgId, OrganisasjonselementResources.class, "/administrasjon/organisasjon/organisasjonselement")
-                .flatMapIterable(OrganisasjonselementResources::getContent)
-                .filter(organisasjonselementResource -> Optional.ofNullable(organisasjonselementResource.getOrganisasjonsId()).map(Identifikator::getIdentifikatorverdi).isPresent() &&
-                        Optional.ofNullable(organisasjonselementResource.getNavn()).isPresent())
-                .collectList()
-                .blockOptional()
-                .ifPresent(organisations -> organisations
-                        .forEach(organisation -> organisation.getSelfLinks()
-                                .forEach(link -> resources.put(LinkUtil.normalize(link), organisation))
-                        )
-                );
-
-        return resources;
-    }
 
     @Cacheable(value = "schools")
     public Map<String, SkoleResource> getSchools(String orgId) {

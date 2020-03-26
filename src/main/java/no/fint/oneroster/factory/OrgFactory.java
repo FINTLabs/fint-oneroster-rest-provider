@@ -1,10 +1,10 @@
 package no.fint.oneroster.factory;
 
 import no.fint.model.felles.kompleksedatatyper.Identifikator;
-import no.fint.model.resource.administrasjon.organisasjon.OrganisasjonselementResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
 import no.fint.oneroster.model.Org;
 import no.fint.oneroster.model.vocab.OrgType;
+import no.fint.oneroster.properties.OrganisationProperties;
 
 import java.util.Optional;
 
@@ -27,16 +27,14 @@ public final class OrgFactory {
         return school;
     }
 
-    public static Org schoolOwner(OrganisasjonselementResource organisasjonselementResource) {
+    public static Org schoolOwner(OrganisationProperties.Organisation organisation) {
         Org schoolOwner = new Org(
-                organisasjonselementResource.getOrganisasjonsId().getIdentifikatorverdi(),
-                organisasjonselementResource.getNavn(),
+                organisation.getSourcedId(),
+                organisation.getName(),
                 OrgType.DISTRICT
         );
 
-        Optional.ofNullable(organisasjonselementResource.getOrganisasjonsnummer())
-                .map(Identifikator::getIdentifikatorverdi)
-                .ifPresent(schoolOwner::setIdentifier);
+        schoolOwner.setIdentifier(organisation.getIdentifier());
 
         return schoolOwner;
     }
