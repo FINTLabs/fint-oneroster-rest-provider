@@ -11,7 +11,7 @@ import java.util.Map;
 @ConfigurationProperties("fint")
 public class OrganisationProperties {
 
-    private Map<String, Organisation> organisations = new HashMap<>();
+    private Organisation organisation = new Organisation();
 
     @Data
     public static class Organisation {

@@ -23,10 +23,11 @@ public class OrgController {
     }
 
     @GetMapping("/orgs")
-    public ResponseEntity<?> getAllOrgs(@RequestHeader(defaultValue = "pwf") String orgId, Pageable pageable,
-                                        @RequestParam(value = "filter", required = false) String filter,
-                                        @RequestParam(value = "fields", required = false) String fields) {
-        List<Org> orgs = orgService.getAllOrgs(orgId);
+    public ResponseEntity<?> getAllOrgs(@RequestParam(value = "filter", required = false) String filter,
+                                        @RequestParam(value = "fields", required = false) String fields,
+                                        Pageable pageable) {
+
+        List<Org> orgs = orgService.getAllOrgs();
 
         List<Org> modifiedOrgs = new OneRosterResponse.Builder<>(orgs)
                 .filter(filter)
@@ -43,9 +44,10 @@ public class OrgController {
     }
 
     @GetMapping("/orgs/{sourcedId}")
-    public ResponseEntity<?> getOrg(@RequestHeader(defaultValue = "pwf") String orgId, @PathVariable String sourcedId,
+    public ResponseEntity<?> getOrg(@PathVariable String sourcedId,
                                     @RequestParam(value = "fields", required = false) String fields) {
-        Org org = orgService.getOrg(orgId, sourcedId);
+
+        Org org = orgService.getOrg(sourcedId);
 
         MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("org", org));
         body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(Org.class, fields)));
@@ -54,10 +56,11 @@ public class OrgController {
     }
 
     @GetMapping("/schools")
-    public ResponseEntity<?> getAllSchools(@RequestHeader(defaultValue = "pwf") String orgId, Pageable pageable,
-                                           @RequestParam(value = "filter", required = false) String filter,
-                                           @RequestParam(value = "fields", required = false) String fields) {
-        List<Org> schools = orgService.getAllSchools(orgId);
+    public ResponseEntity<?> getAllSchools(@RequestParam(value = "filter", required = false) String filter,
+                                           @RequestParam(value = "fields", required = false) String fields,
+                                           Pageable pageable) {
+
+        List<Org> schools = orgService.getAllSchools();
 
         List<Org> modifiedSchools = new OneRosterResponse.Builder<>(schools)
                 .filter(filter)
@@ -74,9 +77,10 @@ public class OrgController {
     }
 
     @GetMapping("/schools/{sourcedId}")
-    public ResponseEntity<?> getSchool(@RequestHeader(defaultValue = "pwf") String orgId, @PathVariable String sourcedId,
+    public ResponseEntity<?> getSchool(@PathVariable String sourcedId,
                                        @RequestParam(value = "fields", required = false) String fields) {
-        Org school = orgService.getSchool(orgId, sourcedId);
+
+        Org school = orgService.getSchool(sourcedId);
 
         MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("org", school));
         body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(Org.class, fields)));

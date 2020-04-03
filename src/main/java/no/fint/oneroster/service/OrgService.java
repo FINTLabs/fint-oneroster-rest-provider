@@ -24,12 +24,12 @@ public class OrgService {
         this.organisationProperties = organisationProperties;
     }
 
-    public List<Org> getAllOrgs(String orgId) {
-        OrganisationProperties.Organisation organisation = organisationProperties.getOrganisations().get(orgId);
+    public List<Org> getAllOrgs() {
+        OrganisationProperties.Organisation organisation = organisationProperties.getOrganisation();
 
         Org schoolOwner = OrgFactory.schoolOwner(organisation);
 
-        List<Org> orgs = fintRepository.getSchools(orgId)
+        List<Org> orgs = fintRepository.getSchools()
                 .values()
                 .stream()
                 .map(OrgFactory::school)
@@ -47,22 +47,24 @@ public class OrgService {
         return orgs;
     }
 
-    public Org getOrg(String orgId, String sourcedId) {
-        return getAllOrgs(orgId).stream()
+    public Org getOrg(String sourcedId) {
+        return getAllOrgs()
+                .stream()
                 .filter(org -> org.getSourcedId().equals(sourcedId))
                 .findAny()
                 .orElseThrow(NotFoundException::new);
     }
 
-    public List<Org> getAllSchools(String orgId) {
-        return getAllOrgs(orgId)
+    public List<Org> getAllSchools() {
+        return getAllOrgs()
                 .stream()
                 .filter(org -> org.getType().equals(OrgType.SCHOOL))
                 .collect(Collectors.toList());
     }
 
-    public Org getSchool(String orgId, String sourcedId) {
-        return getAllSchools(orgId).stream()
+    public Org getSchool(String sourcedId) {
+        return getAllSchools()
+                .stream()
                 .filter(school -> school.getSourcedId().equals(sourcedId))
                 .findAny()
                 .orElseThrow(NotFoundException::new);

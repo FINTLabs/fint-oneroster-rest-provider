@@ -29,20 +29,20 @@ class OrgControllerSpec extends Specification {
 
     def "Given valid orgId return list of orgs"() {
         when:
-        def response = mockMvc.perform(get("/orgs").header('orgId', _ as String))
+        def response = mockMvc.perform(get("/orgs"))
 
         then:
-        1 * orgService.getAllOrgs(_ as String) >> getOrgs()
+        1 * orgService.getAllOrgs() >> getOrgs()
         response.andExpect(status().isOk())
                 .andExpect(jsonPath('$.orgs[0].sourcedId').value('12'))
     }
 
     def "Given fields parameter returns list of orgs with only selected fields"() {
         when:
-        def response = mockMvc.perform(get("/orgs").header('orgId', _ as String).param('fields', 'sourcedId'))
+        def response = mockMvc.perform(get("/orgs").param('fields', 'sourcedId'))
 
         then:
-        1 * orgService.getAllOrgs(_ as String) >> getOrgs()
+        1 * orgService.getAllOrgs() >> getOrgs()
         response.andExpect(status().isOk())
                 .andExpect(jsonPath('$.orgs[0].sourcedId').value('12'))
                 .andExpect(jsonPath('$.orgs[0].name').doesNotHaveJsonPath())
@@ -50,40 +50,40 @@ class OrgControllerSpec extends Specification {
 
     def "Given offset parameter returns sublist of orgs"() {
         when:
-        def response = mockMvc.perform(get("/orgs").header('orgId', _ as String).param('offset', '0'))
+        def response = mockMvc.perform(get("/orgs").param('offset', '0'))
 
         then:
-        1 * orgService.getAllOrgs(_ as String) >> getOrgs()
+        1 * orgService.getAllOrgs() >> getOrgs()
         response.andExpect(status().isOk())
                 .andExpect(jsonPath('$.orgs.length()').value('4'))
     }
 
     def "Given limit parameter returns sublist of orgs"() {
         when:
-        def response = mockMvc.perform(get("/orgs").header('orgId', _ as String).param('limit', '1'))
+        def response = mockMvc.perform(get("/orgs").param('limit', '1'))
 
         then:
-        1 * orgService.getAllOrgs(_ as String) >> getOrgs()
+        1 * orgService.getAllOrgs() >> getOrgs()
         response.andExpect(status().isOk())
                 .andExpect(jsonPath('$.orgs.length()').value('1'))
     }
 
     def "Given sort parameter return sorted list of orgs"() {
         when:
-        def response = mockMvc.perform(get("/orgs").header('orgId', _ as String).param('sort', 'name'))
+        def response = mockMvc.perform(get("/orgs").param('sort', 'name'))
 
         then:
-        1 * orgService.getAllOrgs(_ as String) >> getOrgs()
+        1 * orgService.getAllOrgs() >> getOrgs()
         response.andExpect(status().isOk())
                 .andExpect(jsonPath('$.orgs[0].name').value('abc'))
     }
 
     def "Given filter parameter return sublist of orgs meeting criteria"() {
         when:
-        def response = mockMvc.perform(get("/orgs").header('orgId', _ as String).param('filter', 'name~\'b\''))
+        def response = mockMvc.perform(get("/orgs").param('filter', 'name~\'b\''))
 
         then:
-        1 * orgService.getAllOrgs(_ as String) >> getOrgs()
+        1 * orgService.getAllOrgs() >> getOrgs()
         response.andExpect(status().isOk())
                 .andExpect(jsonPath('$.orgs.length()').value('1'))
                 .andExpect(jsonPath('$.orgs[0].name').value('abc'))
@@ -91,20 +91,20 @@ class OrgControllerSpec extends Specification {
 
     def "Given valid sourcedId return org"() {
         when:
-        def response = mockMvc.perform(get("/orgs/12").header('orgId', _ as String))
+        def response = mockMvc.perform(get("/orgs/12"))
 
         then:
-        1 * orgService.getOrg(_ as String, '12') >> getOrgs().first()
+        1 * orgService.getOrg('12') >> getOrgs().first()
         response.andExpect(status().isOk())
                 .andExpect(jsonPath('$.org.name').value('jkl'))
     }
 
     def "Given valid sourcedId and fields parameter return org with only selected fields"() {
         when:
-        def response = mockMvc.perform(get("/orgs/12").header('orgId', _ as String).param('fields', 'sourcedId'))
+        def response = mockMvc.perform(get("/orgs/12").param('fields', 'sourcedId'))
 
         then:
-        1 * orgService.getOrg(_ as String, '12') >> getOrgs().first()
+        1 * orgService.getOrg('12') >> getOrgs().first()
         response.andExpect(status().isOk())
                 .andExpect(jsonPath('$.org.sourcedId').value('12'))
                 .andExpect(jsonPath('$.org.name').doesNotHaveJsonPath())

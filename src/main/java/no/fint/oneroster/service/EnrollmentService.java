@@ -26,16 +26,16 @@ public class EnrollmentService {
         this.fintRepository = fintRepository;
     }
 
-    public List<Enrollment> getAllEnrollments(String orgId) {
-        Map<String, SkoleResource> schools = fintRepository.getSchools(orgId);
-        Map<String, BasisgruppeResource> basisGroups = fintRepository.getBasisGroups(orgId);
-        Map<String, UndervisningsgruppeResource> teachingGroups = fintRepository.getTeachingGroups(orgId);
+    public List<Enrollment> getAllEnrollments() {
+        Map<String, SkoleResource> schools = fintRepository.getSchools();
+        Map<String, BasisgruppeResource> basisGroups = fintRepository.getBasisGroups();
+        Map<String, UndervisningsgruppeResource> teachingGroups = fintRepository.getTeachingGroups();
 
         List<Enrollment> enrollments = new ArrayList<>();
 
-        Map<String, ElevResource> students = fintRepository.getStudents(orgId);
+        Map<String, ElevResource> students = fintRepository.getStudents();
 
-        fintRepository.getStudentRelations(orgId)
+        fintRepository.getStudentRelations()
                 .values()
                 .forEach(elevforholdResource -> {
                     Optional<ElevResource> student = elevforholdResource.getElev()
@@ -75,9 +75,9 @@ public class EnrollmentService {
                             });
                 });
 
-        Map<String, SkoleressursResource> schoolResourceMap = fintRepository.getTeachers(orgId);
+        Map<String, SkoleressursResource> schoolResourceMap = fintRepository.getTeachers();
 
-        fintRepository.getTeachingRelations(orgId)
+        fintRepository.getTeachingRelations()
                 .values()
                 .forEach(undervisningsforholdResource -> {
                     Optional<SkoleressursResource> teacher = undervisningsforholdResource.getSkoleressurs()
@@ -120,15 +120,16 @@ public class EnrollmentService {
         return enrollments;
     }
 
-    public Enrollment getEnrollment(String orgId, String sourcedId) {
-        return getAllEnrollments(orgId).stream()
+    public Enrollment getEnrollment(String sourcedId) {
+        return getAllEnrollments()
+                .stream()
                 .filter(enrollment -> enrollment.getSourcedId().equals(sourcedId))
                 .findAny()
                 .orElseThrow(NotFoundException::new);
     }
 
-    public List<Enrollment> getEnrollmentsForSchool(String orgId, String sourcedId) {
-        return getAllEnrollments(orgId)
+    public List<Enrollment> getEnrollmentsForSchool(String sourcedId) {
+        return getAllEnrollments()
                 .stream()
                 .filter(enrollment -> enrollment.getSchool().getSourcedId().equals(sourcedId))
                 .collect(Collectors.toList());

@@ -21,8 +21,9 @@ class FintRepositorySpec extends Specification {
     }
 
     OrganisationProperties organisationProperties = Mock {
-        1 * getOrganisations() >> [(_ as String): new OrganisationProperties.Organisation(
-                username: _ as String, password: _ as String, registration: _ as String, environment: mockWebServer.url("/").toString())]
+        1 * getOrganisation() >> new OrganisationProperties.Organisation(
+                username: _ as String, password: _ as String, registration: _ as String, environment: mockWebServer.url("/").toString()
+        )
     }
 
     FintRepository fintRepository = new FintRepository(webClient, Mock(Authentication), authorizedClientManager, organisationProperties)
@@ -37,7 +38,7 @@ class FintRepositorySpec extends Specification {
                 .setResponseCode(200))
 
         when:
-        def resources = fintRepository.getSchools(_ as String)
+        def resources = fintRepository.getSchools()
 
         then:
         resources.size() == 1

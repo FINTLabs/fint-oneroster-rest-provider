@@ -27,15 +27,15 @@ public class ClazzService {
         this.academicSessionService = academicSessionService;
     }
 
-    public List<Clazz> getAllClazzes(String orgId) {
-        Map<String, SkoleResource> schools = fintRepository.getSchools(orgId);
+    public List<Clazz> getAllClazzes() {
+        Map<String, SkoleResource> schools = fintRepository.getSchools();
 
         List<Clazz> clazzes = new ArrayList<>();
 
-        Map<String, ArstrinnResource> levels = fintRepository.getLevels(orgId);
-        List<AcademicSession> terms = academicSessionService.getAllTerms(orgId);
+        Map<String, ArstrinnResource> levels = fintRepository.getLevels();
+        List<AcademicSession> terms = academicSessionService.getAllTerms();
 
-        fintRepository.getBasisGroups(orgId)
+        fintRepository.getBasisGroups()
                 .values()
                 .forEach(basisGroup -> {
                     Optional<ArstrinnResource> level = basisGroup.getTrinn()
@@ -57,9 +57,9 @@ public class ClazzService {
                     }
                 });
 
-        Map<String, FagResource> subjects = fintRepository.getSubjects(orgId);
+        Map<String, FagResource> subjects = fintRepository.getSubjects();
 
-        fintRepository.getTeachingGroups(orgId)
+        fintRepository.getTeachingGroups()
                 .values()
                 .forEach(teachingGroup -> {
                     Optional<FagResource> subject = teachingGroup.getFag()
@@ -84,15 +84,16 @@ public class ClazzService {
         return clazzes;
     }
 
-    public Clazz getClazz(String orgId, String sourcedId) {
-        return getAllClazzes(orgId).stream()
+    public Clazz getClazz(String sourcedId) {
+        return getAllClazzes()
+                .stream()
                 .filter(clazz -> clazz.getSourcedId().equals(sourcedId))
                 .findAny()
                 .orElseThrow(NotFoundException::new);
     }
 
-    public List<Clazz> getClazzesForSchool(String orgId, String sourcedId) {
-        return getAllClazzes(orgId)
+    public List<Clazz> getClazzesForSchool(String sourcedId) {
+        return getAllClazzes()
                 .stream()
                 .filter(clazz -> clazz.getSchool().getSourcedId().equals(sourcedId))
                 .collect(Collectors.toList());

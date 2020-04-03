@@ -24,10 +24,11 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<?> getAllUsers(@RequestHeader(defaultValue = "pwf") String orgId, Pageable pageable,
-                                         @RequestParam(value = "filter", required = false) String filter,
-                                         @RequestParam(value = "fields", required = false) String fields) {
-        List<User> users = userService.getAllUsers(orgId);
+    public ResponseEntity<?> getAllUsers(@RequestParam(value = "filter", required = false) String filter,
+                                         @RequestParam(value = "fields", required = false) String fields,
+                                         Pageable pageable) {
+
+        List<User> users = userService.getAllUsers();
 
         List<User> modifiedUsers = new OneRosterResponse.Builder<>(users)
                 .filter(filter)
@@ -44,9 +45,10 @@ public class UserController {
     }
 
     @GetMapping("/users/{sourcedId}")
-    public ResponseEntity<?> getUser(@RequestHeader(defaultValue = "pwf") String orgId, @PathVariable String sourcedId,
+    public ResponseEntity<?> getUser(@PathVariable String sourcedId,
                                      @RequestParam(value = "fields", required = false) String fields) {
-        User user = userService.getUser(orgId, sourcedId);
+
+        User user = userService.getUser(sourcedId);
 
         MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("user", user));
         body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(User.class, fields)));
@@ -55,10 +57,11 @@ public class UserController {
     }
 
     @GetMapping("/students")
-    public ResponseEntity<?> getAllStudents(@RequestHeader(defaultValue = "pwf") String orgId, Pageable pageable,
-                                            @RequestParam(value = "filter", required = false) String filter,
-                                            @RequestParam(value = "fields", required = false) String fields) {
-        List<User> students = userService.getAllStudents(orgId);
+    public ResponseEntity<?> getAllStudents(@RequestParam(value = "filter", required = false) String filter,
+                                            @RequestParam(value = "fields", required = false) String fields,
+                                            Pageable pageable) {
+
+        List<User> students = userService.getAllStudents();
 
         List<User> modifiedstudents = new OneRosterResponse.Builder<>(students)
                 .filter(filter)
@@ -75,9 +78,10 @@ public class UserController {
     }
 
     @GetMapping("/students/{sourcedId}")
-    public ResponseEntity<?> getStudent(@RequestHeader(defaultValue = "pwf") String orgId, @PathVariable String sourcedId,
+    public ResponseEntity<?> getStudent(@PathVariable String sourcedId,
                                         @RequestParam(value = "fields", required = false) String fields) {
-        User student = userService.getStudent(orgId, sourcedId);
+
+        User student = userService.getStudent(sourcedId);
 
         MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("user", student));
         body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(User.class, fields)));
@@ -86,11 +90,11 @@ public class UserController {
     }
 
     @GetMapping("/schools/{sourcedId}/students")
-    public ResponseEntity<?> getStudentsForSchool(@RequestHeader(defaultValue = "pwf") String orgId, Pageable pageable,
-                                                  @PathVariable String sourcedId,
+    public ResponseEntity<?> getStudentsForSchool(@PathVariable String sourcedId, Pageable pageable,
                                                   @RequestParam(value = "filter", required = false) String filter,
                                                   @RequestParam(value = "fields", required = false) String fields) {
-        List<User> students = userService.getStudentsForSchool(orgId, sourcedId);
+
+        List<User> students = userService.getStudentsForSchool(sourcedId);
 
         List<User> modifiedStudents = new OneRosterResponse.Builder<>(students)
                 .filter(filter)
@@ -107,10 +111,11 @@ public class UserController {
     }
 
     @GetMapping("/teachers")
-    public ResponseEntity<?> getAllTeachers(@RequestHeader(defaultValue = "pwf") String orgId, Pageable pageable,
-                                            @RequestParam(value = "filter", required = false) String filter,
-                                            @RequestParam(value = "fields", required = false) String fields) {
-        List<User> teachers = userService.getAllTeachers(orgId);
+    public ResponseEntity<?> getAllTeachers(@RequestParam(value = "filter", required = false) String filter,
+                                            @RequestParam(value = "fields", required = false) String fields,
+                                            Pageable pageable) {
+
+        List<User> teachers = userService.getAllTeachers();
 
         List<User> modifiedTeachers = new OneRosterResponse.Builder<>(teachers)
                 .filter(filter)
@@ -127,9 +132,10 @@ public class UserController {
     }
 
     @GetMapping("/teachers/{sourcedId}")
-    public ResponseEntity<?> getTeacher(@RequestHeader(defaultValue = "pwf") String orgId, @PathVariable String sourcedId,
+    public ResponseEntity<?> getTeacher(@PathVariable String sourcedId,
                                         @RequestParam(value = "fields", required = false) String fields) {
-        User teacher = userService.getTeacher(orgId, sourcedId);
+
+        User teacher = userService.getTeacher(sourcedId);
 
         MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("user", teacher));
         body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(User.class, fields)));
@@ -138,11 +144,11 @@ public class UserController {
     }
 
     @GetMapping("/schools/{sourcedId}/teachers")
-    public ResponseEntity<?> getTeachersForSchool(@RequestHeader(defaultValue = "pwf") String orgId, Pageable pageable,
-                                                  @PathVariable String sourcedId,
+    public ResponseEntity<?> getTeachersForSchool(@PathVariable String sourcedId, Pageable pageable,
                                                   @RequestParam(value = "filter", required = false) String filter,
                                                   @RequestParam(value = "fields", required = false) String fields) {
-        List<User> teachers = userService.getTeachersForSchool(orgId, sourcedId);
+
+        List<User> teachers = userService.getTeachersForSchool(sourcedId);
 
         List<User> modifiedTeachers = new OneRosterResponse.Builder<>(teachers)
                 .filter(filter)

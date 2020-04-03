@@ -21,24 +21,25 @@ public class CourseService {
         this.organisationProperties = organisationProperties;
     }
 
-    public List<Course> getAllCourses(String orgId) {
-        OrganisationProperties.Organisation organisation = organisationProperties.getOrganisations().get(orgId);
+    public List<Course> getAllCourses() {
+        OrganisationProperties.Organisation organisation = organisationProperties.getOrganisation();
 
         List<Course> courses = new ArrayList<>();
 
-        fintRepository.getLevels(orgId)
+        fintRepository.getLevels()
                 .values()
                 .forEach(level -> courses.add(CourseFactory.level(level, organisation)));
 
-        fintRepository.getSubjects(orgId)
+        fintRepository.getSubjects()
                 .values()
                 .forEach(subject -> courses.add(CourseFactory.subject(subject, organisation)));
 
         return courses;
     }
 
-    public Course getCourse(String orgId, String sourcedId) {
-        return getAllCourses(orgId).stream()
+    public Course getCourse(String sourcedId) {
+        return getAllCourses()
+                .stream()
                 .filter(course -> course.getSourcedId().equals(sourcedId))
                 .findAny()
                 .orElseThrow(NotFoundException::new);

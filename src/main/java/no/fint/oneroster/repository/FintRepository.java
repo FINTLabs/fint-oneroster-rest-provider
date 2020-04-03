@@ -55,10 +55,10 @@ public class FintRepository {
      */
 
     @Cacheable(value = "schools")
-    public Map<String, SkoleResource> getSchools(String orgId) {
+    public Map<String, SkoleResource> getSchools() {
         Map<String, SkoleResource> resources = new HashMap<>();
 
-        getResources(orgId, SkoleResources.class, "/utdanning/utdanningsprogram/skole")
+        getResources(SkoleResources.class, "/utdanning/utdanningsprogram/skole")
                 .flatMapIterable(SkoleResources::getContent)
                 .filter(skoleResource -> Optional.ofNullable(skoleResource.getSystemId()).map(Identifikator::getIdentifikatorverdi).isPresent() &&
                         Optional.ofNullable(skoleResource.getNavn()).isPresent())
@@ -74,9 +74,9 @@ public class FintRepository {
     }
 
     @Cacheable(value = "persons")
-    public Map<String, PersonResource> getPersons(String orgId) {
-        Mono<PersonResources> teachersMono = getResources(orgId, PersonResources.class, "/administrasjon/personal/person");
-        Mono<PersonResources> studentsMono = getResources(orgId, PersonResources.class, "/utdanning/elev/person");
+    public Map<String, PersonResource> getPersons() {
+        Mono<PersonResources> teachersMono = getResources(PersonResources.class, "/administrasjon/personal/person");
+        Mono<PersonResources> studentsMono = getResources(PersonResources.class, "/utdanning/elev/person");
 
         return Mono.zip(teachersMono, studentsMono, (teachers, students) -> {
             teachers.getContent().forEach(students::addResource);
@@ -88,10 +88,10 @@ public class FintRepository {
     }
 
     @Cacheable(value = "students")
-    public Map<String, ElevResource> getStudents(String orgId) {
+    public Map<String, ElevResource> getStudents() {
         Map<String, ElevResource> resources = new HashMap<>();
 
-        getResources(orgId, ElevResources.class, "/utdanning/elev/elev")
+        getResources(ElevResources.class, "/utdanning/elev/elev")
                 .flatMapIterable(ElevResources::getContent)
                 .filter(elevResource -> Optional.ofNullable(elevResource.getSystemId()).map(Identifikator::getIdentifikatorverdi).isPresent() &&
                         Optional.ofNullable(elevResource.getBrukernavn()).map(Identifikator::getIdentifikatorverdi).isPresent())
@@ -107,10 +107,10 @@ public class FintRepository {
     }
 
     @Cacheable(value = "teachers")
-    public Map<String, SkoleressursResource> getTeachers(String orgId) {
+    public Map<String, SkoleressursResource> getTeachers() {
         Map<String, SkoleressursResource> resources = new HashMap<>();
 
-        getResources(orgId, SkoleressursResources.class, "/utdanning/elev/skoleressurs")
+        getResources(SkoleressursResources.class, "/utdanning/elev/skoleressurs")
                 .flatMapIterable(SkoleressursResources::getContent)
                 .filter(teacher -> Optional.ofNullable(teacher.getSystemId()).map(Identifikator::getIdentifikatorverdi).isPresent())
                 .collectList()
@@ -125,10 +125,10 @@ public class FintRepository {
     }
 
     @Cacheable(value = "personnelResources")
-    public Map<String, PersonalressursResource> getPersonnelResources(String orgId) {
+    public Map<String, PersonalressursResource> getPersonnelResources() {
         Map<String, PersonalressursResource> resources = new HashMap<>();
 
-        getResources(orgId, PersonalressursResources.class, "/administrasjon/personal/personalressurs")
+        getResources(PersonalressursResources.class, "/administrasjon/personal/personalressurs")
                 .flatMapIterable(PersonalressursResources::getContent)
                 .filter(personalressursResource -> Optional.ofNullable(personalressursResource.getBrukernavn()).map(Identifikator::getIdentifikatorverdi).isPresent())
                 .collectList()
@@ -143,8 +143,8 @@ public class FintRepository {
     }
 
     @Cacheable(value = "studentRelations")
-    public Map<String, ElevforholdResource> getStudentRelations(String orgId) {
-        return getResources(orgId, ElevforholdResources.class, "/utdanning/elev/elevforhold")
+    public Map<String, ElevforholdResource> getStudentRelations() {
+        return getResources(ElevforholdResources.class, "/utdanning/elev/elevforhold")
                 .flatMapIterable(ElevforholdResources::getContent)
                 .filter(studentRelation -> Optional.of(studentRelation.getSystemId()).map(Identifikator::getIdentifikatorverdi).isPresent())
                 .collectMap(this::getSelfLink)
@@ -152,8 +152,8 @@ public class FintRepository {
     }
 
     @Cacheable(value = "teachingRelations")
-    public Map<String, UndervisningsforholdResource> getTeachingRelations(String orgId) {
-        return getResources(orgId, UndervisningsforholdResources.class, "/utdanning/elev/undervisningsforhold")
+    public Map<String, UndervisningsforholdResource> getTeachingRelations() {
+        return getResources(UndervisningsforholdResources.class, "/utdanning/elev/undervisningsforhold")
                 .flatMapIterable(UndervisningsforholdResources::getContent)
                 .filter(teachingRelation -> Optional.ofNullable(teachingRelation.getSystemId()).map(Identifikator::getIdentifikatorverdi).isPresent())
                 .collectMap(this::getSelfLink)
@@ -161,8 +161,8 @@ public class FintRepository {
     }
 
     @Cacheable(value = "basisGroups")
-    public Map<String, BasisgruppeResource> getBasisGroups(String orgId) {
-        return getResources(orgId, BasisgruppeResources.class, "/utdanning/elev/basisgruppe")
+    public Map<String, BasisgruppeResource> getBasisGroups() {
+        return getResources(BasisgruppeResources.class, "/utdanning/elev/basisgruppe")
                 .flatMapIterable(BasisgruppeResources::getContent)
                 .filter(basisGroup -> Optional.ofNullable(basisGroup.getSystemId()).map(Identifikator::getIdentifikatorverdi).isPresent() &&
                         Optional.ofNullable(basisGroup.getNavn()).isPresent())
@@ -171,8 +171,8 @@ public class FintRepository {
     }
 
     @Cacheable(value = "teachingGroups")
-    public Map<String, UndervisningsgruppeResource> getTeachingGroups(String orgId) {
-        return getResources(orgId, UndervisningsgruppeResources.class, "/utdanning/timeplan/undervisningsgruppe")
+    public Map<String, UndervisningsgruppeResource> getTeachingGroups() {
+        return getResources(UndervisningsgruppeResources.class, "/utdanning/timeplan/undervisningsgruppe")
                 .flatMapIterable(UndervisningsgruppeResources::getContent)
                 .filter(teachingGroup -> Optional.ofNullable(teachingGroup.getSystemId()).map(Identifikator::getIdentifikatorverdi).isPresent() &&
                         Optional.ofNullable(teachingGroup.getNavn()).isPresent())
@@ -181,8 +181,8 @@ public class FintRepository {
     }
 
     @Cacheable(value = "levels")
-    public Map<String, ArstrinnResource> getLevels(String orgId) {
-        return getResources(orgId, ArstrinnResources.class, "/utdanning/utdanningsprogram/arstrinn")
+    public Map<String, ArstrinnResource> getLevels() {
+        return getResources(ArstrinnResources.class, "/utdanning/utdanningsprogram/arstrinn")
                 .flatMapIterable(ArstrinnResources::getContent)
                 .filter(level -> Optional.ofNullable(level.getSystemId()).map(Identifikator::getIdentifikatorverdi).isPresent() &&
                         Optional.ofNullable(level.getNavn()).isPresent())
@@ -191,8 +191,8 @@ public class FintRepository {
     }
 
     @Cacheable(value = "subjects")
-    public Map<String, FagResource> getSubjects(String orgId) {
-        return getResources(orgId, FagResources.class, "/utdanning/timeplan/fag")
+    public Map<String, FagResource> getSubjects() {
+        return getResources(FagResources.class, "/utdanning/timeplan/fag")
                 .flatMapIterable(FagResources::getContent)
                 .filter(subject -> Optional.ofNullable(subject.getSystemId()).map(Identifikator::getIdentifikatorverdi).isPresent() &&
                         Optional.ofNullable(subject.getNavn()).isPresent())
@@ -200,10 +200,10 @@ public class FintRepository {
                 .block();
     }
 
-    public <T> Mono<T> getResources(String orgId, Class<T> clazz, String path) {
-        log.info("({}) Updating {}...", orgId, path);
+    public <T> Mono<T> getResources(Class<T> clazz, String path) {
+        log.info("Updating {}...", path);
 
-        OrganisationProperties.Organisation organisation = organisationProperties.getOrganisations().get(orgId);
+        OrganisationProperties.Organisation organisation = organisationProperties.getOrganisation();
 
         String uri = organisation.getEnvironment().concat(path);
 

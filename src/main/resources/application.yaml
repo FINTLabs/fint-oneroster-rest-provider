@@ -1,25 +1,24 @@
 fint:
-  organisations:
-    pwf:
-      registration: pwf
-      sourcedId: 1234567890
-      name: play-with-fint
-      identifier: 1234567890
-      school-year:
+  organisation:
+    registration: pwf
+    sourcedId: 1234567890
+    name: play-with-fint
+    identifier: 1234567890
+    school-year:
+      begin-date: 2019-08-01
+      end-date: 2020-07-31
+      name: Skoleåret 2019/2020
+      first-term:
         begin-date: 2019-08-01
+        end-date: 2019-12-31
+        name: 1. termin 2019/2020
+      second-term:
+        begin-date: 2020-01-01
         end-date: 2020-07-31
-        name: Skoleåret 2019/2020
-        first-term:
-          begin-date: 2019-08-01
-          end-date: 2019-12-31
-          name: 1. termin 2019/2020
-        second-term:
-          begin-date: 2020-01-01
-          end-date: 2020-07-31
-          name: 2. termin 2019/2020
-      username: abc
-      password: def
-      environment: https://play-with-fint.felleskomponent.no
+        name: 2. termin 2019/2020
+    username: abc
+    password: def
+    environment: https://play-with-fint.felleskomponent.no
 
 spring:
   security:

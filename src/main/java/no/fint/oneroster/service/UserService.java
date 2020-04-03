@@ -28,15 +28,15 @@ public class UserService {
         this.fintRepository = fintRepository;
     }
 
-    public List<User> getAllUsers(String orgId) {
-        Map<String, SkoleResource> schools = fintRepository.getSchools(orgId);
-        Map<String, PersonResource> persons = fintRepository.getPersons(orgId);
+    public List<User> getAllUsers() {
+        Map<String, SkoleResource> schools = fintRepository.getSchools();
+        Map<String, PersonResource> persons = fintRepository.getPersons();
 
         List<User> users = new ArrayList<>();
 
-        Map<String, ElevforholdResource> studentRelations = fintRepository.getStudentRelations(orgId);
+        Map<String, ElevforholdResource> studentRelations = fintRepository.getStudentRelations();
 
-        fintRepository.getStudents(orgId)
+        fintRepository.getStudents()
                 .values()
                 .forEach(student -> {
                     Optional<PersonResource> person = student.getPerson()
@@ -63,10 +63,10 @@ public class UserService {
                     }
                 });
 
-        Map<String, PersonalressursResource> personnelResources = fintRepository.getPersonnelResources(orgId);
-        Map<String, UndervisningsforholdResource> teachingRelations = fintRepository.getTeachingRelations(orgId);
+        Map<String, PersonalressursResource> personnelResources = fintRepository.getPersonnelResources();
+        Map<String, UndervisningsforholdResource> teachingRelations = fintRepository.getTeachingRelations();
 
-        fintRepository.getTeachers(orgId)
+        fintRepository.getTeachers()
                 .values()
                 .forEach(teacher -> {
                     Optional<PersonalressursResource> personnelResource = teacher.getPersonalressurs()
@@ -105,52 +105,53 @@ public class UserService {
         return users;
     }
 
-    public User getUser(String orgId, String sourcedId) {
-        return getAllUsers(orgId)
+    public User getUser(String sourcedId) {
+        return getAllUsers()
                 .stream()
                 .filter(user -> user.getSourcedId().equals(sourcedId))
                 .findAny()
                 .orElseThrow(NotFoundException::new);
     }
 
-    public List<User> getAllStudents(String orgId) {
-        return getAllUsers(orgId)
+    public List<User> getAllStudents() {
+        return getAllUsers()
                 .stream()
                 .filter(user -> user.getRole().equals(RoleType.STUDENT))
                 .collect(Collectors.toList());
     }
 
-    public User getStudent(String orgId, String sourcedId) {
-        return getAllStudents(orgId)
+    public User getStudent(String sourcedId) {
+        return getAllStudents()
                 .stream()
                 .filter(student -> student.getSourcedId().equals(sourcedId))
                 .findAny()
                 .orElseThrow(NotFoundException::new);
     }
 
-    public List<User> getStudentsForSchool(String orgId, String sourcedId) {
-        return getAllStudents(orgId)
+    public List<User> getStudentsForSchool(String sourcedId) {
+        return getAllStudents()
                 .stream()
                 .filter(student -> student.getOrgs().stream().map(GUIDRef::getSourcedId).anyMatch(sourcedId::equals))
                 .collect(Collectors.toList());
     }
 
-    public List<User> getAllTeachers(String orgId) {
-        return getAllUsers(orgId)
+    public List<User> getAllTeachers() {
+        return getAllUsers()
                 .stream()
                 .filter(user -> user.getRole().equals(RoleType.TEACHER))
                 .collect(Collectors.toList());
     }
 
-    public User getTeacher(String orgId, String sourcedId) {
-        return getAllTeachers(orgId).stream()
+    public User getTeacher(String sourcedId) {
+        return getAllTeachers()
+                .stream()
                 .filter(teacher -> teacher.getSourcedId().equals(sourcedId))
                 .findAny()
                 .orElseThrow(NotFoundException::new);
     }
 
-    public List<User> getTeachersForSchool(String orgId, String sourcedId) {
-        return getAllTeachers(orgId)
+    public List<User> getTeachersForSchool(String sourcedId) {
+        return getAllTeachers()
                 .stream()
                 .filter(teacher -> teacher.getOrgs().stream().map(GUIDRef::getSourcedId).anyMatch(sourcedId::equals))
                 .collect(Collectors.toList());
