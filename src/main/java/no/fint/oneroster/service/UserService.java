@@ -29,12 +29,7 @@ public class UserService {
     }
 
     public List<User> getAllUsers() {
-        Map<String, SkoleResource> schools = fintRepository.getSchools();
-        Map<String, PersonResource> persons = fintRepository.getPersons();
-
         List<User> users = new ArrayList<>();
-
-        Map<String, ElevforholdResource> studentRelations = fintRepository.getStudentRelations();
 
         fintRepository.getStudents()
                 .values()
@@ -42,29 +37,26 @@ public class UserService {
                     Optional<PersonResource> person = student.getPerson()
                             .stream()
                             .map(LinkUtil::normalize)
-                            .map(persons::get)
+                            .map(fintRepository.getPersons()::get)
                             .filter(Objects::nonNull)
                             .findAny();
 
-                    List<SkoleResource> skoleResources = student.getElevforhold()
+                    List<SkoleResource> schoolResources = student.getElevforhold()
                             .stream()
                             .map(LinkUtil::normalize)
-                            .map(studentRelations::get)
+                            .map(fintRepository.getStudentRelations()::get)
                             .filter(Objects::nonNull)
                             .map(ElevforholdResource::getSkole)
                             .flatMap(List::stream)
                             .map(LinkUtil::normalize)
-                            .map(schools::get)
+                            .map(fintRepository.getSchools()::get)
                             .filter(Objects::nonNull)
                             .collect(Collectors.toList());
 
-                    if (person.isPresent() && !skoleResources.isEmpty()) {
-                        users.add(UserFactory.student(student, person.get(), skoleResources));
+                    if (person.isPresent() && !schoolResources.isEmpty()) {
+                        users.add(UserFactory.student(student, person.get(), schoolResources));
                     }
                 });
-
-        Map<String, PersonalressursResource> personnelResources = fintRepository.getPersonnelResources();
-        Map<String, UndervisningsforholdResource> teachingRelations = fintRepository.getTeachingRelations();
 
         fintRepository.getTeachers()
                 .values()
@@ -72,7 +64,7 @@ public class UserService {
                     Optional<PersonalressursResource> personnelResource = teacher.getPersonalressurs()
                             .stream()
                             .map(LinkUtil::normalize)
-                            .map(personnelResources::get)
+                            .map(fintRepository.getPersonnelResources()::get)
                             .filter(Objects::nonNull)
                             .findAny();
 
@@ -81,23 +73,23 @@ public class UserService {
                             .orElseGet(Collections::emptyList)
                             .stream()
                             .map(LinkUtil::normalize)
-                            .map(persons::get)
+                            .map(fintRepository.getPersons()::get)
                             .filter(Objects::nonNull)
                             .findAny();
 
                     List<SkoleResource> schoolResources = teacher.getUndervisningsforhold()
                             .stream()
                             .map(LinkUtil::normalize)
-                            .map(teachingRelations::get)
+                            .map(fintRepository.getTeachingRelations()::get)
                             .filter(Objects::nonNull)
                             .map(UndervisningsforholdResource::getSkole)
                             .flatMap(List::stream)
                             .map(LinkUtil::normalize)
-                            .map(schools::get)
+                            .map(fintRepository.getSchools()::get)
                             .filter(Objects::nonNull)
                             .collect(Collectors.toList());
 
-                    if (personnelResource.isPresent() && personResource.isPresent() && !schools.isEmpty()) {
+                    if (personnelResource.isPresent() && personResource.isPresent() && !schoolResources.isEmpty()) {
                         users.add(UserFactory.teacher(teacher, personnelResource.get(), personResource.get(), schoolResources));
                     }
                 });

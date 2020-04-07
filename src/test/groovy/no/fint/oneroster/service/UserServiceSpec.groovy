@@ -8,13 +8,16 @@ import spock.lang.Specification
 class UserServiceSpec extends Specification {
 
     FintRepository fintRepository = Mock {
-        1 * getPersons() >> [('/person-sourced-id'): FintObjectFactory.newPerson(), ('/teacher-sourced-id'): FintObjectFactory.newTeacher()]
-        1 * getStudents() >> [('/student-sourced-id'): FintObjectFactory.newStudent()]
-        1 * getTeachers() >> [('/teacher-sourced-id'): FintObjectFactory.newTeacher()]
-        1 * getStudentRelations() >> [('/student-relation-sourced-id'): FintObjectFactory.newStudentRelation()]
-        1 * getTeachingRelations() >> [('/teaching-relation-sourced-id'): FintObjectFactory.newTeachingRelation()]
-        1 * getPersonnelResources() >> [('/personnel-resource-sourced-id'): FintObjectFactory.newPersonnelResource()]
         1 * getSchools() >> [('/school-sourced-id'): FintObjectFactory.newSchool()]
+        1 * getPersons() >> [('/person-sourced-id'): FintObjectFactory.newPerson()]
+        1 * getStudents() >> [('/student-sourced-id'): FintObjectFactory.newStudent()]
+        1 * getStudentRelations() >> [('/student-relation-sourced-id'): FintObjectFactory.newStudentRelation()]
+
+        1 * getSchools() >> [('/school-sourced-id'): FintObjectFactory.newSchool()]
+        1 * getPersons() >> [('/person-sourced-id'): FintObjectFactory.newPerson()]
+        1 * getPersonnelResources() >> [('/personnel-resource-sourced-id'): FintObjectFactory.newPersonnelResource()]
+        1 * getTeachers() >> [('/teacher-sourced-id'): FintObjectFactory.newTeacher()]
+        1 * getTeachingRelations() >> [('/teaching-relation-sourced-id'): FintObjectFactory.newTeachingRelation()]
     }
 
     UserService userService = new UserService(fintRepository)

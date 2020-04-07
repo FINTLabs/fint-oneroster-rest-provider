@@ -28,12 +28,9 @@ public class ClazzService {
     }
 
     public List<Clazz> getAllClazzes() {
-        Map<String, SkoleResource> schools = fintRepository.getSchools();
+        List<AcademicSession> terms = academicSessionService.getAllTerms();
 
         List<Clazz> clazzes = new ArrayList<>();
-
-        Map<String, ArstrinnResource> levels = fintRepository.getLevels();
-        List<AcademicSession> terms = academicSessionService.getAllTerms();
 
         fintRepository.getBasisGroups()
                 .values()
@@ -41,14 +38,14 @@ public class ClazzService {
                     Optional<ArstrinnResource> level = basisGroup.getTrinn()
                             .stream()
                             .map(LinkUtil::normalize)
-                            .map(levels::get)
+                            .map(fintRepository.getLevels()::get)
                             .filter(Objects::nonNull)
                             .findAny();
 
                     Optional<SkoleResource> school = basisGroup.getSkole()
                             .stream()
                             .map(LinkUtil::normalize)
-                            .map(schools::get)
+                            .map(fintRepository.getSchools()::get)
                             .filter(Objects::nonNull)
                             .findAny();
 
@@ -57,22 +54,20 @@ public class ClazzService {
                     }
                 });
 
-        Map<String, FagResource> subjects = fintRepository.getSubjects();
-
         fintRepository.getTeachingGroups()
                 .values()
                 .forEach(teachingGroup -> {
                     Optional<FagResource> subject = teachingGroup.getFag()
                             .stream()
                             .map(LinkUtil::normalize)
-                            .map(subjects::get)
+                            .map(fintRepository.getSubjects()::get)
                             .filter(Objects::nonNull)
                             .findFirst();
 
                     Optional<SkoleResource> school = teachingGroup.getSkole()
                             .stream()
                             .map(LinkUtil::normalize)
-                            .map(schools::get)
+                            .map(fintRepository.getSchools()::get)
                             .filter(Objects::nonNull)
                             .findAny();
 

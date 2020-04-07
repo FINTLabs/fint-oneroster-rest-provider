@@ -8,11 +8,15 @@ import spock.lang.Specification
 class EnrollmentServiceSpec extends Specification {
 
     FintRepository fintRepository = Mock {
+        1 * getSchools() >> [('/school-sourced-id'): FintObjectFactory.newSchool()]
         1 * getStudents() >> [('/student-sourced-id'): FintObjectFactory.newStudent()]
         1 * getStudentRelations() >> [('/student-relation-sourced-id'): FintObjectFactory.newStudentRelation()]
+        1 * getBasisGroups() >> [('/basis-group-sourced-id'): FintObjectFactory.newBasisGroup()]
+        1 * getTeachingGroups() >> [('/teaching-group-sourced-id'): FintObjectFactory.newTeachingGroup()]
+
+        1 * getSchools() >> [('/school-sourced-id'): FintObjectFactory.newSchool()]
         1 * getTeachers() >> [('/teacher-sourced-id'): FintObjectFactory.newTeacher()]
         1 * getTeachingRelations() >> [('/teaching-relation-sourced-id'): FintObjectFactory.newTeachingRelation()]
-        1 * getSchools() >> [('/school-sourced-id'): FintObjectFactory.newSchool()]
         1 * getBasisGroups() >> [('/basis-group-sourced-id'): FintObjectFactory.newBasisGroup()]
         1 * getTeachingGroups() >> [('/teaching-group-sourced-id'): FintObjectFactory.newTeachingGroup()]
     }

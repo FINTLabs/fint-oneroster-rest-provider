@@ -1,10 +1,8 @@
 package no.fint.oneroster.service;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fint.model.resource.utdanning.elev.BasisgruppeResource;
 import no.fint.model.resource.utdanning.elev.ElevResource;
 import no.fint.model.resource.utdanning.elev.SkoleressursResource;
-import no.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
 import no.fint.oneroster.exception.NotFoundException;
 import no.fint.oneroster.factory.EnrollmentFactory;
@@ -27,13 +25,7 @@ public class EnrollmentService {
     }
 
     public List<Enrollment> getAllEnrollments() {
-        Map<String, SkoleResource> schools = fintRepository.getSchools();
-        Map<String, BasisgruppeResource> basisGroups = fintRepository.getBasisGroups();
-        Map<String, UndervisningsgruppeResource> teachingGroups = fintRepository.getTeachingGroups();
-
         List<Enrollment> enrollments = new ArrayList<>();
-
-        Map<String, ElevResource> students = fintRepository.getStudents();
 
         fintRepository.getStudentRelations()
                 .values()
@@ -41,21 +33,21 @@ public class EnrollmentService {
                     Optional<ElevResource> student = elevforholdResource.getElev()
                             .stream()
                             .map(LinkUtil::normalize)
-                            .map(students::get)
+                            .map(fintRepository.getStudents()::get)
                             .filter(Objects::nonNull)
                             .findAny();
 
                     Optional<SkoleResource> school = elevforholdResource.getSkole()
                             .stream()
                             .map(LinkUtil::normalize)
-                            .map(schools::get)
+                            .map(fintRepository.getSchools()::get)
                             .filter(Objects::nonNull)
                             .findAny();
 
                     elevforholdResource.getBasisgruppe()
                             .stream()
                             .map(LinkUtil::normalize)
-                            .map(basisGroups::get)
+                            .map(fintRepository.getBasisGroups()::get)
                             .filter(Objects::nonNull)
                             .forEach(basisGroup -> {
                                 if (student.isPresent() && school.isPresent()) {
@@ -66,7 +58,7 @@ public class EnrollmentService {
                     elevforholdResource.getUndervisningsgruppe()
                             .stream()
                             .map(LinkUtil::normalize)
-                            .map(teachingGroups::get)
+                            .map(fintRepository.getTeachingGroups()::get)
                             .filter(Objects::nonNull)
                             .forEach(teachingGroup -> {
                                 if (student.isPresent() && school.isPresent()) {
@@ -75,29 +67,27 @@ public class EnrollmentService {
                             });
                 });
 
-        Map<String, SkoleressursResource> schoolResourceMap = fintRepository.getTeachers();
-
         fintRepository.getTeachingRelations()
                 .values()
                 .forEach(undervisningsforholdResource -> {
                     Optional<SkoleressursResource> teacher = undervisningsforholdResource.getSkoleressurs()
                             .stream()
                             .map(LinkUtil::normalize)
-                            .map(schoolResourceMap::get)
+                            .map(fintRepository.getTeachers()::get)
                             .filter(Objects::nonNull)
                             .findAny();
 
                     Optional<SkoleResource> school = undervisningsforholdResource.getSkole()
                             .stream()
                             .map(LinkUtil::normalize)
-                            .map(schools::get)
+                            .map(fintRepository.getSchools()::get)
                             .filter(Objects::nonNull)
                             .findAny();
 
                     undervisningsforholdResource.getBasisgruppe()
                             .stream()
                             .map(LinkUtil::normalize)
-                            .map(basisGroups::get)
+                            .map(fintRepository.getBasisGroups()::get)
                             .filter(Objects::nonNull)
                             .forEach(basisGroup -> {
                                 if (teacher.isPresent() && school.isPresent()) {
@@ -108,7 +98,7 @@ public class EnrollmentService {
                     undervisningsforholdResource.getUndervisningsgruppe()
                             .stream()
                             .map(LinkUtil::normalize)
-                            .map(teachingGroups::get)
+                            .map(fintRepository.getTeachingGroups()::get)
                             .filter(Objects::nonNull)
                             .forEach(teachingGroup -> {
                                 if (teacher.isPresent() && school.isPresent()) {
