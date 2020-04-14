@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class AcademicSessionService {
-
     private final OrganisationProperties organisationProperties;
 
     public AcademicSessionService(OrganisationProperties organisationProperties) {

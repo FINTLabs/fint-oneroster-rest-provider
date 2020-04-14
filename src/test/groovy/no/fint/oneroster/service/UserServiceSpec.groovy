@@ -1,13 +1,13 @@
 package no.fint.oneroster.service
 
 import no.fint.oneroster.model.vocab.RoleType
-import no.fint.oneroster.repository.FintRepository
+import no.fint.oneroster.repository.FintAdministrationService
 import no.fint.oneroster.util.FintObjectFactory
 import spock.lang.Specification
 
 class UserServiceSpec extends Specification {
 
-    FintRepository fintRepository = Mock {
+    FintAdministrationService fintRepository = Mock {
         1 * getSchools() >> [('/school-sourced-id'): FintObjectFactory.newSchool()]
         1 * getPersons() >> [('/person-sourced-id'): FintObjectFactory.newPerson()]
         1 * getStudents() >> [('/student-sourced-id'): FintObjectFactory.newStudent()]
@@ -15,7 +15,7 @@ class UserServiceSpec extends Specification {
 
         1 * getSchools() >> [('/school-sourced-id'): FintObjectFactory.newSchool()]
         1 * getPersons() >> [('/person-sourced-id'): FintObjectFactory.newPerson()]
-        1 * getPersonnelResources() >> [('/personnel-resource-sourced-id'): FintObjectFactory.newPersonnelResource()]
+        1 * getPersonnel() >> [('/personnel-resource-sourced-id'): FintObjectFactory.newPersonnel()]
         1 * getTeachers() >> [('/teacher-sourced-id'): FintObjectFactory.newTeacher()]
         1 * getTeachingRelations() >> [('/teaching-relation-sourced-id'): FintObjectFactory.newTeachingRelation()]
     }

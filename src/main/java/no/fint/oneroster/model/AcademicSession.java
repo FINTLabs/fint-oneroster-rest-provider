@@ -1,5 +1,6 @@
 package no.fint.oneroster.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import no.fint.oneroster.model.vocab.SessionType;

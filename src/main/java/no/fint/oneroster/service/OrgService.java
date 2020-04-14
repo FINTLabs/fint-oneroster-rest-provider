@@ -7,7 +7,7 @@ import no.fint.oneroster.model.Org;
 import no.fint.oneroster.model.vocab.GUIDType;
 import no.fint.oneroster.model.vocab.OrgType;
 import no.fint.oneroster.properties.OrganisationProperties;
-import no.fint.oneroster.repository.FintRepository;
+import no.fint.oneroster.repository.FintEducationService;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -16,11 +16,11 @@ import java.util.stream.Collectors;
 @Service
 public class OrgService {
 
-    private final FintRepository fintRepository;
+    private final FintEducationService fintEducationService;
     private final OrganisationProperties organisationProperties;
 
-    public OrgService(FintRepository fintRepository, OrganisationProperties organisationProperties) {
-        this.fintRepository = fintRepository;
+    public OrgService(FintEducationService fintEducationService, OrganisationProperties organisationProperties) {
+        this.fintEducationService = fintEducationService;
         this.organisationProperties = organisationProperties;
     }
 
@@ -29,9 +29,10 @@ public class OrgService {
 
         Org schoolOwner = OrgFactory.schoolOwner(organisation);
 
-        List<Org> orgs = fintRepository.getSchools()
+        List<Org> orgs = fintEducationService.getSchools()
                 .values()
                 .stream()
+                .distinct()
                 .map(OrgFactory::school)
                 .peek(school -> {
                     if (schoolOwner.getChildren() == null) {

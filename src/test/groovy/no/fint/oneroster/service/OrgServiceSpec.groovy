@@ -2,14 +2,13 @@ package no.fint.oneroster.service
 
 import no.fint.oneroster.model.vocab.OrgType
 import no.fint.oneroster.properties.OrganisationProperties
-import no.fint.oneroster.repository.FintRepository
+import no.fint.oneroster.repository.FintAdministrationService
 import no.fint.oneroster.util.FintObjectFactory
-import spock.lang.Ignore
 import spock.lang.Specification
 
 class OrgServiceSpec extends Specification {
 
-    FintRepository fintRepository = Mock {
+    FintAdministrationService fintRepository = Mock {
         getSchools() >> [('/school-sourced-id'): FintObjectFactory.newSchool()]
     }
 

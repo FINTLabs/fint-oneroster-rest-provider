@@ -1,13 +1,13 @@
 package no.fint.oneroster.service
 
 import no.fint.oneroster.properties.OrganisationProperties
-import no.fint.oneroster.repository.FintRepository
+import no.fint.oneroster.repository.FintAdministrationService
 import no.fint.oneroster.util.FintObjectFactory
 import spock.lang.Specification
 
 class CourseServiceSpec extends Specification {
 
-    FintRepository fintRepository = Mock {
+    FintAdministrationService fintRepository = Mock {
         getLevels() >> [('/level-sourced-id'): FintObjectFactory.newLevel()]
         getSubjects() >> [('/subject-sourced-id'): FintObjectFactory.newSubject()]
     }

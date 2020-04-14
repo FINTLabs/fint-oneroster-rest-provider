@@ -1,6 +1,7 @@
 package no.fint.oneroster.service;
 
 import lombok.extern.slf4j.Slf4j;
+import no.fint.model.resource.Link;
 import no.fint.model.resource.utdanning.timeplan.FagResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
@@ -8,8 +9,7 @@ import no.fint.oneroster.exception.NotFoundException;
 import no.fint.oneroster.factory.ClazzFactory;
 import no.fint.oneroster.model.AcademicSession;
 import no.fint.oneroster.model.Clazz;
-import no.fint.oneroster.repository.FintRepository;
-import no.fint.oneroster.util.LinkUtil;
+import no.fint.oneroster.repository.FintEducationService;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -18,12 +18,11 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class ClazzService {
-
-    private final FintRepository fintRepository;
+    private final FintEducationService fintEducationService;
     private final AcademicSessionService academicSessionService;
 
-    public ClazzService(FintRepository fintRepository, AcademicSessionService academicSessionService) {
-        this.fintRepository = fintRepository;
+    public ClazzService(FintEducationService fintEducationService, AcademicSessionService academicSessionService) {
+        this.fintEducationService = fintEducationService;
         this.academicSessionService = academicSessionService;
     }
 
@@ -32,20 +31,24 @@ public class ClazzService {
 
         List<Clazz> clazzes = new ArrayList<>();
 
-        fintRepository.getBasisGroups()
+        fintEducationService.getBasisGroups()
                 .values()
+                .stream()
+                .distinct()
                 .forEach(basisGroup -> {
                     Optional<ArstrinnResource> level = basisGroup.getTrinn()
                             .stream()
-                            .map(LinkUtil::normalize)
-                            .map(fintRepository.getLevels()::get)
+                            .map(Link::getHref)
+                            .map(String::toLowerCase)
+                            .map(fintEducationService.getLevels()::get)
                             .filter(Objects::nonNull)
                             .findAny();
 
                     Optional<SkoleResource> school = basisGroup.getSkole()
                             .stream()
-                            .map(LinkUtil::normalize)
-                            .map(fintRepository.getSchools()::get)
+                            .map(Link::getHref)
+                            .map(String::toLowerCase)
+                            .map(fintEducationService.getSchools()::get)
                             .filter(Objects::nonNull)
                             .findAny();
 
@@ -54,20 +57,24 @@ public class ClazzService {
                     }
                 });
 
-        fintRepository.getTeachingGroups()
+        fintEducationService.getTeachingGroups()
                 .values()
+                .stream()
+                .distinct()
                 .forEach(teachingGroup -> {
                     Optional<FagResource> subject = teachingGroup.getFag()
                             .stream()
-                            .map(LinkUtil::normalize)
-                            .map(fintRepository.getSubjects()::get)
+                            .map(Link::getHref)
+                            .map(String::toLowerCase)
+                            .map(fintEducationService.getSubjects()::get)
                             .filter(Objects::nonNull)
                             .findFirst();
 
                     Optional<SkoleResource> school = teachingGroup.getSkole()
                             .stream()
-                            .map(LinkUtil::normalize)
-                            .map(fintRepository.getSchools()::get)
+                            .map(Link::getHref)
+                            .map(String::toLowerCase)
+                            .map(fintEducationService.getSchools()::get)
                             .filter(Objects::nonNull)
                             .findAny();
 

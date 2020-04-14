@@ -1,13 +1,13 @@
 package no.fint.oneroster.service
 
 import no.fint.oneroster.model.vocab.RoleType
-import no.fint.oneroster.repository.FintRepository
+import no.fint.oneroster.repository.FintAdministrationService
 import no.fint.oneroster.util.FintObjectFactory
 import spock.lang.Specification
 
 class EnrollmentServiceSpec extends Specification {
 
-    FintRepository fintRepository = Mock {
+    FintAdministrationService fintRepository = Mock {
         1 * getSchools() >> [('/school-sourced-id'): FintObjectFactory.newSchool()]
         1 * getStudents() >> [('/student-sourced-id'): FintObjectFactory.newStudent()]
         1 * getStudentRelations() >> [('/student-relation-sourced-id'): FintObjectFactory.newStudentRelation()]

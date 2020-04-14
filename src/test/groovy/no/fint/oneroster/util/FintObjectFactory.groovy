@@ -19,16 +19,6 @@ import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource
 
 class FintObjectFactory {
 
-    static OrganisasjonselementResource newSchoolOwner() {
-        OrganisasjonselementResource resource = new OrganisasjonselementResource()
-        resource.setOrganisasjonsId(Identifikator.newInstance(identifikatorverdi: 'school-owner-sourced-id'))
-        resource.setNavn('SchoolOwner')
-        resource.setOrganisasjonsnummer(Identifikator.newInstance(identifikatorverdi: 'identifier'))
-        resource.addOverordnet(Link.with('/school-owner-sourced-id'))
-        resource.addSelf(Link.with('/school-owner-sourced-id'))
-        return resource
-    }
-
     static SkoleResource newSchool() {
         SkoleResource resource = new SkoleResource()
         resource.setSystemId(Identifikator.newInstance(identifikatorverdi: 'school-sourced-id'))
@@ -89,7 +79,7 @@ class FintObjectFactory {
         return resource
     }
 
-    static PersonalressursResource newPersonnelResource() {
+    static PersonalressursResource newPersonnel() {
         PersonalressursResource resource = new PersonalressursResource()
         resource.setBrukernavn(Identifikator.newInstance(identifikatorverdi: 'username'))
         resource.setAnsattnummer(Identifikator.newInstance(identifikatorverdi: 'identifier'))

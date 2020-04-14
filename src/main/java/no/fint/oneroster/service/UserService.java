@@ -1,6 +1,7 @@
 package no.fint.oneroster.service;
 
 import lombok.extern.slf4j.Slf4j;
+import no.fint.model.resource.Link;
 import no.fint.model.resource.administrasjon.personal.PersonalressursResource;
 import no.fint.model.resource.felles.PersonResource;
 import no.fint.model.resource.utdanning.elev.ElevforholdResource;
@@ -11,8 +12,8 @@ import no.fint.oneroster.factory.UserFactory;
 import no.fint.oneroster.model.GUIDRef;
 import no.fint.oneroster.model.User;
 import no.fint.oneroster.model.vocab.RoleType;
-import no.fint.oneroster.repository.FintRepository;
-import no.fint.oneroster.util.LinkUtil;
+import no.fint.oneroster.repository.FintAdministrationService;
+import no.fint.oneroster.repository.FintEducationService;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -21,35 +22,41 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class UserService {
+    private final FintEducationService fintEducationService;
+    private final FintAdministrationService fintAdministrationService;
 
-    private final FintRepository fintRepository;
-
-    public UserService(FintRepository fintRepository) {
-        this.fintRepository = fintRepository;
+    public UserService(FintEducationService fintEducationService, FintAdministrationService fintAdministrationService) {
+        this.fintEducationService = fintEducationService;
+        this.fintAdministrationService = fintAdministrationService;
     }
 
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
 
-        fintRepository.getStudents()
+        fintEducationService.getStudents()
                 .values()
+                .stream()
+                .distinct()
                 .forEach(student -> {
                     Optional<PersonResource> person = student.getPerson()
                             .stream()
-                            .map(LinkUtil::normalize)
-                            .map(fintRepository.getPersons()::get)
+                            .map(Link::getHref)
+                            .map(String::toLowerCase)
+                            .map(fintEducationService.getPersons()::get)
                             .filter(Objects::nonNull)
                             .findAny();
 
                     List<SkoleResource> schoolResources = student.getElevforhold()
                             .stream()
-                            .map(LinkUtil::normalize)
-                            .map(fintRepository.getStudentRelations()::get)
+                            .map(Link::getHref)
+                            .map(String::toLowerCase)
+                            .map(fintEducationService.getStudentRelations()::get)
                             .filter(Objects::nonNull)
                             .map(ElevforholdResource::getSkole)
                             .flatMap(List::stream)
-                            .map(LinkUtil::normalize)
-                            .map(fintRepository.getSchools()::get)
+                            .map(Link::getHref)
+                            .map(String::toLowerCase)
+                            .map(fintEducationService.getSchools()::get)
                             .filter(Objects::nonNull)
                             .collect(Collectors.toList());
 
@@ -58,13 +65,16 @@ public class UserService {
                     }
                 });
 
-        fintRepository.getTeachers()
+        fintEducationService.getTeachers()
                 .values()
+                .stream()
+                .distinct()
                 .forEach(teacher -> {
                     Optional<PersonalressursResource> personnelResource = teacher.getPersonalressurs()
                             .stream()
-                            .map(LinkUtil::normalize)
-                            .map(fintRepository.getPersonnelResources()::get)
+                            .map(Link::getHref)
+                            .map(String::toLowerCase)
+                            .map(fintAdministrationService.getPersonnel()::get)
                             .filter(Objects::nonNull)
                             .findAny();
 
@@ -72,20 +82,23 @@ public class UserService {
                             .map(PersonalressursResource::getPerson)
                             .orElseGet(Collections::emptyList)
                             .stream()
-                            .map(LinkUtil::normalize)
-                            .map(fintRepository.getPersons()::get)
+                            .map(Link::getHref)
+                            .map(String::toLowerCase)
+                            .map(fintAdministrationService.getPersons()::get)
                             .filter(Objects::nonNull)
                             .findAny();
 
                     List<SkoleResource> schoolResources = teacher.getUndervisningsforhold()
                             .stream()
-                            .map(LinkUtil::normalize)
-                            .map(fintRepository.getTeachingRelations()::get)
+                            .map(Link::getHref)
+                            .map(String::toLowerCase)
+                            .map(fintEducationService.getTeachingRelations()::get)
                             .filter(Objects::nonNull)
                             .map(UndervisningsforholdResource::getSkole)
                             .flatMap(List::stream)
-                            .map(LinkUtil::normalize)
-                            .map(fintRepository.getSchools()::get)
+                            .map(Link::getHref)
+                            .map(String::toLowerCase)
+                            .map(fintEducationService.getSchools()::get)
                             .filter(Objects::nonNull)
                             .collect(Collectors.toList());
 

@@ -7,12 +7,11 @@ import no.fint.oneroster.util.FintObjectFactory
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.springframework.security.core.Authentication
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
 import org.springframework.web.reactive.function.client.WebClient
 import spock.lang.Specification
 
-class FintRepositorySpec extends Specification {
+class FintAdministrationServiceSpec extends Specification {
     MockWebServer mockWebServer = new MockWebServer()
     WebClient webClient = WebClient.builder().build()
 
@@ -22,11 +21,11 @@ class FintRepositorySpec extends Specification {
 
     OrganisationProperties organisationProperties = Mock {
         1 * getOrganisation() >> new OrganisationProperties.Organisation(
-                username: _ as String, password: _ as String, registration: _ as String, environment: mockWebServer.url("/").toString()
+                username: _ as String, password: _ as String, registration: _ as String, endpoints: [('school'): mockWebServer.url("/").toString()]
         )
     }
 
-    FintRepository fintRepository = new FintRepository(webClient, Mock(Authentication), authorizedClientManager, organisationProperties)
+    FintAdministrationService fintRepository = new FintAdministrationService(webClient, Mock(Authentication), authorizedClientManager, organisationProperties)
 
     def "get() for given type returns resources of given type"() {
         given:

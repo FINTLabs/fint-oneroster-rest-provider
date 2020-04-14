@@ -3,7 +3,7 @@ package no.fint.oneroster.service
 import no.fint.oneroster.model.AcademicSession
 import no.fint.oneroster.model.vocab.ClazzType
 import no.fint.oneroster.model.vocab.SessionType
-import no.fint.oneroster.repository.FintRepository
+import no.fint.oneroster.repository.FintAdministrationService
 import no.fint.oneroster.util.FintObjectFactory
 import spock.lang.Specification
 
@@ -12,7 +12,7 @@ import java.time.Year
 
 class ClazzServiceSpec extends Specification {
 
-    FintRepository fintRepository = Mock {
+    FintAdministrationService fintRepository = Mock {
         getBasisGroups() >> [('/basis-group-sourced-id'): FintObjectFactory.newBasisGroup()]
         getTeachingGroups() >> [('/teaching-group-sourced-id'): FintObjectFactory.newTeachingGroup()]
         getLevels() >> [('/level-sourced-id'): FintObjectFactory.newLevel()]
