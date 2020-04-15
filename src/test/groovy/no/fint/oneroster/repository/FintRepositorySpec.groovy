@@ -7,6 +7,8 @@ import no.fint.oneroster.util.FintObjectFactory
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.springframework.security.core.Authentication
+import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
 import org.springframework.web.reactive.function.client.WebClient
 import spock.lang.Specification
@@ -16,7 +18,7 @@ class FintRepositorySpec extends Specification {
     WebClient webClient = WebClient.builder().build()
 
     OAuth2AuthorizedClientManager authorizedClientManager = Mock {
-        //1 * authorize(_) >> Mock(OAuth2AuthorizedClient)
+        1 * authorize(_ as OAuth2AuthorizeRequest) >> Mock(OAuth2AuthorizedClient)
     }
 
     OrganisationProperties organisationProperties = Mock {
@@ -25,7 +27,6 @@ class FintRepositorySpec extends Specification {
                 endpoints: [('school'): mockWebServer.url("/").toString()]
         )])
     }
-
 
     FintRepository fintRepository = new FintRepository(webClient, Mock(Authentication), authorizedClientManager, organisationProperties)
 
