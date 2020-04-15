@@ -1,6 +1,7 @@
 package no.fint.oneroster.model;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import no.fint.oneroster.model.vocab.StatusType;
@@ -9,6 +10,7 @@ import java.time.ZonedDateTime;
 import java.util.Map;
 
 @Getter @Setter
+@EqualsAndHashCode
 @JsonFilter("fields")
 public class Base {
     private final String sourcedId;

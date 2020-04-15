@@ -13,6 +13,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 @Getter @Setter
+@EqualsAndHashCode(callSuper = true)
 public class AcademicSession extends Base {
     private final String title;
     private final LocalDate startDate;

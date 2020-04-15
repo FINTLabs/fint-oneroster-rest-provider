@@ -1,9 +1,8 @@
 package no.fint.oneroster.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter @Setter
+@Data
 public class UserId {
     private final String type;
     private final String identifier;

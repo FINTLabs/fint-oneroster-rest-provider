@@ -16,7 +16,6 @@ import java.util.List;
 @Slf4j
 @RestController
 public class UserController {
-
     private final UserService userService;
 
     public UserController(UserService userService) {

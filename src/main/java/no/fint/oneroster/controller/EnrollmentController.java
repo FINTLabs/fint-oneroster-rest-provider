@@ -16,7 +16,6 @@ import java.util.List;
 @Slf4j
 @RestController
 public class EnrollmentController {
-
     private final EnrollmentService enrollmentService;
 
     public EnrollmentController(EnrollmentService enrollmentService) {

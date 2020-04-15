@@ -1,10 +1,9 @@
 package no.fint.oneroster.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import no.fint.oneroster.model.vocab.GUIDType;
 
-@Getter @Setter
+@Data
 public final class GUIDRef {
     private final String sourcedId;
     private final GUIDType type;

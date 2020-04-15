@@ -1,5 +1,6 @@
 package no.fint.oneroster.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import no.fint.oneroster.model.vocab.OrgType;
@@ -10,6 +11,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 @Getter @Setter
+@EqualsAndHashCode(callSuper = true)
 public class Org extends Base {
     private final String name;
     private final OrgType type;

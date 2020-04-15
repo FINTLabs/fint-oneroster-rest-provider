@@ -11,7 +11,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
 import org.springframework.web.reactive.function.client.WebClient
 import spock.lang.Specification
 
-class FintAdministrationServiceSpec extends Specification {
+class FintRepositorySpec extends Specification {
     MockWebServer mockWebServer = new MockWebServer()
     WebClient webClient = WebClient.builder().build()
 
@@ -20,12 +20,14 @@ class FintAdministrationServiceSpec extends Specification {
     }
 
     OrganisationProperties organisationProperties = Mock {
-        1 * getOrganisation() >> new OrganisationProperties.Organisation(
-                username: _ as String, password: _ as String, registration: _ as String, endpoints: [('school'): mockWebServer.url("/").toString()]
-        )
+        1 * getOrganisation() >> new OrganisationProperties.Organisation(components: [('education'): new OrganisationProperties.Component(
+                registrations: [new OrganisationProperties.Registration(id: _ as String, username: _ as String, password: _ as String)],
+                endpoints: [('school'): mockWebServer.url("/").toString()]
+        )])
     }
 
-    FintAdministrationService fintRepository = new FintAdministrationService(webClient, Mock(Authentication), authorizedClientManager, organisationProperties)
+
+    FintRepository fintRepository = new FintRepository(webClient, Mock(Authentication), authorizedClientManager, organisationProperties)
 
     def "get() for given type returns resources of given type"() {
         given:
@@ -37,10 +39,10 @@ class FintAdministrationServiceSpec extends Specification {
                 .setResponseCode(200))
 
         when:
-        def resources = fintRepository.getSchools()
+        def resources = fintRepository.getResources(SkoleResources.class, 'education', 'school')
 
         then:
-        resources.size() == 1
+        resources.blockLast().navn == 'School'
     }
 }
 

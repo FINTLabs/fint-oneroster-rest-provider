@@ -17,7 +17,6 @@ import java.util.List;
 @Slf4j
 @RestController
 public class AcademicSessionController {
-
     private final AcademicSessionService academicSessionService;
 
     public AcademicSessionController(AcademicSessionService academicSessionService) {

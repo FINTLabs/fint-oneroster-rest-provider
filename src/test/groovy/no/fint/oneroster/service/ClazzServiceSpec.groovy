@@ -3,7 +3,7 @@ package no.fint.oneroster.service
 import no.fint.oneroster.model.AcademicSession
 import no.fint.oneroster.model.vocab.ClazzType
 import no.fint.oneroster.model.vocab.SessionType
-import no.fint.oneroster.repository.FintAdministrationService
+import no.fint.oneroster.repository.FintEducationService
 import no.fint.oneroster.util.FintObjectFactory
 import spock.lang.Specification
 
@@ -12,7 +12,7 @@ import java.time.Year
 
 class ClazzServiceSpec extends Specification {
 
-    FintAdministrationService fintRepository = Mock {
+    FintEducationService fintEducationService = Mock {
         getBasisGroups() >> [('/basis-group-sourced-id'): FintObjectFactory.newBasisGroup()]
         getTeachingGroups() >> [('/teaching-group-sourced-id'): FintObjectFactory.newTeachingGroup()]
         getLevels() >> [('/level-sourced-id'): FintObjectFactory.newLevel()]
@@ -22,7 +22,7 @@ class ClazzServiceSpec extends Specification {
 
     AcademicSessionService academicSessionService = Mock()
 
-    ClazzService clazzService = new ClazzService(fintRepository, academicSessionService)
+    ClazzService clazzService = new ClazzService(fintEducationService, academicSessionService)
 
     def "getAllClazzes returns a list of clazzes given valid orgId"() {
         when:

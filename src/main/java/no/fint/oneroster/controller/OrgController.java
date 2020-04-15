@@ -15,7 +15,6 @@ import java.util.*;
 @Slf4j
 @RestController
 public class OrgController {
-
     private final OrgService orgService;
 
     public OrgController(OrgService orgService) {

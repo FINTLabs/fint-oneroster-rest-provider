@@ -2,25 +2,29 @@ package no.fint.oneroster.service
 
 import no.fint.oneroster.model.vocab.RoleType
 import no.fint.oneroster.repository.FintAdministrationService
+import no.fint.oneroster.repository.FintEducationService
 import no.fint.oneroster.util.FintObjectFactory
 import spock.lang.Specification
 
 class UserServiceSpec extends Specification {
 
-    FintAdministrationService fintRepository = Mock {
+    FintEducationService fintEducationService = Mock {
         1 * getSchools() >> [('/school-sourced-id'): FintObjectFactory.newSchool()]
         1 * getPersons() >> [('/person-sourced-id'): FintObjectFactory.newPerson()]
         1 * getStudents() >> [('/student-sourced-id'): FintObjectFactory.newStudent()]
         1 * getStudentRelations() >> [('/student-relation-sourced-id'): FintObjectFactory.newStudentRelation()]
 
         1 * getSchools() >> [('/school-sourced-id'): FintObjectFactory.newSchool()]
-        1 * getPersons() >> [('/person-sourced-id'): FintObjectFactory.newPerson()]
-        1 * getPersonnel() >> [('/personnel-resource-sourced-id'): FintObjectFactory.newPersonnel()]
         1 * getTeachers() >> [('/teacher-sourced-id'): FintObjectFactory.newTeacher()]
         1 * getTeachingRelations() >> [('/teaching-relation-sourced-id'): FintObjectFactory.newTeachingRelation()]
     }
 
-    UserService userService = new UserService(fintRepository)
+    FintAdministrationService fintAdministrationService = Mock {
+        1 * getPersons() >> [('/person-sourced-id'): FintObjectFactory.newPerson()]
+        1 * getPersonnel() >> [('/personnel-resource-sourced-id'): FintObjectFactory.newPersonnel()]
+    }
+
+    UserService userService = new UserService(fintEducationService, fintAdministrationService)
 
     def "getAllUsers returns a list of users given valid orgId"() {
         when:

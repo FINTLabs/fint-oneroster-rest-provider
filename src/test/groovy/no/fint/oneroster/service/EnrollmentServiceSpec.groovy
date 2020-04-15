@@ -1,13 +1,13 @@
 package no.fint.oneroster.service
 
 import no.fint.oneroster.model.vocab.RoleType
-import no.fint.oneroster.repository.FintAdministrationService
+import no.fint.oneroster.repository.FintEducationService
 import no.fint.oneroster.util.FintObjectFactory
 import spock.lang.Specification
 
 class EnrollmentServiceSpec extends Specification {
 
-    FintAdministrationService fintRepository = Mock {
+    FintEducationService fintEducationService = Mock {
         1 * getSchools() >> [('/school-sourced-id'): FintObjectFactory.newSchool()]
         1 * getStudents() >> [('/student-sourced-id'): FintObjectFactory.newStudent()]
         1 * getStudentRelations() >> [('/student-relation-sourced-id'): FintObjectFactory.newStudentRelation()]
@@ -21,7 +21,7 @@ class EnrollmentServiceSpec extends Specification {
         1 * getTeachingGroups() >> [('/teaching-group-sourced-id'): FintObjectFactory.newTeachingGroup()]
     }
 
-    EnrollmentService enrollmentService = new EnrollmentService(fintRepository)
+    EnrollmentService enrollmentService = new EnrollmentService(fintEducationService)
 
     def "getAllEnrollments returns a list of enrollments given valid orgId"() {
         when:
