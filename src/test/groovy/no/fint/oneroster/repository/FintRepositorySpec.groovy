@@ -7,6 +7,7 @@ import no.fint.oneroster.util.FintObjectFactory
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.springframework.security.core.Authentication
+import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
 import org.springframework.web.reactive.function.client.WebClient
@@ -17,12 +18,14 @@ class FintRepositorySpec extends Specification {
     WebClient webClient = WebClient.builder().build()
 
     OAuth2AuthorizedClientManager authorizedClientManager = Mock {
-        //1 * authorize(_) >> Mock(OAuth2AuthorizedClient)
+        1 * authorize(_ as OAuth2AuthorizeRequest) >> Mock(OAuth2AuthorizedClient)
     }
 
     OrganisationProperties organisationProperties = Mock {
-        1 * getOrganisations() >> [(_ as String): new OrganisationProperties.Organisation(
-                username: _ as String, password: _ as String, registration: _ as String, environment: mockWebServer.url("/").toString())]
+        1 * getOrganisation() >> new OrganisationProperties.Organisation(components: [('education'): new OrganisationProperties.Component(
+                registrations: [new OrganisationProperties.Registration(id: _ as String, username: _ as String, password: _ as String)],
+                endpoints: [('school'): mockWebServer.url("/").toString()]
+        )])
     }
 
     FintRepository fintRepository = new FintRepository(webClient, Mock(Authentication), authorizedClientManager, organisationProperties)
@@ -37,10 +40,10 @@ class FintRepositorySpec extends Specification {
                 .setResponseCode(200))
 
         when:
-        def resources = fintRepository.getSchools(_ as String)
+        def resources = fintRepository.getResources(SkoleResources.class, 'education', 'school')
 
         then:
-        resources.size() == 1
+        resources.blockLast().navn == 'School'
     }
 }
 

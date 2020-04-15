@@ -16,7 +16,6 @@ import java.util.List;
 @Slf4j
 @RestController
 public class ClazzController {
-
     private final ClazzService clazzService;
 
     public ClazzController(ClazzService clazzService) {
@@ -24,10 +23,11 @@ public class ClazzController {
     }
 
     @GetMapping("/classes")
-    public ResponseEntity<?> getAllClazzes(@RequestHeader(defaultValue = "pwf") String orgId, Pageable pageable,
-                                           @RequestParam(value = "filter", required = false) String filter,
-                                           @RequestParam(value = "fields", required = false) String fields) {
-        List<Clazz> clazzes = clazzService.getAllClazzes(orgId);
+    public ResponseEntity<?> getAllClazzes(@RequestParam(value = "filter", required = false) String filter,
+                                           @RequestParam(value = "fields", required = false) String fields,
+                                           Pageable pageable) {
+
+        List<Clazz> clazzes = clazzService.getAllClazzes();
 
         List<Clazz> modifiedClazzes = new OneRosterResponse.Builder<>(clazzes)
                 .filter(filter)
@@ -44,9 +44,10 @@ public class ClazzController {
     }
 
     @GetMapping("/classes/{sourcedId}")
-    public ResponseEntity<?> getClazz(@RequestHeader(defaultValue = "pwf") String orgId, @PathVariable String sourcedId,
-                                       @RequestParam(value = "fields", required = false) String fields) {
-        Clazz clazz = clazzService.getClazz(orgId, sourcedId);
+    public ResponseEntity<?> getClazz(@PathVariable String sourcedId,
+                                      @RequestParam(value = "fields", required = false) String fields) {
+
+        Clazz clazz = clazzService.getClazz(sourcedId);
 
         MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("class", clazz));
         body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(Clazz.class, fields)));
@@ -55,11 +56,11 @@ public class ClazzController {
     }
 
     @GetMapping("/schools/{sourcedId}/classes")
-    public ResponseEntity<?> getClassesForSchool(@RequestHeader(defaultValue = "pwf") String orgId, Pageable pageable,
-                                                 @PathVariable String sourcedId,
+    public ResponseEntity<?> getClassesForSchool(@PathVariable String sourcedId, Pageable pageable,
                                                  @RequestParam(value = "filter", required = false) String filter,
                                                  @RequestParam(value = "fields", required = false) String fields) {
-        List<Clazz> clazzes = clazzService.getClazzesForSchool(orgId, sourcedId);
+
+        List<Clazz> clazzes = clazzService.getClazzesForSchool(sourcedId);
 
         List<Clazz> modifiedClazzes = new OneRosterResponse.Builder<>(clazzes)
                 .filter(filter)

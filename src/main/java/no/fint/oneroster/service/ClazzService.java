@@ -1,6 +1,7 @@
 package no.fint.oneroster.service;
 
 import lombok.extern.slf4j.Slf4j;
+import no.fint.model.resource.Link;
 import no.fint.model.resource.utdanning.timeplan.FagResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
@@ -8,8 +9,7 @@ import no.fint.oneroster.exception.NotFoundException;
 import no.fint.oneroster.factory.ClazzFactory;
 import no.fint.oneroster.model.AcademicSession;
 import no.fint.oneroster.model.Clazz;
-import no.fint.oneroster.repository.FintRepository;
-import no.fint.oneroster.util.LinkUtil;
+import no.fint.oneroster.repository.FintEducationService;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -18,37 +18,37 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class ClazzService {
-
-    private final FintRepository fintRepository;
+    private final FintEducationService fintEducationService;
     private final AcademicSessionService academicSessionService;
 
-    public ClazzService(FintRepository fintRepository, AcademicSessionService academicSessionService) {
-        this.fintRepository = fintRepository;
+    public ClazzService(FintEducationService fintEducationService, AcademicSessionService academicSessionService) {
+        this.fintEducationService = fintEducationService;
         this.academicSessionService = academicSessionService;
     }
 
-    public List<Clazz> getAllClazzes(String orgId) {
-        Map<String, SkoleResource> schools = fintRepository.getSchools(orgId);
+    public List<Clazz> getAllClazzes() {
+        List<AcademicSession> terms = academicSessionService.getAllTerms();
 
         List<Clazz> clazzes = new ArrayList<>();
 
-        Map<String, ArstrinnResource> levels = fintRepository.getLevels(orgId);
-        List<AcademicSession> terms = academicSessionService.getAllTerms(orgId);
-
-        fintRepository.getBasisGroups(orgId)
+        fintEducationService.getBasisGroups()
                 .values()
+                .stream()
+                .distinct()
                 .forEach(basisGroup -> {
                     Optional<ArstrinnResource> level = basisGroup.getTrinn()
                             .stream()
-                            .map(LinkUtil::normalize)
-                            .map(levels::get)
+                            .map(Link::getHref)
+                            .map(String::toLowerCase)
+                            .map(fintEducationService.getLevels()::get)
                             .filter(Objects::nonNull)
                             .findAny();
 
                     Optional<SkoleResource> school = basisGroup.getSkole()
                             .stream()
-                            .map(LinkUtil::normalize)
-                            .map(schools::get)
+                            .map(Link::getHref)
+                            .map(String::toLowerCase)
+                            .map(fintEducationService.getSchools()::get)
                             .filter(Objects::nonNull)
                             .findAny();
 
@@ -57,22 +57,24 @@ public class ClazzService {
                     }
                 });
 
-        Map<String, FagResource> subjects = fintRepository.getSubjects(orgId);
-
-        fintRepository.getTeachingGroups(orgId)
+        fintEducationService.getTeachingGroups()
                 .values()
+                .stream()
+                .distinct()
                 .forEach(teachingGroup -> {
                     Optional<FagResource> subject = teachingGroup.getFag()
                             .stream()
-                            .map(LinkUtil::normalize)
-                            .map(subjects::get)
+                            .map(Link::getHref)
+                            .map(String::toLowerCase)
+                            .map(fintEducationService.getSubjects()::get)
                             .filter(Objects::nonNull)
                             .findFirst();
 
                     Optional<SkoleResource> school = teachingGroup.getSkole()
                             .stream()
-                            .map(LinkUtil::normalize)
-                            .map(schools::get)
+                            .map(Link::getHref)
+                            .map(String::toLowerCase)
+                            .map(fintEducationService.getSchools()::get)
                             .filter(Objects::nonNull)
                             .findAny();
 
@@ -84,15 +86,16 @@ public class ClazzService {
         return clazzes;
     }
 
-    public Clazz getClazz(String orgId, String sourcedId) {
-        return getAllClazzes(orgId).stream()
+    public Clazz getClazz(String sourcedId) {
+        return getAllClazzes()
+                .stream()
                 .filter(clazz -> clazz.getSourcedId().equals(sourcedId))
                 .findAny()
                 .orElseThrow(NotFoundException::new);
     }
 
-    public List<Clazz> getClazzesForSchool(String orgId, String sourcedId) {
-        return getAllClazzes(orgId)
+    public List<Clazz> getClazzesForSchool(String sourcedId) {
+        return getAllClazzes()
                 .stream()
                 .filter(clazz -> clazz.getSchool().getSourcedId().equals(sourcedId))
                 .collect(Collectors.toList());

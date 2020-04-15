@@ -1,5 +1,6 @@
 package no.fint.oneroster.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import no.fint.oneroster.model.vocab.SessionType;
@@ -12,6 +13,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 @Getter @Setter
+@EqualsAndHashCode(callSuper = true)
 public class AcademicSession extends Base {
     private final String title;
     private final LocalDate startDate;

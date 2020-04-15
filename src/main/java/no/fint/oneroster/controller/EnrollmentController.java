@@ -16,7 +16,6 @@ import java.util.List;
 @Slf4j
 @RestController
 public class EnrollmentController {
-
     private final EnrollmentService enrollmentService;
 
     public EnrollmentController(EnrollmentService enrollmentService) {
@@ -24,10 +23,11 @@ public class EnrollmentController {
     }
 
     @GetMapping("/enrollments")
-    public ResponseEntity<?> getAllEnrollments(@RequestHeader(defaultValue = "pwf") String orgId, Pageable pageable,
-                                               @RequestParam(value = "filter", required = false) String filter,
-                                               @RequestParam(value = "fields", required = false) String fields) {
-        List<Enrollment> enrollments = enrollmentService.getAllEnrollments(orgId);
+    public ResponseEntity<?> getAllEnrollments(@RequestParam(value = "filter", required = false) String filter,
+                                               @RequestParam(value = "fields", required = false) String fields,
+                                               Pageable pageable) {
+
+        List<Enrollment> enrollments = enrollmentService.getAllEnrollments();
 
         List<Enrollment> modifiedEnrollments = new OneRosterResponse.Builder<>(enrollments)
                 .filter(filter)
@@ -44,9 +44,10 @@ public class EnrollmentController {
     }
 
     @GetMapping("/enrollments/{sourcedId}")
-    public ResponseEntity<?> getEnrollment(@RequestHeader(defaultValue = "pwf") String orgId, @PathVariable String sourcedId,
+    public ResponseEntity<?> getEnrollment(@PathVariable String sourcedId,
                                            @RequestParam(value = "fields", required = false) String fields) {
-        Enrollment enrollment = enrollmentService.getEnrollment(orgId, sourcedId);
+
+        Enrollment enrollment = enrollmentService.getEnrollment(sourcedId);
 
         MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("enrollment", enrollment));
         body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(Enrollment.class, fields)));
@@ -55,11 +56,11 @@ public class EnrollmentController {
     }
 
     @GetMapping("/schools/{sourcedId}/enrollments")
-    public ResponseEntity<?> getEnrollmentsForSchool(@RequestHeader(defaultValue = "pwf") String orgId, Pageable pageable,
-                                                     @PathVariable String sourcedId,
+    public ResponseEntity<?> getEnrollmentsForSchool(@PathVariable String sourcedId, Pageable pageable,
                                                      @RequestParam(value = "filter", required = false) String filter,
                                                      @RequestParam(value = "fields", required = false) String fields) {
-        List<Enrollment> enrollments = enrollmentService.getEnrollmentsForSchool(orgId, sourcedId);
+
+        List<Enrollment> enrollments = enrollmentService.getEnrollmentsForSchool(sourcedId);
 
         List<Enrollment> modifiedEnrollments = new OneRosterResponse.Builder<>(enrollments)
                 .filter(filter)

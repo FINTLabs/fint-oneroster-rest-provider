@@ -1,5 +1,6 @@
 package no.fint.oneroster.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import no.fint.oneroster.model.vocab.RoleType;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter @Setter
+@EqualsAndHashCode(callSuper = true)
 public class User extends Base {
     private final String username;
     private final Boolean enabledUser;

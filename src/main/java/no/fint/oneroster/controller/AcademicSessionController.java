@@ -17,7 +17,6 @@ import java.util.List;
 @Slf4j
 @RestController
 public class AcademicSessionController {
-
     private final AcademicSessionService academicSessionService;
 
     public AcademicSessionController(AcademicSessionService academicSessionService) {
@@ -25,10 +24,11 @@ public class AcademicSessionController {
     }
 
     @GetMapping("/academicSessions")
-    public ResponseEntity<?> getAllUsers(@RequestHeader(defaultValue = "pwf") String orgId, Pageable pageable,
-                                         @RequestParam(value = "filter", required = false) String filter,
-                                         @RequestParam(value = "fields", required = false) String fields) {
-        List<AcademicSession> academicSessions = academicSessionService.getAllAcademicSessions(orgId);
+    public ResponseEntity<?> getAllUsers(@RequestParam(value = "filter", required = false) String filter,
+                                         @RequestParam(value = "fields", required = false) String fields,
+                                         Pageable pageable) {
+
+        List<AcademicSession> academicSessions = academicSessionService.getAllAcademicSessions();
 
         List<AcademicSession> modifiedAcademicSessions = new OneRosterResponse.Builder<>(academicSessions)
                 .filter(filter)
@@ -45,9 +45,10 @@ public class AcademicSessionController {
     }
 
     @GetMapping("/academicSessions/{sourcedId}")
-    public ResponseEntity<?> getAcademicSession(@RequestHeader(defaultValue = "pwf") String orgId, @PathVariable String sourcedId,
+    public ResponseEntity<?> getAcademicSession(@PathVariable String sourcedId,
                                                 @RequestParam(value = "fields", required = false) String fields) {
-        AcademicSession academicSession = academicSessionService.getAcademicSession(orgId, sourcedId);
+
+        AcademicSession academicSession = academicSessionService.getAcademicSession(sourcedId);
 
         MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("academicSession", academicSession));
         body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(Clazz.class, fields)));
@@ -56,10 +57,11 @@ public class AcademicSessionController {
     }
 
     @GetMapping("/terms")
-    public ResponseEntity<?> getAllTerms(@RequestHeader(defaultValue = "pwf") String orgId, Pageable pageable,
-                                         @RequestParam(value = "filter", required = false) String filter,
-                                         @RequestParam(value = "fields", required = false) String fields) {
-        List<AcademicSession> terms = academicSessionService.getAllTerms(orgId);
+    public ResponseEntity<?> getAllTerms(@RequestParam(value = "filter", required = false) String filter,
+                                         @RequestParam(value = "fields", required = false) String fields,
+                                         Pageable pageable) {
+
+        List<AcademicSession> terms = academicSessionService.getAllTerms();
 
         List<AcademicSession> modifiedAcademicSessions = new OneRosterResponse.Builder<>(terms)
                 .filter(filter)
@@ -76,9 +78,10 @@ public class AcademicSessionController {
     }
 
     @GetMapping("/terms/{sourcedId}")
-    public ResponseEntity<?> getTerm(@RequestHeader(defaultValue = "pwf") String orgId, @PathVariable String sourcedId,
+    public ResponseEntity<?> getTerm(@PathVariable String sourcedId,
                                      @RequestParam(value = "fields", required = false) String fields) {
-        AcademicSession term = academicSessionService.getTerm(orgId, sourcedId);
+
+        AcademicSession term = academicSessionService.getTerm(sourcedId);
 
         MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("academicSession", term));
         body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(Clazz.class, fields)));
@@ -87,10 +90,11 @@ public class AcademicSessionController {
     }
 
     @GetMapping("/gradingPeriods")
-    public ResponseEntity<?> getAllGradingPeriods(@RequestHeader(defaultValue = "pwf") String orgId, Pageable pageable,
-                                                  @RequestParam(value = "filter", required = false) String filter,
-                                                  @RequestParam(value = "fields", required = false) String fields) {
-        List<AcademicSession> gradingPeriods = academicSessionService.getAllGradingPeriods(orgId);
+    public ResponseEntity<?> getAllGradingPeriods(@RequestParam(value = "filter", required = false) String filter,
+                                                  @RequestParam(value = "fields", required = false) String fields,
+                                                  Pageable pageable) {
+
+        List<AcademicSession> gradingPeriods = academicSessionService.getAllGradingPeriods();
 
         List<AcademicSession> modifiedAcademicSessions = new OneRosterResponse.Builder<>(gradingPeriods)
                 .filter(filter)
@@ -107,9 +111,10 @@ public class AcademicSessionController {
     }
 
     @GetMapping("/gradingPeriods/{sourcedId}")
-    public ResponseEntity<?> getGradingPeriod(@RequestHeader(defaultValue = "pwf") String orgId, @PathVariable String sourcedId,
+    public ResponseEntity<?> getGradingPeriod(@PathVariable String sourcedId,
                                               @RequestParam(value = "fields", required = false) String fields) {
-        AcademicSession gradingPeriod = academicSessionService.getGradingPeriod(orgId, sourcedId);
+
+        AcademicSession gradingPeriod = academicSessionService.getGradingPeriod(sourcedId);
 
         MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("academicSession", gradingPeriod));
         body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(AcademicSession.class, fields)));

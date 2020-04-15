@@ -7,7 +7,7 @@ import no.fint.oneroster.model.Org;
 import no.fint.oneroster.model.vocab.GUIDType;
 import no.fint.oneroster.model.vocab.OrgType;
 import no.fint.oneroster.properties.OrganisationProperties;
-import no.fint.oneroster.repository.FintRepository;
+import no.fint.oneroster.repository.FintEducationService;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -16,22 +16,23 @@ import java.util.stream.Collectors;
 @Service
 public class OrgService {
 
-    private final FintRepository fintRepository;
+    private final FintEducationService fintEducationService;
     private final OrganisationProperties organisationProperties;
 
-    public OrgService(FintRepository fintRepository, OrganisationProperties organisationProperties) {
-        this.fintRepository = fintRepository;
+    public OrgService(FintEducationService fintEducationService, OrganisationProperties organisationProperties) {
+        this.fintEducationService = fintEducationService;
         this.organisationProperties = organisationProperties;
     }
 
-    public List<Org> getAllOrgs(String orgId) {
-        OrganisationProperties.Organisation organisation = organisationProperties.getOrganisations().get(orgId);
+    public List<Org> getAllOrgs() {
+        OrganisationProperties.Organisation organisation = organisationProperties.getOrganisation();
 
         Org schoolOwner = OrgFactory.schoolOwner(organisation);
 
-        List<Org> orgs = fintRepository.getSchools(orgId)
+        List<Org> orgs = fintEducationService.getSchools()
                 .values()
                 .stream()
+                .distinct()
                 .map(OrgFactory::school)
                 .peek(school -> {
                     if (schoolOwner.getChildren() == null) {
@@ -47,22 +48,24 @@ public class OrgService {
         return orgs;
     }
 
-    public Org getOrg(String orgId, String sourcedId) {
-        return getAllOrgs(orgId).stream()
+    public Org getOrg(String sourcedId) {
+        return getAllOrgs()
+                .stream()
                 .filter(org -> org.getSourcedId().equals(sourcedId))
                 .findAny()
                 .orElseThrow(NotFoundException::new);
     }
 
-    public List<Org> getAllSchools(String orgId) {
-        return getAllOrgs(orgId)
+    public List<Org> getAllSchools() {
+        return getAllOrgs()
                 .stream()
                 .filter(org -> org.getType().equals(OrgType.SCHOOL))
                 .collect(Collectors.toList());
     }
 
-    public Org getSchool(String orgId, String sourcedId) {
-        return getAllSchools(orgId).stream()
+    public Org getSchool(String sourcedId) {
+        return getAllSchools()
+                .stream()
                 .filter(school -> school.getSourcedId().equals(sourcedId))
                 .findAny()
                 .orElseThrow(NotFoundException::new);

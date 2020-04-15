@@ -1,5 +1,6 @@
 package no.fint.oneroster.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import no.fint.oneroster.model.vocab.StatusType;
@@ -9,6 +10,7 @@ import java.time.ZonedDateTime;
 import java.util.*;
 
 @Getter @Setter
+@EqualsAndHashCode(callSuper = true)
 public class Course extends Base {
     private final String title;
     private final GUIDRef org;

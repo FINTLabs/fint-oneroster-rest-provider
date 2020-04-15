@@ -17,7 +17,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/courses")
 public class CourseController {
-
     private final CourseService courseService;
 
     public CourseController(CourseService courseService) {
@@ -25,10 +24,11 @@ public class CourseController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllCourses(@RequestHeader(defaultValue = "pwf") String orgId, Pageable pageable,
-                                           @RequestParam(value = "filter", required = false) String filter,
-                                           @RequestParam(value = "fields", required = false) String fields) {
-        List<Course> courses = courseService.getAllCourses(orgId);
+    public ResponseEntity<?> getAllCourses(@RequestParam(value = "filter", required = false) String filter,
+                                           @RequestParam(value = "fields", required = false) String fields,
+                                           Pageable pageable) {
+
+        List<Course> courses = courseService.getAllCourses();
 
         List<Course> modifiedCourses = new OneRosterResponse.Builder<>(courses)
                 .filter(filter)
@@ -45,9 +45,10 @@ public class CourseController {
     }
 
     @GetMapping("/{sourcedId}")
-    public ResponseEntity<?> getCourse(@RequestHeader(defaultValue = "pwf") String orgId, @PathVariable String sourcedId,
-                                         @RequestParam(value = "fields", required = false) String fields) {
-        Course course = courseService.getCourse(orgId, sourcedId);
+    public ResponseEntity<?> getCourse(@PathVariable String sourcedId,
+                                       @RequestParam(value = "fields", required = false) String fields) {
+
+        Course course = courseService.getCourse(sourcedId);
 
         MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("course", course));
         body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(Course.class, fields)));

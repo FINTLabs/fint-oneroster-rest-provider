@@ -14,20 +14,19 @@ import java.util.stream.Collectors;
 
 @Service
 public class AcademicSessionService {
-
     private final OrganisationProperties organisationProperties;
 
     public AcademicSessionService(OrganisationProperties organisationProperties) {
         this.organisationProperties = organisationProperties;
     }
 
-    public List<AcademicSession> getAllAcademicSessions(String orgId) {
-        OrganisationProperties.Organisation organisation = organisationProperties.getOrganisations().get(orgId);
+    public List<AcademicSession> getAllAcademicSessions() {
+        OrganisationProperties.Organisation organisation = organisationProperties.getOrganisation();
 
         Year endYear = Year.of(organisation.getSchoolYear().getEndDate().getYear());
 
         AcademicSession schoolYear = new AcademicSession(
-                orgId + SessionType.SCHOOLYEAR.getSessionType() + organisation.getSchoolYear().getBeginDate() + organisation.getSchoolYear().getEndDate(),
+                SessionType.SCHOOLYEAR.getSessionType() + organisation.getSchoolYear().getBeginDate() + organisation.getSchoolYear().getEndDate(),
                 organisation.getSchoolYear().getName(),
                 organisation.getSchoolYear().getBeginDate(),
                 organisation.getSchoolYear().getEndDate(),
@@ -36,7 +35,7 @@ public class AcademicSessionService {
         );
 
         AcademicSession firstTerm = new AcademicSession(
-                orgId + SessionType.TERM.getSessionType() + organisation.getSchoolYear().getFirstTerm().getBeginDate() + organisation.getSchoolYear().getFirstTerm().getEndDate(),
+                SessionType.TERM.getSessionType() + organisation.getSchoolYear().getFirstTerm().getBeginDate() + organisation.getSchoolYear().getFirstTerm().getEndDate(),
                 organisation.getSchoolYear().getFirstTerm().getName(),
                 organisation.getSchoolYear().getFirstTerm().getBeginDate(),
                 organisation.getSchoolYear().getFirstTerm().getEndDate(),
@@ -46,7 +45,7 @@ public class AcademicSessionService {
         firstTerm.setParent(GUIDRef.of(GUIDType.ACADEMICSESSION, schoolYear.getSourcedId()));
 
         AcademicSession secondTerm = new AcademicSession(
-                orgId + SessionType.TERM.getSessionType() + organisation.getSchoolYear().getSecondTerm().getBeginDate() + organisation.getSchoolYear().getSecondTerm().getEndDate(),
+                SessionType.TERM.getSessionType() + organisation.getSchoolYear().getSecondTerm().getBeginDate() + organisation.getSchoolYear().getSecondTerm().getEndDate(),
                 organisation.getSchoolYear().getSecondTerm().getName(),
                 organisation.getSchoolYear().getSecondTerm().getBeginDate(),
                 organisation.getSchoolYear().getSecondTerm().getEndDate(),
@@ -61,34 +60,39 @@ public class AcademicSessionService {
         return Arrays.asList(schoolYear, firstTerm, secondTerm);
     }
 
-    public AcademicSession getAcademicSession(String orgId, String sourcedId) {
-        return getAllAcademicSessions(orgId).stream()
+    public AcademicSession getAcademicSession(String sourcedId) {
+        return getAllAcademicSessions()
+                .stream()
                 .filter(academicSession -> academicSession.getSourcedId().equals(sourcedId))
                 .findAny()
                 .orElseThrow(NotFoundException::new);
     }
 
-    public List<AcademicSession> getAllTerms(String orgId) {
-        return getAllAcademicSessions(orgId).stream()
+    public List<AcademicSession> getAllTerms() {
+        return getAllAcademicSessions()
+                .stream()
                 .filter(academicSession -> academicSession.getType().equals(SessionType.TERM))
                 .collect(Collectors.toList());
     }
 
-    public AcademicSession getTerm(String orgId, String sourcedId) {
-        return getAllTerms(orgId).stream()
+    public AcademicSession getTerm(String sourcedId) {
+        return getAllTerms()
+                .stream()
                 .filter(term -> term.getSourcedId().equals(sourcedId))
                 .findAny()
                 .orElseThrow(NotFoundException::new);
     }
 
-    public List<AcademicSession> getAllGradingPeriods(String orgId) {
-        return getAllAcademicSessions(orgId).stream()
+    public List<AcademicSession> getAllGradingPeriods() {
+        return getAllAcademicSessions()
+                .stream()
                 .filter(academicSession -> academicSession.getType().equals(SessionType.GRADINGPERIOD))
                 .collect(Collectors.toList());
     }
 
-    public AcademicSession getGradingPeriod(String orgId, String sourcedId) {
-        return getAllGradingPeriods(orgId).stream()
+    public AcademicSession getGradingPeriod(String sourcedId) {
+        return getAllGradingPeriods()
+                .stream()
                 .filter(gradingPeriod -> gradingPeriod.getSourcedId().equals(sourcedId))
                 .findAny()
                 .orElseThrow(NotFoundException::new);

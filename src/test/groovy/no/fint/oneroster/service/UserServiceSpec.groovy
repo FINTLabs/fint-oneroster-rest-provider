@@ -1,27 +1,34 @@
 package no.fint.oneroster.service
 
 import no.fint.oneroster.model.vocab.RoleType
-import no.fint.oneroster.repository.FintRepository
+import no.fint.oneroster.repository.FintAdministrationService
+import no.fint.oneroster.repository.FintEducationService
 import no.fint.oneroster.util.FintObjectFactory
 import spock.lang.Specification
 
 class UserServiceSpec extends Specification {
 
-    FintRepository fintRepository = Mock {
-        1 * getPersons(_ as String) >> [('/person-sourced-id'): FintObjectFactory.newPerson(), ('/teacher-sourced-id'): FintObjectFactory.newTeacher()]
-        1 * getStudents(_ as String) >> [('/student-sourced-id'): FintObjectFactory.newStudent()]
-        1 * getTeachers(_ as String) >> [('/teacher-sourced-id'): FintObjectFactory.newTeacher()]
-        1 * getStudentRelations(_ as String) >> [('/student-relation-sourced-id'): FintObjectFactory.newStudentRelation()]
-        1 * getTeachingRelations(_ as String) >> [('/teaching-relation-sourced-id'): FintObjectFactory.newTeachingRelation()]
-        1 * getPersonnelResources(_ as String) >> [('/personnel-resource-sourced-id'): FintObjectFactory.newPersonnelResource()]
-        1 * getSchools(_ as String) >> [('/school-sourced-id'): FintObjectFactory.newSchool()]
+    FintEducationService fintEducationService = Mock {
+        1 * getSchools() >> [('/school-sourced-id'): FintObjectFactory.newSchool()]
+        1 * getPersons() >> [('/person-sourced-id'): FintObjectFactory.newPerson()]
+        1 * getStudents() >> [('/student-sourced-id'): FintObjectFactory.newStudent()]
+        1 * getStudentRelations() >> [('/student-relation-sourced-id'): FintObjectFactory.newStudentRelation()]
+
+        1 * getSchools() >> [('/school-sourced-id'): FintObjectFactory.newSchool()]
+        1 * getTeachers() >> [('/teacher-sourced-id'): FintObjectFactory.newTeacher()]
+        1 * getTeachingRelations() >> [('/teaching-relation-sourced-id'): FintObjectFactory.newTeachingRelation()]
     }
 
-    UserService userService = new UserService(fintRepository)
+    FintAdministrationService fintAdministrationService = Mock {
+        1 * getPersons() >> [('/person-sourced-id'): FintObjectFactory.newPerson()]
+        1 * getPersonnel() >> [('/personnel-resource-sourced-id'): FintObjectFactory.newPersonnel()]
+    }
+
+    UserService userService = new UserService(fintEducationService, fintAdministrationService)
 
     def "getAllUsers returns a list of users given valid orgId"() {
         when:
-        def users = userService.getAllUsers(_ as String)
+        def users = userService.getAllUsers()
 
         then:
         users.size() == 2
@@ -59,7 +66,7 @@ class UserServiceSpec extends Specification {
 
     def "getUser returns a user given valid orgId and sourcedId"() {
         when:
-        def user = userService.getUser(_ as String, 'student-sourced-id')
+        def user = userService.getUser('student-sourced-id')
 
         then:
         user.sourcedId == 'student-sourced-id'
@@ -80,7 +87,7 @@ class UserServiceSpec extends Specification {
 
     def "getAllStudents returns a list of users given valid orgId"() {
         when:
-        def students = userService.getAllStudents(_ as String)
+        def students = userService.getAllStudents()
 
         then:
         students.size() == 1
@@ -88,7 +95,7 @@ class UserServiceSpec extends Specification {
 
     def "getStudent returns a student given valid orgId and sourcedId"() {
         when:
-        def student = userService.getStudent(_ as String, 'student-sourced-id')
+        def student = userService.getStudent('student-sourced-id')
 
         then:
         student.sourcedId == 'student-sourced-id'
@@ -109,7 +116,7 @@ class UserServiceSpec extends Specification {
 
     def "getAllTeachers returns a list of users given valid orgId"() {
         when:
-        def teachers = userService.getAllTeachers(_ as String)
+        def teachers = userService.getAllTeachers()
 
         then:
         teachers.size() == 1
@@ -117,7 +124,7 @@ class UserServiceSpec extends Specification {
 
     def "getTeacher returns a teacher given valid orgId and sourcedId"() {
         when:
-        def teacher = userService.getTeacher(_ as String, 'teacher-sourced-id')
+        def teacher = userService.getTeacher('teacher-sourced-id')
 
         then:
         teacher.sourcedId == 'teacher-sourced-id'

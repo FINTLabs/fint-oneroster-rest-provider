@@ -1,16 +1,14 @@
 package no.fint.oneroster.service;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fint.model.resource.utdanning.elev.BasisgruppeResource;
+import no.fint.model.resource.Link;
 import no.fint.model.resource.utdanning.elev.ElevResource;
 import no.fint.model.resource.utdanning.elev.SkoleressursResource;
-import no.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
 import no.fint.oneroster.exception.NotFoundException;
 import no.fint.oneroster.factory.EnrollmentFactory;
 import no.fint.oneroster.model.Enrollment;
-import no.fint.oneroster.repository.FintRepository;
-import no.fint.oneroster.util.LinkUtil;
+import no.fint.oneroster.repository.FintEducationService;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -19,43 +17,41 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class EnrollmentService {
+    private final FintEducationService fintEducationService;
 
-    private final FintRepository fintRepository;
-
-    public EnrollmentService(FintRepository fintRepository) {
-        this.fintRepository = fintRepository;
+    public EnrollmentService(FintEducationService fintEducationService) {
+        this.fintEducationService = fintEducationService;
     }
 
-    public List<Enrollment> getAllEnrollments(String orgId) {
-        Map<String, SkoleResource> schools = fintRepository.getSchools(orgId);
-        Map<String, BasisgruppeResource> basisGroups = fintRepository.getBasisGroups(orgId);
-        Map<String, UndervisningsgruppeResource> teachingGroups = fintRepository.getTeachingGroups(orgId);
-
+    public List<Enrollment> getAllEnrollments() {
         List<Enrollment> enrollments = new ArrayList<>();
 
-        Map<String, ElevResource> students = fintRepository.getStudents(orgId);
-
-        fintRepository.getStudentRelations(orgId)
+        fintEducationService.getStudentRelations()
                 .values()
+                .stream()
+                .distinct()
                 .forEach(elevforholdResource -> {
                     Optional<ElevResource> student = elevforholdResource.getElev()
                             .stream()
-                            .map(LinkUtil::normalize)
-                            .map(students::get)
+                            .map(Link::getHref)
+                            .map(String::toLowerCase)
+                            .map(fintEducationService.getStudents()::get)
                             .filter(Objects::nonNull)
                             .findAny();
 
                     Optional<SkoleResource> school = elevforholdResource.getSkole()
                             .stream()
-                            .map(LinkUtil::normalize)
-                            .map(schools::get)
+                            .map(Link::getHref)
+                            .map(String::toLowerCase)
+                            .map(fintEducationService.getSchools()::get)
                             .filter(Objects::nonNull)
                             .findAny();
 
                     elevforholdResource.getBasisgruppe()
                             .stream()
-                            .map(LinkUtil::normalize)
-                            .map(basisGroups::get)
+                            .map(Link::getHref)
+                            .map(String::toLowerCase)
+                            .map(fintEducationService.getBasisGroups()::get)
                             .filter(Objects::nonNull)
                             .forEach(basisGroup -> {
                                 if (student.isPresent() && school.isPresent()) {
@@ -65,8 +61,9 @@ public class EnrollmentService {
 
                     elevforholdResource.getUndervisningsgruppe()
                             .stream()
-                            .map(LinkUtil::normalize)
-                            .map(teachingGroups::get)
+                            .map(Link::getHref)
+                            .map(String::toLowerCase)
+                            .map(fintEducationService.getTeachingGroups()::get)
                             .filter(Objects::nonNull)
                             .forEach(teachingGroup -> {
                                 if (student.isPresent() && school.isPresent()) {
@@ -75,29 +72,32 @@ public class EnrollmentService {
                             });
                 });
 
-        Map<String, SkoleressursResource> schoolResourceMap = fintRepository.getTeachers(orgId);
-
-        fintRepository.getTeachingRelations(orgId)
+        fintEducationService.getTeachingRelations()
                 .values()
+                .stream()
+                .distinct()
                 .forEach(undervisningsforholdResource -> {
                     Optional<SkoleressursResource> teacher = undervisningsforholdResource.getSkoleressurs()
                             .stream()
-                            .map(LinkUtil::normalize)
-                            .map(schoolResourceMap::get)
+                            .map(Link::getHref)
+                            .map(String::toLowerCase)
+                            .map(fintEducationService.getTeachers()::get)
                             .filter(Objects::nonNull)
                             .findAny();
 
                     Optional<SkoleResource> school = undervisningsforholdResource.getSkole()
                             .stream()
-                            .map(LinkUtil::normalize)
-                            .map(schools::get)
+                            .map(Link::getHref)
+                            .map(String::toLowerCase)
+                            .map(fintEducationService.getSchools()::get)
                             .filter(Objects::nonNull)
                             .findAny();
 
                     undervisningsforholdResource.getBasisgruppe()
                             .stream()
-                            .map(LinkUtil::normalize)
-                            .map(basisGroups::get)
+                            .map(Link::getHref)
+                            .map(String::toLowerCase)
+                            .map(fintEducationService.getBasisGroups()::get)
                             .filter(Objects::nonNull)
                             .forEach(basisGroup -> {
                                 if (teacher.isPresent() && school.isPresent()) {
@@ -107,8 +107,9 @@ public class EnrollmentService {
 
                     undervisningsforholdResource.getUndervisningsgruppe()
                             .stream()
-                            .map(LinkUtil::normalize)
-                            .map(teachingGroups::get)
+                            .map(Link::getHref)
+                            .map(String::toLowerCase)
+                            .map(fintEducationService.getTeachingGroups()::get)
                             .filter(Objects::nonNull)
                             .forEach(teachingGroup -> {
                                 if (teacher.isPresent() && school.isPresent()) {
@@ -120,15 +121,16 @@ public class EnrollmentService {
         return enrollments;
     }
 
-    public Enrollment getEnrollment(String orgId, String sourcedId) {
-        return getAllEnrollments(orgId).stream()
+    public Enrollment getEnrollment(String sourcedId) {
+        return getAllEnrollments()
+                .stream()
                 .filter(enrollment -> enrollment.getSourcedId().equals(sourcedId))
                 .findAny()
                 .orElseThrow(NotFoundException::new);
     }
 
-    public List<Enrollment> getEnrollmentsForSchool(String orgId, String sourcedId) {
-        return getAllEnrollments(orgId)
+    public List<Enrollment> getEnrollmentsForSchool(String sourcedId) {
+        return getAllEnrollments()
                 .stream()
                 .filter(enrollment -> enrollment.getSchool().getSourcedId().equals(sourcedId))
                 .collect(Collectors.toList());

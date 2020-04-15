@@ -1,6 +1,7 @@
 package no.fint.oneroster.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import no.fint.oneroster.model.vocab.RoleType;
@@ -11,6 +12,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 @Getter @Setter
+@EqualsAndHashCode(callSuper = true)
 public class Enrollment extends Base {
     private final GUIDRef user;
     private final GUIDRef clazz;

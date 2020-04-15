@@ -1,30 +1,30 @@
 package no.fint.oneroster.service
 
 import no.fint.oneroster.properties.OrganisationProperties
-import no.fint.oneroster.repository.FintRepository
+import no.fint.oneroster.repository.FintEducationService
 import no.fint.oneroster.util.FintObjectFactory
 import spock.lang.Specification
 
 class CourseServiceSpec extends Specification {
 
-    FintRepository fintRepository = Mock {
-        getLevels(_ as String) >> [('/level-sourced-id'): FintObjectFactory.newLevel()]
-        getSubjects(_ as String) >> [('/subject-sourced-id'): FintObjectFactory.newSubject()]
+    FintEducationService fintEducationService = Mock {
+        getLevels() >> [('/level-sourced-id'): FintObjectFactory.newLevel()]
+        getSubjects() >> [('/subject-sourced-id'): FintObjectFactory.newSubject()]
     }
 
     OrganisationProperties organisationProperties = Mock {
-        getOrganisations() >> [(_ as String): new OrganisationProperties.Organisation(
+        getOrganisation() >> new OrganisationProperties.Organisation(
                 sourcedId: 'school-owner-sourced-id',
                 name: 'Org',
                 identifier: '0123456789'
-        )]
+        )
     }
 
-    CourseService courseService = new CourseService(fintRepository, organisationProperties)
+    CourseService courseService = new CourseService(fintEducationService, organisationProperties)
 
     def "getAllCourses returns a list of courses given valid orgId"() {
         when:
-        def courses = courseService.getAllCourses(_ as String)
+        def courses = courseService.getAllCourses()
 
         then:
         courses.size() == 2
@@ -42,7 +42,7 @@ class CourseServiceSpec extends Specification {
 
     def "getCourse returns a course given valid orgId and sourcedId"() {
         when:
-        def course = courseService.getCourse(_ as String, 'level-sourced-id')
+        def course = courseService.getCourse('level-sourced-id')
 
         then:
         course.sourcedId == 'level-sourced-id'
