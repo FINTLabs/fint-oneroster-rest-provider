@@ -147,7 +147,8 @@ public class FintEducationService {
     public void updateBasisGroups() {
         fintRepository.getResources(BasisgruppeResources.class, "education", "basis-group")
                 .filter(resource -> Optional.ofNullable(resource.getSystemId()).map(Identifikator::getIdentifikatorverdi).isPresent() &&
-                        Optional.ofNullable(resource.getNavn()).isPresent())
+                        Optional.ofNullable(resource.getNavn()).isPresent() &&
+                        (resource.getElevforhold().size() > 0 || resource.getUndervisningsforhold().size() > 0))
                 .toStream()
                 .forEach(resource -> this.getSelfLinks(resource).forEach(link -> basisGroups.put(link, resource)));
     }
@@ -163,7 +164,8 @@ public class FintEducationService {
     public void updateTeachingGroups() {
         fintRepository.getResources(UndervisningsgruppeResources.class, "education", "teaching-group")
                 .filter(resource -> Optional.ofNullable(resource.getSystemId()).map(Identifikator::getIdentifikatorverdi).isPresent() &&
-                        Optional.ofNullable(resource.getNavn()).isPresent())
+                        Optional.ofNullable(resource.getNavn()).isPresent() &&
+                        (resource.getElevforhold().size() > 0 || resource.getUndervisningsforhold().size() > 0))
                 .toStream()
                 .forEach(resource -> this.getSelfLinks(resource).forEach(link -> teachingGroups.put(link, resource)));
     }
