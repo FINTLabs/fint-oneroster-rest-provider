@@ -12,7 +12,6 @@ import java.util.Map;
 @Data
 @ConfigurationProperties("fint")
 public class OrganisationProperties {
-
     private Organisation organisation = new Organisation();
 
     @Data
@@ -39,6 +38,7 @@ public class OrganisationProperties {
 
     @Data
     public static class SchoolYear {
+        private String sourcedId;
         private LocalDate beginDate;
         private LocalDate endDate;
         private String name;
@@ -56,6 +56,7 @@ public class OrganisationProperties {
 
     @Data
     public static class Term {
+        private String sourcedId;
         private LocalDate beginDate;
         private LocalDate endDate;
         private String name;

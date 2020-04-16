@@ -4,14 +4,17 @@ fint:
     name: play-with-fint
     identifier: 1234567890
     school-year:
+      sourced-id: SY20192020
       begin-date: 2019-08-01
       end-date: 2020-07-31
       name: Skoleåret 2019/2020
       first-term:
+        sourced-id: T1SY20192020
         begin-date: 2019-08-01
         end-date: 2019-12-31
         name: 1. termin 2019/2020
       second-term:
+        sourced-id: T2SY20192020
         begin-date: 2020-01-01
         end-date: 2020-07-31
         name: 2. termin 2019/2020

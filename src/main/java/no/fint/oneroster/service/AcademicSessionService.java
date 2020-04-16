@@ -26,7 +26,7 @@ public class AcademicSessionService {
         Year endYear = Year.of(organisation.getSchoolYear().getEndDate().getYear());
 
         AcademicSession schoolYear = new AcademicSession(
-                SessionType.SCHOOLYEAR.getSessionType() + organisation.getSchoolYear().getBeginDate() + organisation.getSchoolYear().getEndDate(),
+                organisation.getSchoolYear().getSourcedId(),
                 organisation.getSchoolYear().getName(),
                 organisation.getSchoolYear().getBeginDate(),
                 organisation.getSchoolYear().getEndDate(),
@@ -35,7 +35,7 @@ public class AcademicSessionService {
         );
 
         AcademicSession firstTerm = new AcademicSession(
-                SessionType.TERM.getSessionType() + organisation.getSchoolYear().getFirstTerm().getBeginDate() + organisation.getSchoolYear().getFirstTerm().getEndDate(),
+                organisation.getSchoolYear().getFirstTerm().getSourcedId(),
                 organisation.getSchoolYear().getFirstTerm().getName(),
                 organisation.getSchoolYear().getFirstTerm().getBeginDate(),
                 organisation.getSchoolYear().getFirstTerm().getEndDate(),
@@ -45,14 +45,14 @@ public class AcademicSessionService {
         firstTerm.setParent(GUIDRef.of(GUIDType.ACADEMICSESSION, schoolYear.getSourcedId()));
 
         AcademicSession secondTerm = new AcademicSession(
-                SessionType.TERM.getSessionType() + organisation.getSchoolYear().getSecondTerm().getBeginDate() + organisation.getSchoolYear().getSecondTerm().getEndDate(),
+                organisation.getSchoolYear().getSecondTerm().getSourcedId(),
                 organisation.getSchoolYear().getSecondTerm().getName(),
                 organisation.getSchoolYear().getSecondTerm().getBeginDate(),
                 organisation.getSchoolYear().getSecondTerm().getEndDate(),
                 SessionType.TERM,
                 endYear);
 
-        secondTerm.setParent(GUIDRef.of(GUIDType.ACADEMICSESSION, secondTerm.getSourcedId()));
+        secondTerm.setParent(GUIDRef.of(GUIDType.ACADEMICSESSION, schoolYear.getSourcedId()));
 
         schoolYear.setChildren(Arrays.asList(GUIDRef.of(GUIDType.ACADEMICSESSION, firstTerm.getSourcedId()),
                 GUIDRef.of(GUIDType.ACADEMICSESSION, secondTerm.getSourcedId())));
