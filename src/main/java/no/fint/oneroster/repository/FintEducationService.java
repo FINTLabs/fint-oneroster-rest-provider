@@ -54,7 +54,8 @@ public class FintEducationService {
     public void updateSchools() {
         fintRepository.getResources(SkoleResources.class, "education", "school")
                 .filter(resource -> Optional.ofNullable(resource.getSystemId()).map(Identifikator::getIdentifikatorverdi).isPresent() &&
-                        Optional.ofNullable(resource.getNavn()).isPresent())
+                        Optional.ofNullable(resource.getNavn()).isPresent() &&
+                        (resource.getElevforhold().size() > 0 || resource.getUndervisningsforhold().size() > 0))
                 .toStream()
                 .forEach(resource -> this.getSelfLinks(resource).forEach(link -> schools.put(link, resource)));
     }
