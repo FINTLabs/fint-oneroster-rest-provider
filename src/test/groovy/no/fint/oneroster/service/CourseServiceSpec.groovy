@@ -1,6 +1,6 @@
 package no.fint.oneroster.service
 
-import no.fint.oneroster.properties.OrganisationProperties
+import no.fint.oneroster.properties.OneRosterProperties
 import no.fint.oneroster.repository.FintEducationService
 import no.fint.oneroster.util.FintObjectFactory
 import spock.lang.Specification
@@ -12,8 +12,8 @@ class CourseServiceSpec extends Specification {
         getSubjects() >> [('/subject-sourced-id'): FintObjectFactory.newSubject()]
     }
 
-    OrganisationProperties organisationProperties = Mock {
-        getOrganisation() >> new OrganisationProperties.Organisation(
+    OneRosterProperties organisationProperties = Mock {
+        getOrg() >> new OneRosterProperties.Org(
                 sourcedId: 'school-owner-sourced-id',
                 name: 'Org',
                 identifier: '0123456789'

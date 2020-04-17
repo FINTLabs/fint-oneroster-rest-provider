@@ -3,7 +3,7 @@ package no.fint.oneroster.service;
 import no.fint.oneroster.exception.NotFoundException;
 import no.fint.oneroster.factory.CourseFactory;
 import no.fint.oneroster.model.Course;
-import no.fint.oneroster.properties.OrganisationProperties;
+import no.fint.oneroster.properties.OneRosterProperties;
 import no.fint.oneroster.repository.FintEducationService;
 import org.springframework.stereotype.Service;
 
@@ -13,15 +13,15 @@ import java.util.List;
 @Service
 public class CourseService {
     private final FintEducationService fintEducationService;
-    private final OrganisationProperties organisationProperties;
+    private final OneRosterProperties oneRosterProperties;
 
-    public CourseService(FintEducationService fintEducationService, OrganisationProperties organisationProperties) {
+    public CourseService(FintEducationService fintEducationService, OneRosterProperties oneRosterProperties) {
         this.fintEducationService = fintEducationService;
-        this.organisationProperties = organisationProperties;
+        this.oneRosterProperties = oneRosterProperties;
     }
 
     public List<Course> getAllCourses() {
-        OrganisationProperties.Organisation organisation = organisationProperties.getOrganisation();
+        OneRosterProperties.Org org = oneRosterProperties.getOrg();
 
         List<Course> courses = new ArrayList<>();
 
@@ -29,13 +29,13 @@ public class CourseService {
                 .values()
                 .stream()
                 .distinct()
-                .forEach(level -> courses.add(CourseFactory.level(level, organisation)));
+                .forEach(level -> courses.add(CourseFactory.level(level, org)));
 
         fintEducationService.getSubjects()
                 .values()
                 .stream()
                 .distinct()
-                .forEach(subject -> courses.add(CourseFactory.subject(subject, organisation)));
+                .forEach(subject -> courses.add(CourseFactory.subject(subject, org)));
 
         return courses;
     }

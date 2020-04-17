@@ -1,7 +1,7 @@
 package no.fint.oneroster.service
 
 import no.fint.oneroster.model.vocab.SessionType
-import no.fint.oneroster.properties.OrganisationProperties
+import no.fint.oneroster.properties.OneRosterProperties
 import spock.lang.Ignore
 import spock.lang.Specification
 
@@ -10,18 +10,15 @@ import java.time.Year
 
 class AcademicSessionServiceSpec extends Specification {
 
-    OrganisationProperties organisationProperties = Mock {
-        getOrganisation() >> new OrganisationProperties.Organisation(
-                schoolYear: new OrganisationProperties.SchoolYear(
-                        sourcedId: 'SY20192020', beginDate: '2019-08-01', endDate: '2020-07-31', name: 'Skoleåret 2019/2020',
-                        firstTerm: new OrganisationProperties.Term(
-                                sourcedId: 'T1SY20192020', beginDate: '2019-08-01', endDate: '2019-12-31', name: '1. termin 2019/2020'),
-                        secondTerm: new OrganisationProperties.Term(
-                                sourcedId: 'T2SY20192020', beginDate: '2020-01-01', endDate: '2020-07-31', name: '2. termin 2019/2020'))
+    OneRosterProperties oneRosterProperties = Mock {
+        getAcademicSession() >> new OneRosterProperties.AcademicSession(
+                schoolYear: new OneRosterProperties.SchoolYear(sourcedId: 'SY20192020', beginDate: '2019-08-01', endDate: '2020-07-31', name: 'Skoleåret 2019/2020'),
+                firstTerm: new OneRosterProperties.Term(sourcedId: 'T1SY20192020', beginDate: '2019-08-01', endDate: '2019-12-31', name: '1. termin 2019/2020'),
+                secondTerm: new OneRosterProperties.Term(sourcedId: 'T2SY20192020', beginDate: '2020-01-01', endDate: '2020-07-31', name: '2. termin 2019/2020')
         )
     }
 
-    AcademicSessionService academicSessionService = new AcademicSessionService(organisationProperties)
+    AcademicSessionService academicSessionService = new AcademicSessionService(oneRosterProperties)
 
     def "getAllAcademicSessions returns a list of academicSessions given valid orgId"() {
         when:

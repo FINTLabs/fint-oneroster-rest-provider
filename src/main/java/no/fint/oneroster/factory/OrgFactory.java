@@ -4,7 +4,7 @@ import no.fint.model.felles.kompleksedatatyper.Identifikator;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
 import no.fint.oneroster.model.Org;
 import no.fint.oneroster.model.vocab.OrgType;
-import no.fint.oneroster.properties.OrganisationProperties;
+import no.fint.oneroster.properties.OneRosterProperties;
 
 import java.util.Optional;
 
@@ -13,7 +13,7 @@ public final class OrgFactory {
     private OrgFactory() {
     }
 
-    public static Org school(SkoleResource skoleResource) {
+    public static no.fint.oneroster.model.Org school(SkoleResource skoleResource) {
         Org school = new Org(
                 skoleResource.getSystemId().getIdentifikatorverdi(),
                 skoleResource.getNavn(),
@@ -27,14 +27,14 @@ public final class OrgFactory {
         return school;
     }
 
-    public static Org schoolOwner(OrganisationProperties.Organisation organisation) {
+    public static no.fint.oneroster.model.Org schoolOwner(OneRosterProperties.Org org) {
         Org schoolOwner = new Org(
-                organisation.getSourcedId(),
-                organisation.getName(),
+                org.getSourcedId(),
+                org.getName(),
                 OrgType.DISTRICT
         );
 
-        schoolOwner.setIdentifier(organisation.getIdentifier());
+        schoolOwner.setIdentifier(org.getIdentifier());
 
         return schoolOwner;
     }

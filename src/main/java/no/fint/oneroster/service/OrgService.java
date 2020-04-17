@@ -6,7 +6,7 @@ import no.fint.oneroster.model.GUIDRef;
 import no.fint.oneroster.model.Org;
 import no.fint.oneroster.model.vocab.GUIDType;
 import no.fint.oneroster.model.vocab.OrgType;
-import no.fint.oneroster.properties.OrganisationProperties;
+import no.fint.oneroster.properties.OneRosterProperties;
 import no.fint.oneroster.repository.FintEducationService;
 import org.springframework.stereotype.Service;
 
@@ -17,17 +17,15 @@ import java.util.stream.Collectors;
 public class OrgService {
 
     private final FintEducationService fintEducationService;
-    private final OrganisationProperties organisationProperties;
+    private final OneRosterProperties oneRosterProperties;
 
-    public OrgService(FintEducationService fintEducationService, OrganisationProperties organisationProperties) {
+    public OrgService(FintEducationService fintEducationService, OneRosterProperties oneRosterProperties) {
         this.fintEducationService = fintEducationService;
-        this.organisationProperties = organisationProperties;
+        this.oneRosterProperties = oneRosterProperties;
     }
 
     public List<Org> getAllOrgs() {
-        OrganisationProperties.Organisation organisation = organisationProperties.getOrganisation();
-
-        Org schoolOwner = OrgFactory.schoolOwner(organisation);
+        Org schoolOwner = OrgFactory.schoolOwner(oneRosterProperties.getOrg());
 
         List<Org> orgs = fintEducationService.getSchools()
                 .values()

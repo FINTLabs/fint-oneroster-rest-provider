@@ -5,7 +5,7 @@ import no.fint.oneroster.model.AcademicSession;
 import no.fint.oneroster.model.GUIDRef;
 import no.fint.oneroster.model.vocab.GUIDType;
 import no.fint.oneroster.model.vocab.SessionType;
-import no.fint.oneroster.properties.OrganisationProperties;
+import no.fint.oneroster.properties.OneRosterProperties;
 import org.springframework.stereotype.Service;
 
 import java.time.Year;
@@ -14,41 +14,41 @@ import java.util.stream.Collectors;
 
 @Service
 public class AcademicSessionService {
-    private final OrganisationProperties organisationProperties;
+    private final OneRosterProperties oneRosterProperties;
 
-    public AcademicSessionService(OrganisationProperties organisationProperties) {
-        this.organisationProperties = organisationProperties;
+    public AcademicSessionService(OneRosterProperties oneRosterProperties) {
+        this.oneRosterProperties = oneRosterProperties;
     }
 
     public List<AcademicSession> getAllAcademicSessions() {
-        OrganisationProperties.Organisation organisation = organisationProperties.getOrganisation();
+        OneRosterProperties.AcademicSession academicSession = oneRosterProperties.getAcademicSession();
 
-        Year endYear = Year.of(organisation.getSchoolYear().getEndDate().getYear());
+        Year endYear = Year.of(academicSession.getSchoolYear().getEndDate().getYear());
 
         AcademicSession schoolYear = new AcademicSession(
-                organisation.getSchoolYear().getSourcedId(),
-                organisation.getSchoolYear().getName(),
-                organisation.getSchoolYear().getBeginDate(),
-                organisation.getSchoolYear().getEndDate(),
+                academicSession.getSchoolYear().getSourcedId(),
+                academicSession.getSchoolYear().getName(),
+                academicSession.getSchoolYear().getBeginDate(),
+                academicSession.getSchoolYear().getEndDate(),
                 SessionType.SCHOOLYEAR,
                 endYear
         );
 
         AcademicSession firstTerm = new AcademicSession(
-                organisation.getSchoolYear().getFirstTerm().getSourcedId(),
-                organisation.getSchoolYear().getFirstTerm().getName(),
-                organisation.getSchoolYear().getFirstTerm().getBeginDate(),
-                organisation.getSchoolYear().getFirstTerm().getEndDate(),
+                academicSession.getFirstTerm().getSourcedId(),
+                academicSession.getFirstTerm().getName(),
+                academicSession.getFirstTerm().getBeginDate(),
+                academicSession.getFirstTerm().getEndDate(),
                 SessionType.TERM,
                 endYear);
 
         firstTerm.setParent(GUIDRef.of(GUIDType.ACADEMICSESSION, schoolYear.getSourcedId()));
 
         AcademicSession secondTerm = new AcademicSession(
-                organisation.getSchoolYear().getSecondTerm().getSourcedId(),
-                organisation.getSchoolYear().getSecondTerm().getName(),
-                organisation.getSchoolYear().getSecondTerm().getBeginDate(),
-                organisation.getSchoolYear().getSecondTerm().getEndDate(),
+                academicSession.getSecondTerm().getSourcedId(),
+                academicSession.getSecondTerm().getName(),
+                academicSession.getSecondTerm().getBeginDate(),
+                academicSession.getSecondTerm().getEndDate(),
                 SessionType.TERM,
                 endYear);
 

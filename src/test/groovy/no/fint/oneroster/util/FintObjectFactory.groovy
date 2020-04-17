@@ -4,7 +4,6 @@ import no.fint.model.felles.kompleksedatatyper.Identifikator
 import no.fint.model.felles.kompleksedatatyper.Kontaktinformasjon
 import no.fint.model.felles.kompleksedatatyper.Personnavn
 import no.fint.model.resource.Link
-import no.fint.model.resource.administrasjon.organisasjon.OrganisasjonselementResource
 import no.fint.model.resource.administrasjon.personal.PersonalressursResource
 import no.fint.model.resource.felles.PersonResource
 import no.fint.model.resource.utdanning.elev.BasisgruppeResource

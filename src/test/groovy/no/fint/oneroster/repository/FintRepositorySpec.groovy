@@ -2,7 +2,7 @@ package no.fint.oneroster.repository
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResources
-import no.fint.oneroster.properties.OrganisationProperties
+import no.fint.oneroster.properties.FintProperties
 import no.fint.oneroster.util.FintObjectFactory
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -18,17 +18,17 @@ class FintRepositorySpec extends Specification {
     WebClient webClient = WebClient.builder().build()
 
     OAuth2AuthorizedClientManager authorizedClientManager = Mock {
-        1 * authorize(_ as OAuth2AuthorizeRequest) >> Mock(OAuth2AuthorizedClient)
+        authorize(_ as OAuth2AuthorizeRequest) >> Mock(OAuth2AuthorizedClient)
     }
 
-    OrganisationProperties organisationProperties = Mock {
-        1 * getOrganisation() >> new OrganisationProperties.Organisation(components: [('education'): new OrganisationProperties.Component(
-                registrations: [new OrganisationProperties.Registration(id: _ as String, username: _ as String, password: _ as String)],
-                endpoints: [('school'): mockWebServer.url("/").toString()]
-        )])
+    FintProperties fintProperties = Mock {
+        getComponent() >> [('education'): new FintProperties.Component(
+                registration: [('1'): new FintProperties.Registration(id: _ as String, username: _ as String, password: _ as String)],
+                endpoint: [('school'): mockWebServer.url("/").toString()]
+        )]
     }
 
-    FintRepository fintRepository = new FintRepository(webClient, Mock(Authentication), authorizedClientManager, organisationProperties)
+    FintRepository fintRepository = new FintRepository(webClient, Mock(Authentication), authorizedClientManager, fintProperties)
 
     def "get() for given type returns resources of given type"() {
         given:
