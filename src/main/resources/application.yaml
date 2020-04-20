@@ -49,26 +49,6 @@ fint:
         personnel:
 
 spring:
-  security:
-    oauth2:
-      client:
-        registration:
-          pwf-education:
-            client-id:
-            client-secret:
-            authorization-grant-type: password
-            scope: fint-client
-            provider: fint
-          pwf-administration:
-            client-id:
-            client-secret:
-            authorization-grant-type: password
-            scope: fint-client
-            provider: fint
-        provider:
-          fint:
-            token-uri:
-
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 
