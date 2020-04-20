@@ -1,52 +1,52 @@
 oneroster:
   org:
-    sourced-id: 1234567890
-    name: Play With FINT
-    identifier: 0987654321
+    sourced-id:
+    name:
+    identifier:
   academic-session:
     school-year:
-      sourced-id: SY20192020
-      begin-date: 2019-08-01
-      end-date: 2020-07-31
-      name: Skoleåret 2019/2020
+      sourced-id:
+      begin-date:
+      end-date:
+      name:
     first-term:
-      sourced-id: T1SY20192020
-      begin-date: 2019-08-01
-      end-date: 2019-12-31
-      name: 1. termin 2019/2020
+      sourced-id:
+      begin-date:
+      end-date:
+      name:
     second-term:
-      sourced-id: T2SY20192020
-      begin-date: 2020-01-01
-      end-date: 2020-07-31
-      name: 2. termin 2019/2020
+      sourced-id:
+      begin-date:
+      end-date:
+      name:
 fint:
   component:
     education:
       registration:
         1:
-          id: pwf-education
-          username: username
-          password: password
+          id:
+          username:
+          password:
       endpoint:
-        school: https://play-with-fint.felleskomponent.no/utdanning/utdanningsprogram/skole
-        person: https://play-with-fint.felleskomponent.no/utdanning/elev/person
-        student: https://play-with-fint.felleskomponent.no/utdanning/elev/elev
-        student-relation: https://play-with-fint.felleskomponent.no/utdanning/elev/elevforhold
-        teacher: https://play-with-fint.felleskomponent.no/utdanning/elev/skoleressurs
-        teaching-relation: https://play-with-fint.felleskomponent.no/utdanning/elev/undervisningsforhold
-        basis-group: https://play-with-fint.felleskomponent.no/utdanning/elev/basisgruppe
-        level: https://play-with-fint.felleskomponent.no/utdanning/utdanningsprogram/arstrinn
-        teaching-group: https://play-with-fint.felleskomponent.no/utdanning/timeplan/undervisningsgruppe
-        subject: https://play-with-fint.felleskomponent.no/utdanning/timeplan/fag
+        school:
+        person:
+        student:
+        student-relation:
+        teacher:
+        teaching-relation:
+        basis-group:
+        level:
+        teaching-group:
+        subject:
     administration:
       registration:
         1:
-          id: pwf-administration
-          username: username
-          password: password
+          id:
+          username:
+          password:
       endpoint:
-        person: https://play-with-fint.felleskomponent.no/administrasjon/personal/person
-        personnel: https://play-with-fint.felleskomponent.no/administrasjon/personal/personalressurs
+        person:
+        personnel:
 
 spring:
   security:
@@ -54,20 +54,20 @@ spring:
       client:
         registration:
           pwf-education:
-            client-id: client-id
-            client-secret: client-secret
+            client-id:
+            client-secret:
             authorization-grant-type: password
             scope: fint-client
             provider: fint
           pwf-administration:
-            client-id: client-id
-            client-secret: client-secret
+            client-id:
+            client-secret:
             authorization-grant-type: password
             scope: fint-client
             provider: fint
         provider:
           fint:
-            token-uri: token-uri
+            token-uri:
 
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
