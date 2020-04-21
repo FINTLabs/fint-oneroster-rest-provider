@@ -3,7 +3,6 @@ package no.fint.oneroster.repository;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.model.resource.AbstractCollectionResources;
 import no.fint.oneroster.properties.FintProperties;
-import no.fint.oneroster.properties.OneRosterProperties;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
