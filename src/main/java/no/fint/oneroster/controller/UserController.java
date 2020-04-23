@@ -1,16 +1,13 @@
 package no.fint.oneroster.controller;
 
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.oneroster.model.User;
 import no.fint.oneroster.service.UserService;
 import no.fint.oneroster.util.OneRosterResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -29,18 +26,15 @@ public class UserController {
 
         List<User> users = userService.getAllUsers();
 
-        List<User> modifiedUsers = new OneRosterResponse.Builder<>(users)
+        OneRosterResponse<User> oneRosterResponse = new OneRosterResponse<>(User.class, "users")
+                .collection(users)
                 .filter(filter)
-                .sort(pageable.getSort())
-                .page(pageable)
-                .build();
-
-        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("users", modifiedUsers));
-        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(User.class, fields)));
+                .pagingAndSorting(pageable)
+                .fieldSelection(fields);
 
         return ResponseEntity.ok()
-                .header("X-Total-Count", String.valueOf(users.size()))
-                .body(body);
+                .headers(oneRosterResponse.getHeaders())
+                .body(oneRosterResponse.getBody());
     }
 
     @GetMapping("/users/{sourcedId}")
@@ -49,10 +43,11 @@ public class UserController {
 
         User user = userService.getUser(sourcedId);
 
-        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("user", user));
-        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(User.class, fields)));
+        OneRosterResponse<User> oneRosterResponse = new OneRosterResponse<>(User.class, "user")
+                .item(user)
+                .fieldSelection(fields);
 
-        return ResponseEntity.ok(body);
+        return ResponseEntity.ok(oneRosterResponse.getBody());
     }
 
     @GetMapping("/students")
@@ -62,18 +57,15 @@ public class UserController {
 
         List<User> students = userService.getAllStudents();
 
-        List<User> modifiedstudents = new OneRosterResponse.Builder<>(students)
+        OneRosterResponse<User> oneRosterResponse = new OneRosterResponse<>(User.class, "users")
+                .collection(students)
                 .filter(filter)
-                .sort(pageable.getSort())
-                .page(pageable)
-                .build();
-
-        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("users", modifiedstudents));
-        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(User.class, fields)));
+                .pagingAndSorting(pageable)
+                .fieldSelection(fields);
 
         return ResponseEntity.ok()
-                .header("X-Total-Count", String.valueOf(students.size()))
-                .body(body);
+                .headers(oneRosterResponse.getHeaders())
+                .body(oneRosterResponse.getBody());
     }
 
     @GetMapping("/students/{sourcedId}")
@@ -82,10 +74,11 @@ public class UserController {
 
         User student = userService.getStudent(sourcedId);
 
-        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("user", student));
-        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(User.class, fields)));
+        OneRosterResponse<User> oneRosterResponse = new OneRosterResponse<>(User.class, "user")
+                .item(student)
+                .fieldSelection(fields);
 
-        return ResponseEntity.ok(body);
+        return ResponseEntity.ok(oneRosterResponse.getBody());
     }
 
     @GetMapping("/schools/{sourcedId}/students")
@@ -95,18 +88,15 @@ public class UserController {
 
         List<User> students = userService.getStudentsForSchool(sourcedId);
 
-        List<User> modifiedStudents = new OneRosterResponse.Builder<>(students)
+        OneRosterResponse<User> oneRosterResponse = new OneRosterResponse<>(User.class, "users")
+                .collection(students)
                 .filter(filter)
-                .sort(pageable.getSort())
-                .page(pageable)
-                .build();
-
-        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("users", modifiedStudents));
-        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(User.class, fields)));
+                .pagingAndSorting(pageable)
+                .fieldSelection(fields);
 
         return ResponseEntity.ok()
-                .header("X-Total-Count", String.valueOf(students.size()))
-                .body(body);
+                .headers(oneRosterResponse.getHeaders())
+                .body(oneRosterResponse.getBody());
     }
 
     @GetMapping("/teachers")
@@ -116,18 +106,15 @@ public class UserController {
 
         List<User> teachers = userService.getAllTeachers();
 
-        List<User> modifiedTeachers = new OneRosterResponse.Builder<>(teachers)
+        OneRosterResponse<User> oneRosterResponse = new OneRosterResponse<>(User.class, "users")
+                .collection(teachers)
                 .filter(filter)
-                .sort(pageable.getSort())
-                .page(pageable)
-                .build();
-
-        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("users", modifiedTeachers));
-        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(User.class, fields)));
+                .pagingAndSorting(pageable)
+                .fieldSelection(fields);
 
         return ResponseEntity.ok()
-                .header("X-Total-Count", String.valueOf(teachers.size()))
-                .body(body);
+                .headers(oneRosterResponse.getHeaders())
+                .body(oneRosterResponse.getBody());
     }
 
     @GetMapping("/teachers/{sourcedId}")
@@ -136,10 +123,11 @@ public class UserController {
 
         User teacher = userService.getTeacher(sourcedId);
 
-        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("user", teacher));
-        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(User.class, fields)));
+        OneRosterResponse<User> oneRosterResponse = new OneRosterResponse<>(User.class, "user")
+                .item(teacher)
+                .fieldSelection(fields);
 
-        return ResponseEntity.ok(body);
+        return ResponseEntity.ok(oneRosterResponse.getBody());
     }
 
     @GetMapping("/schools/{sourcedId}/teachers")
@@ -149,17 +137,14 @@ public class UserController {
 
         List<User> teachers = userService.getTeachersForSchool(sourcedId);
 
-        List<User> modifiedTeachers = new OneRosterResponse.Builder<>(teachers)
+        OneRosterResponse<User> oneRosterResponse = new OneRosterResponse<>(User.class, "users")
+                .collection(teachers)
                 .filter(filter)
-                .sort(pageable.getSort())
-                .page(pageable)
-                .build();
-
-        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("users", modifiedTeachers));
-        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(User.class, fields)));
+                .pagingAndSorting(pageable)
+                .fieldSelection(fields);
 
         return ResponseEntity.ok()
-                .header("X-Total-Count", String.valueOf(teachers.size()))
-                .body(body);
+                .headers(oneRosterResponse.getHeaders())
+                .body(oneRosterResponse.getBody());
     }
 }

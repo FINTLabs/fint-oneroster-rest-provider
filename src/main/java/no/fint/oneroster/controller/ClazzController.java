@@ -1,16 +1,13 @@
 package no.fint.oneroster.controller;
 
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.oneroster.model.Clazz;
 import no.fint.oneroster.service.ClazzService;
 import no.fint.oneroster.util.OneRosterResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -29,18 +26,15 @@ public class ClazzController {
 
         List<Clazz> clazzes = clazzService.getAllClazzes();
 
-        List<Clazz> modifiedClazzes = new OneRosterResponse.Builder<>(clazzes)
+        OneRosterResponse<Clazz> oneRosterResponse = new OneRosterResponse<>(Clazz.class, "classes")
+                .collection(clazzes)
                 .filter(filter)
-                .sort(pageable.getSort())
-                .page(pageable)
-                .build();
-
-        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("classes", modifiedClazzes));
-        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(Clazz.class, fields)));
+                .pagingAndSorting(pageable)
+                .fieldSelection(fields);
 
         return ResponseEntity.ok()
-                .header("X-Total-Count", String.valueOf(clazzes.size()))
-                .body(body);
+                .headers(oneRosterResponse.getHeaders())
+                .body(oneRosterResponse.getBody());
     }
 
     @GetMapping("/classes/{sourcedId}")
@@ -49,10 +43,11 @@ public class ClazzController {
 
         Clazz clazz = clazzService.getClazz(sourcedId);
 
-        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("class", clazz));
-        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(Clazz.class, fields)));
+        OneRosterResponse<Clazz> oneRosterResponse = new OneRosterResponse<>(Clazz.class, "class")
+                .item(clazz)
+                .fieldSelection(fields);
 
-        return ResponseEntity.ok(body);
+        return ResponseEntity.ok(oneRosterResponse.getBody());
     }
 
     @GetMapping("/schools/{sourcedId}/classes")
@@ -62,17 +57,14 @@ public class ClazzController {
 
         List<Clazz> clazzes = clazzService.getClazzesForSchool(sourcedId);
 
-        List<Clazz> modifiedClazzes = new OneRosterResponse.Builder<>(clazzes)
+        OneRosterResponse<Clazz> oneRosterResponse = new OneRosterResponse<>(Clazz.class, "classes")
+                .collection(clazzes)
                 .filter(filter)
-                .sort(pageable.getSort())
-                .page(pageable)
-                .build();
-
-        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("classes", modifiedClazzes));
-        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(Clazz.class, fields)));
+                .pagingAndSorting(pageable)
+                .fieldSelection(fields);
 
         return ResponseEntity.ok()
-                .header("X-Total-Count", String.valueOf(clazzes.size()))
-                .body(body);
+                .headers(oneRosterResponse.getHeaders())
+                .body(oneRosterResponse.getBody());
     }
 }

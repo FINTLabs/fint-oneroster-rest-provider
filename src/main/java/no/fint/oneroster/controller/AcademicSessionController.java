@@ -1,17 +1,13 @@
 package no.fint.oneroster.controller;
 
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.oneroster.model.AcademicSession;
-import no.fint.oneroster.model.Clazz;
 import no.fint.oneroster.service.AcademicSessionService;
 import no.fint.oneroster.util.OneRosterResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -30,18 +26,15 @@ public class AcademicSessionController {
 
         List<AcademicSession> academicSessions = academicSessionService.getAllAcademicSessions();
 
-        List<AcademicSession> modifiedAcademicSessions = new OneRosterResponse.Builder<>(academicSessions)
+        OneRosterResponse<AcademicSession> oneRosterResponse = new OneRosterResponse<>(AcademicSession.class, "academicSessions")
+                .collection(academicSessions)
                 .filter(filter)
-                .sort(pageable.getSort())
-                .page(pageable)
-                .build();
-
-        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("academicSessions", modifiedAcademicSessions));
-        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(AcademicSession.class, fields)));
+                .pagingAndSorting(pageable)
+                .fieldSelection(fields);
 
         return ResponseEntity.ok()
-                .header("X-Total-Count", String.valueOf(academicSessions.size()))
-                .body(body);
+                .headers(oneRosterResponse.getHeaders())
+                .body(oneRosterResponse.getBody());
     }
 
     @GetMapping("/academicSessions/{sourcedId}")
@@ -50,10 +43,11 @@ public class AcademicSessionController {
 
         AcademicSession academicSession = academicSessionService.getAcademicSession(sourcedId);
 
-        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("academicSession", academicSession));
-        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(Clazz.class, fields)));
+        OneRosterResponse<AcademicSession> oneRosterResponse = new OneRosterResponse<>(AcademicSession.class, "academicSession")
+                .item(academicSession)
+                .fieldSelection(fields);
 
-        return ResponseEntity.ok(body);
+        return ResponseEntity.ok(oneRosterResponse.getBody());
     }
 
     @GetMapping("/terms")
@@ -63,18 +57,15 @@ public class AcademicSessionController {
 
         List<AcademicSession> terms = academicSessionService.getAllTerms();
 
-        List<AcademicSession> modifiedAcademicSessions = new OneRosterResponse.Builder<>(terms)
+        OneRosterResponse<AcademicSession> oneRosterResponse = new OneRosterResponse<>(AcademicSession.class, "academicSessions")
+                .collection(terms)
                 .filter(filter)
-                .sort(pageable.getSort())
-                .page(pageable)
-                .build();
-
-        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("academicSessions", modifiedAcademicSessions));
-        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(AcademicSession.class, fields)));
+                .pagingAndSorting(pageable)
+                .fieldSelection(fields);
 
         return ResponseEntity.ok()
-                .header("X-Total-Count", String.valueOf(terms.size()))
-                .body(body);
+                .headers(oneRosterResponse.getHeaders())
+                .body(oneRosterResponse.getBody());
     }
 
     @GetMapping("/terms/{sourcedId}")
@@ -83,10 +74,11 @@ public class AcademicSessionController {
 
         AcademicSession term = academicSessionService.getTerm(sourcedId);
 
-        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("academicSession", term));
-        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(Clazz.class, fields)));
+        OneRosterResponse<AcademicSession> oneRosterResponse = new OneRosterResponse<>(AcademicSession.class, "academicSession")
+                .item(term)
+                .fieldSelection(fields);
 
-        return ResponseEntity.ok(body);
+        return ResponseEntity.ok(oneRosterResponse.getBody());
     }
 
     @GetMapping("/gradingPeriods")
@@ -96,18 +88,15 @@ public class AcademicSessionController {
 
         List<AcademicSession> gradingPeriods = academicSessionService.getAllGradingPeriods();
 
-        List<AcademicSession> modifiedAcademicSessions = new OneRosterResponse.Builder<>(gradingPeriods)
+        OneRosterResponse<AcademicSession> oneRosterResponse = new OneRosterResponse<>(AcademicSession.class, "academicSessions")
+                .collection(gradingPeriods)
                 .filter(filter)
-                .sort(pageable.getSort())
-                .page(pageable)
-                .build();
-
-        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("academicSessions", modifiedAcademicSessions));
-        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(AcademicSession.class, fields)));
+                .pagingAndSorting(pageable)
+                .fieldSelection(fields);
 
         return ResponseEntity.ok()
-                .header("X-Total-Count", String.valueOf(gradingPeriods.size()))
-                .body(body);
+                .headers(oneRosterResponse.getHeaders())
+                .body(oneRosterResponse.getBody());
     }
 
     @GetMapping("/gradingPeriods/{sourcedId}")
@@ -116,9 +105,10 @@ public class AcademicSessionController {
 
         AcademicSession gradingPeriod = academicSessionService.getGradingPeriod(sourcedId);
 
-        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("academicSession", gradingPeriod));
-        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(AcademicSession.class, fields)));
+        OneRosterResponse<AcademicSession> oneRosterResponse = new OneRosterResponse<>(AcademicSession.class, "academicSession")
+                .item(gradingPeriod)
+                .fieldSelection(fields);
 
-        return ResponseEntity.ok(body);
+        return ResponseEntity.ok(oneRosterResponse.getBody());
     }
 }

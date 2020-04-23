@@ -2,6 +2,8 @@ package no.fint.oneroster.util;
 
 import com.fasterxml.jackson.databind.ser.PropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.oneroster.antlr.FilterLexer;
 import no.fint.oneroster.antlr.FilterParser;
@@ -19,7 +21,8 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.util.StringUtils;
 
 import java.beans.PropertyDescriptor;
@@ -27,76 +30,93 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class OneRosterResponse {
+@Data
+public class OneRosterResponse<T extends Base> {
+    private final Class<T> clazz;
+    private final String rel;
+    private T item;
+    private List<T> collection;
+    private HttpHeaders headers;
+    private MappingJacksonValue body;
 
-    public static class Builder<T extends Base> {
-        private List<T> entities;
-
-        public Builder(List<T> entities) {
-            this.entities = entities;
-        }
-
-        public Builder<T> sort(Sort sort) {
-            sort.get().findFirst().ifPresent(order -> {
-                try {
-                    entities.sort(new BeanComparator<>(order.getProperty()));
-                } catch (Exception e) {
-                    entities.sort(new BeanComparator<>("sourcedId"));
-                }
-            });
-
-            return this;
-        }
-
-        public Builder<T> page(Pageable pageable) {
-            entities = entities.stream()
-                    .skip(pageable.getPageNumber())
-                    .limit(pageable.getPageSize())
-                    .collect(Collectors.toList());
-
-            return this;
-        }
-
-        public Builder<T> filter(String filter) {
-            if (filter == null || filter.isEmpty()) {
-                return this;
-            }
-
-            CharStream stream = CharStreams.fromString(filter.trim());
-            FilterLexer lexer = new FilterLexer(stream);
-            CommonTokenStream tokens = new CommonTokenStream(lexer);
-
-            FilterParser parser = new FilterParser(tokens);
-            parser.removeErrorListener(ConsoleErrorListener.INSTANCE);
-            parser.addErrorListener(FilterErrorListener.INSTANCE);
-
-            ParseTree parseTree;
-
-            try {
-                parseTree = parser.logical();
-            } catch (InvalidSyntaxException e) {
-                return this;
-            }
-
-            entities = entities.stream()
-                    .filter(entity -> {
-                        try {
-                            return new FilterEvaluator(entity).visit(parseTree);
-                        } catch (NoSuchFieldException e) {
-                            throw new BadRequestException();
-                        }
-                    })
-                    .collect(Collectors.toList());
-
-            return this;
-        }
-
-        public List<T> build() {
-            return Collections.unmodifiableList(entities);
-        }
+    public OneRosterResponse(Class<T> clazz, String rel) {
+        this.clazz = clazz;
+        this.rel = rel;
     }
 
-    public static <T extends Base> PropertyFilter getFieldSelection(Class<T> clazz, String commaDelimitedFields) {
+    public OneRosterResponse<T> item(T item) {
+        this.item = item;
+
+        return this;
+    }
+
+    public OneRosterResponse<T> collection(List<T> collection) {
+        this.collection = collection;
+        this.headers = new HttpHeaders();
+        this.headers.set("X-Total-Count", String.valueOf(collection.size()));
+
+        return this;
+    }
+
+    public OneRosterResponse<T> pagingAndSorting(Pageable pageable) {
+        pageable.getSort().get().findFirst().ifPresent(order -> {
+            try {
+                collection.sort(new BeanComparator<>(order.getProperty()));
+            } catch (Exception e) {
+                collection.sort(new BeanComparator<>("sourcedId"));
+            }
+        });
+
+        collection = collection.stream()
+                .skip(pageable.getPageNumber())
+                .limit(pageable.getPageSize())
+                .collect(Collectors.toList());
+
+        return this;
+    }
+
+    public OneRosterResponse<T> filter(String filter) {
+        if (filter == null || filter.isEmpty()) {
+            return this;
+        }
+
+        CharStream stream = CharStreams.fromString(filter.trim());
+        FilterLexer lexer = new FilterLexer(stream);
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+
+        FilterParser parser = new FilterParser(tokens);
+        parser.removeErrorListener(ConsoleErrorListener.INSTANCE);
+        parser.addErrorListener(FilterErrorListener.INSTANCE);
+
+        ParseTree parseTree;
+
+        try {
+            parseTree = parser.logical();
+        } catch (InvalidSyntaxException e) {
+            return this;
+        }
+
+        collection = collection.stream()
+                .filter(entity -> {
+                    try {
+                        return new FilterEvaluator(entity).visit(parseTree);
+                    } catch (NoSuchFieldException e) {
+                        throw new BadRequestException();
+                    }
+                })
+                .collect(Collectors.toList());
+
+        return this;
+    }
+
+    public OneRosterResponse<T> fieldSelection(String fields) {
+        body = new MappingJacksonValue(Collections.singletonMap(rel, (item == null ? collection : item)));
+        body.setFilters(new SimpleFilterProvider().addFilter("fields", getPropertyFilter(fields)));
+
+        return this;
+    }
+
+    public PropertyFilter getPropertyFilter(String commaDelimitedFields) {
         if (commaDelimitedFields == null) {
             return SimpleBeanPropertyFilter.serializeAll();
         }

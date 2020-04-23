@@ -1,13 +1,11 @@
 package no.fint.oneroster.controller;
 
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.oneroster.model.Org;
 import no.fint.oneroster.service.OrgService;
 import no.fint.oneroster.util.OneRosterResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -28,18 +26,15 @@ public class OrgController {
 
         List<Org> orgs = orgService.getAllOrgs();
 
-        List<Org> modifiedOrgs = new OneRosterResponse.Builder<>(orgs)
+        OneRosterResponse<Org> oneRosterResponse = new OneRosterResponse<>(Org.class, "orgs")
+                .collection(orgs)
                 .filter(filter)
-                .sort(pageable.getSort())
-                .page(pageable)
-                .build();
-
-        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("orgs", modifiedOrgs));
-        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(Org.class, fields)));
+                .pagingAndSorting(pageable)
+                .fieldSelection(fields);
 
         return ResponseEntity.ok()
-                .header("X-Total-Count", String.valueOf(orgs.size()))
-                .body(body);
+                .headers(oneRosterResponse.getHeaders())
+                .body(oneRosterResponse.getBody());
     }
 
     @GetMapping("/orgs/{sourcedId}")
@@ -48,10 +43,11 @@ public class OrgController {
 
         Org org = orgService.getOrg(sourcedId);
 
-        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("org", org));
-        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(Org.class, fields)));
+        OneRosterResponse<Org> oneRosterResponse = new OneRosterResponse<>(Org.class, "org")
+                .item(org)
+                .fieldSelection(fields);
 
-        return ResponseEntity.ok(body);
+        return ResponseEntity.ok(oneRosterResponse.getBody());
     }
 
     @GetMapping("/schools")
@@ -61,18 +57,15 @@ public class OrgController {
 
         List<Org> schools = orgService.getAllSchools();
 
-        List<Org> modifiedSchools = new OneRosterResponse.Builder<>(schools)
+        OneRosterResponse<Org> oneRosterResponse = new OneRosterResponse<>(Org.class, "orgs")
+                .collection(schools)
                 .filter(filter)
-                .sort(pageable.getSort())
-                .page(pageable)
-                .build();
-
-        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("orgs", modifiedSchools));
-        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(Org.class, fields)));
+                .pagingAndSorting(pageable)
+                .fieldSelection(fields);
 
         return ResponseEntity.ok()
-                .header("X-Total-Count", String.valueOf(schools.size()))
-                .body(body);
+                .headers(oneRosterResponse.getHeaders())
+                .body(oneRosterResponse.getBody());
     }
 
     @GetMapping("/schools/{sourcedId}")
@@ -81,9 +74,10 @@ public class OrgController {
 
         Org school = orgService.getSchool(sourcedId);
 
-        MappingJacksonValue body = new MappingJacksonValue(Collections.singletonMap("org", school));
-        body.setFilters(new SimpleFilterProvider().addFilter("fields", OneRosterResponse.getFieldSelection(Org.class, fields)));
+        OneRosterResponse<Org> oneRosterResponse = new OneRosterResponse<>(Org.class, "org")
+                .item(school)
+                .fieldSelection(fields);
 
-        return ResponseEntity.ok(body);
+        return ResponseEntity.ok(oneRosterResponse.getBody());
     }
 }
