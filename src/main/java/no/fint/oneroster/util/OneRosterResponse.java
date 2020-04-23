@@ -53,7 +53,7 @@ public class OneRosterResponse<T extends Base> {
     public OneRosterResponse<T> collection(List<T> collection) {
         this.collection = collection;
         this.headers = new HttpHeaders();
-        this.headers.set("X-Total-Count", String.valueOf(this.collection.size()));
+        this.headers.set("X-Total-Count", String.valueOf(collection.size()));
 
         return this;
     }
