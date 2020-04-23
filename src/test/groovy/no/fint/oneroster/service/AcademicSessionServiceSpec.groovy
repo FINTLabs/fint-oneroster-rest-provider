@@ -33,7 +33,6 @@ class AcademicSessionServiceSpec extends Specification {
         academicSessions.first().endDate == LocalDate.of(2020, 7, 31)
         academicSessions.first().type == SessionType.SCHOOLYEAR
         academicSessions.first().schoolYear == Year.of(2020)
-        academicSessions.first().children.first().sourcedId == 'T1SY20192020'
 
         academicSessions.last().sourcedId == 'T2SY20192020'
         academicSessions.last().title == '2. termin 2019/2020'
@@ -41,7 +40,6 @@ class AcademicSessionServiceSpec extends Specification {
         academicSessions.last().endDate == LocalDate.of(2020, 7, 31)
         academicSessions.last().type == SessionType.TERM
         academicSessions.last().schoolYear == Year.of(2020)
-        academicSessions.last().parent.sourcedId == 'SY20192020'
     }
 
     def "getAcademicSession returns an academicSession given valid orgId and sourcedId"() {
@@ -58,7 +56,6 @@ class AcademicSessionServiceSpec extends Specification {
         academicSession.endDate == LocalDate.of(2019, 12, 31)
         academicSession.type == SessionType.TERM
         academicSession.schoolYear == Year.of(2020)
-        academicSession.parent.sourcedId == 'SY20192020'
     }
 
     def "getAllTerms returns a list of terms given valid orgId"() {
@@ -74,7 +71,6 @@ class AcademicSessionServiceSpec extends Specification {
         terms.first().endDate == LocalDate.of(2019, 12, 31)
         terms.first().type == SessionType.TERM
         terms.first().schoolYear == Year.of(2020)
-        terms.first().parent.sourcedId == 'SY20192020'
 
         terms.last().sourcedId == 'T2SY20192020'
         terms.last().title == '2. termin 2019/2020'
@@ -82,7 +78,6 @@ class AcademicSessionServiceSpec extends Specification {
         terms.last().endDate == LocalDate.of(2020, 7, 31)
         terms.last().type == SessionType.TERM
         terms.last().schoolYear == Year.of(2020)
-        terms.first().parent.sourcedId == 'SY20192020'
     }
 
     def "getTerm returns a term given valid orgId and sourcedId"() {
@@ -99,7 +94,6 @@ class AcademicSessionServiceSpec extends Specification {
         term.endDate == LocalDate.of(2019, 12, 31)
         term.type == SessionType.TERM
         term.schoolYear == Year.of(2020)
-        term.parent.sourcedId == 'SY20192020'
     }
 
     @Ignore

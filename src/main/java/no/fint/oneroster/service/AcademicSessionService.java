@@ -42,8 +42,6 @@ public class AcademicSessionService {
                 SessionType.TERM,
                 endYear);
 
-        firstTerm.setParent(GUIDRef.of(GUIDType.ACADEMICSESSION, schoolYear.getSourcedId()));
-
         AcademicSession secondTerm = new AcademicSession(
                 academicSession.getSecondTerm().getSourcedId(),
                 academicSession.getSecondTerm().getName(),
@@ -51,11 +49,6 @@ public class AcademicSessionService {
                 academicSession.getSecondTerm().getEndDate(),
                 SessionType.TERM,
                 endYear);
-
-        secondTerm.setParent(GUIDRef.of(GUIDType.ACADEMICSESSION, schoolYear.getSourcedId()));
-
-        schoolYear.setChildren(Arrays.asList(GUIDRef.of(GUIDType.ACADEMICSESSION, firstTerm.getSourcedId()),
-                GUIDRef.of(GUIDType.ACADEMICSESSION, secondTerm.getSourcedId())));
 
         return Arrays.asList(schoolYear, firstTerm, secondTerm);
     }
