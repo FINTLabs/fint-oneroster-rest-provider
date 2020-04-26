@@ -13,7 +13,7 @@ public final class OrgFactory {
     private OrgFactory() {
     }
 
-    public static no.fint.oneroster.model.Org school(SkoleResource skoleResource) {
+    public static Org school(SkoleResource skoleResource) {
         Org school = new Org(
                 skoleResource.getSystemId().getIdentifikatorverdi(),
                 skoleResource.getNavn(),
@@ -27,7 +27,7 @@ public final class OrgFactory {
         return school;
     }
 
-    public static no.fint.oneroster.model.Org schoolOwner(OneRosterProperties.Org org) {
+    public static Org schoolOwner(OneRosterProperties.Org org) {
         Org schoolOwner = new Org(
                 org.getSourcedId(),
                 org.getName(),

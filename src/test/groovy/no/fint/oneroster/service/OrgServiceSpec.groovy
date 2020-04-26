@@ -15,7 +15,7 @@ class OrgServiceSpec extends Specification {
     OneRosterProperties organisationProperties = Mock {
         getOrg() >> new OneRosterProperties.Org(
                 sourcedId: 'school-owner-sourced-id',
-                name: 'SchoolOwner',
+                name: 'School owner',
                 identifier: '0123456789'
         )
     }
@@ -36,7 +36,7 @@ class OrgServiceSpec extends Specification {
 
         then:
         org.sourcedId == 'school-owner-sourced-id'
-        org.name == 'SchoolOwner'
+        org.name == 'School owner'
         org.type == OrgType.DISTRICT
         org.identifier == '0123456789'
         org.children.first().sourcedId == 'school-sourced-id'

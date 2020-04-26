@@ -4,12 +4,14 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @ConfigurationProperties("oneroster")
 public class OneRosterProperties {
     private Org org;
     private AcademicSession academicSession;
+    private Profile profile;
 
     @Data
     public static class Org {
@@ -55,5 +57,11 @@ public class OneRosterProperties {
         public void setEndDate(String endDate) {
             this.endDate = LocalDate.parse(endDate);
         }
+    }
+
+    @Data
+    public static class Profile {
+        private String clazz;
+        private List<String> clazzNameFilter;
     }
 }

@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrgService {
-
     private final FintEducationService fintEducationService;
     private final OneRosterProperties oneRosterProperties;
 

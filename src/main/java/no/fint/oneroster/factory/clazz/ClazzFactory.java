@@ -1,4 +1,4 @@
-package no.fint.oneroster.factory;
+package no.fint.oneroster.factory.clazz;
 
 import no.fint.model.resource.utdanning.elev.BasisgruppeResource;
 import no.fint.model.resource.utdanning.timeplan.FagResource;
@@ -14,15 +14,11 @@ import no.fint.oneroster.model.vocab.GUIDType;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public final class ClazzFactory {
-
-    private ClazzFactory() {
-    }
-
-    public static Clazz basisGroup(BasisgruppeResource basisgruppeResource, ArstrinnResource arstrinnResource, SkoleResource skoleResource, List<AcademicSession> terms) {
+public interface ClazzFactory {
+    default Clazz basisGroup(BasisgruppeResource basisgruppeResource, ArstrinnResource arstrinnResource, SkoleResource skoleResource, List<AcademicSession> terms) {
         return new Clazz(
                 basisgruppeResource.getSystemId().getIdentifikatorverdi(),
-                basisgruppeResource.getNavn(),
+                basisGroupNameConverter(basisgruppeResource.getNavn()),
                 ClazzType.HOMEROOM,
                 GUIDRef.of(GUIDType.COURSE, arstrinnResource.getSystemId().getIdentifikatorverdi()),
                 GUIDRef.of(GUIDType.ORG, skoleResource.getSystemId().getIdentifikatorverdi()),
@@ -32,10 +28,10 @@ public final class ClazzFactory {
         );
     }
 
-    public static Clazz teachingGroup(UndervisningsgruppeResource undervisningsgruppeResource, FagResource fagResource, SkoleResource skoleResource, List<AcademicSession> terms) {
+    default Clazz teachingGroup(UndervisningsgruppeResource undervisningsgruppeResource, FagResource fagResource, SkoleResource skoleResource, List<AcademicSession> terms) {
         return new Clazz(
                 undervisningsgruppeResource.getSystemId().getIdentifikatorverdi(),
-                undervisningsgruppeResource.getNavn(),
+                teachingGroupNameConverter(undervisningsgruppeResource.getNavn()),
                 ClazzType.SCHEDULED,
                 GUIDRef.of(GUIDType.COURSE, fagResource.getSystemId().getIdentifikatorverdi()),
                 GUIDRef.of(GUIDType.ORG, skoleResource.getSystemId().getIdentifikatorverdi()),
@@ -43,5 +39,13 @@ public final class ClazzFactory {
                         .map(term -> GUIDRef.of(GUIDType.ACADEMICSESSION, term.getSourcedId()))
                         .collect(Collectors.toList())
         );
+    }
+
+    default String basisGroupNameConverter(String name) {
+        return name;
+    }
+
+    default String teachingGroupNameConverter(String name) {
+        return name;
     }
 }

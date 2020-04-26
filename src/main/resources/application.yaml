@@ -19,6 +19,10 @@ oneroster:
       begin-date:
       end-date:
       name:
+  profile:
+    class: default
+    org: default
+
 fint:
   component:
     education:

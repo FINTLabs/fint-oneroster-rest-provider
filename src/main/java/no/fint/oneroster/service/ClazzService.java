@@ -6,7 +6,7 @@ import no.fint.model.resource.utdanning.timeplan.FagResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
 import no.fint.oneroster.exception.NotFoundException;
-import no.fint.oneroster.factory.ClazzFactory;
+import no.fint.oneroster.factory.clazz.ClazzFactory;
 import no.fint.oneroster.model.AcademicSession;
 import no.fint.oneroster.model.Clazz;
 import no.fint.oneroster.repository.FintEducationService;
@@ -20,10 +20,12 @@ import java.util.stream.Collectors;
 public class ClazzService {
     private final FintEducationService fintEducationService;
     private final AcademicSessionService academicSessionService;
+    private final ClazzFactory clazzFactory;
 
-    public ClazzService(FintEducationService fintEducationService, AcademicSessionService academicSessionService) {
+    public ClazzService(FintEducationService fintEducationService, AcademicSessionService academicSessionService, ClazzFactory clazzFactory) {
         this.fintEducationService = fintEducationService;
         this.academicSessionService = academicSessionService;
+        this.clazzFactory = clazzFactory;
     }
 
     public List<Clazz> getAllClazzes() {
@@ -53,7 +55,7 @@ public class ClazzService {
                             .findAny();
 
                     if (level.isPresent() && school.isPresent() && !terms.isEmpty()) {
-                        clazzes.add(ClazzFactory.basisGroup(basisGroup, level.get(), school.get(), terms));
+                        clazzes.add(clazzFactory.basisGroup(basisGroup, level.get(), school.get(), terms));
                     }
                 });
 
@@ -79,7 +81,7 @@ public class ClazzService {
                             .findAny();
 
                     if (subject.isPresent() && school.isPresent() && !terms.isEmpty()) {
-                        clazzes.add(ClazzFactory.teachingGroup(teachingGroup, subject.get(), school.get(), terms));
+                        clazzes.add(clazzFactory.teachingGroup(teachingGroup, subject.get(), school.get(), terms));
                     }
                 });
 

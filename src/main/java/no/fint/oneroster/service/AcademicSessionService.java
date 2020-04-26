@@ -2,8 +2,6 @@ package no.fint.oneroster.service;
 
 import no.fint.oneroster.exception.NotFoundException;
 import no.fint.oneroster.model.AcademicSession;
-import no.fint.oneroster.model.GUIDRef;
-import no.fint.oneroster.model.vocab.GUIDType;
 import no.fint.oneroster.model.vocab.SessionType;
 import no.fint.oneroster.properties.OneRosterProperties;
 import org.springframework.stereotype.Service;
