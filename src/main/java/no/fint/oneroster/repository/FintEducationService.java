@@ -17,11 +17,12 @@ import no.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResources;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResources;
 import no.fint.oneroster.properties.OneRosterProperties;
+import no.fint.oneroster.repository.FintRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
 @Slf4j
@@ -30,16 +31,16 @@ public class FintEducationService {
     private final FintRepository fintRepository;
     private final OneRosterProperties oneRosterProperties;
 
-    private final Map<String, SkoleResource> schools = new ConcurrentHashMap<>();
-    private final Map<String, PersonResource> persons = new ConcurrentHashMap<>();
-    private final Map<String, ElevResource> students = new ConcurrentHashMap<>();
-    private final Map<String, SkoleressursResource> teachers = new ConcurrentHashMap<>();
-    private final Map<String, ElevforholdResource> studentRelations = new ConcurrentHashMap<>();
-    private final Map<String, UndervisningsforholdResource> teachingRelations = new ConcurrentHashMap<>();
-    private final Map<String, BasisgruppeResource> basisGroups = new ConcurrentHashMap<>();
-    private final Map<String, UndervisningsgruppeResource> teachingGroups = new ConcurrentHashMap<>();
-    private final Map<String, ArstrinnResource> levels = new ConcurrentHashMap<>();
-    private final Map<String, FagResource> subjects = new ConcurrentHashMap<>();
+    private final Map<String, SkoleResource> schools = new HashMap<>();
+    private final Map<String, PersonResource> persons = new HashMap<>();
+    private final Map<String, ElevResource> students = new HashMap<>();
+    private final Map<String, SkoleressursResource> teachers = new HashMap<>();
+    private final Map<String, ElevforholdResource> studentRelations = new HashMap<>();
+    private final Map<String, UndervisningsforholdResource> teachingRelations = new HashMap<>();
+    private final Map<String, BasisgruppeResource> basisGroups = new HashMap<>();
+    private final Map<String, UndervisningsgruppeResource> teachingGroups = new HashMap<>();
+    private final Map<String, ArstrinnResource> levels = new HashMap<>();
+    private final Map<String, FagResource> subjects = new HashMap<>();
 
     public FintEducationService(FintRepository fintRepository, OneRosterProperties oneRosterProperties) {
         this.fintRepository = fintRepository;
@@ -59,7 +60,6 @@ public class FintEducationService {
                 .toStream()
                 .filter(resource -> Optional.ofNullable(resource.getSystemId()).map(Identifikator::getIdentifikatorverdi).isPresent() &&
                         Optional.ofNullable(resource.getNavn()).isPresent())
-                .filter(resource -> resource.getElevforhold().size() > 0 || resource.getUndervisningsforhold().size() > 0)
                 .forEach(resource -> this.getSelfLinks(resource).forEach(link -> schools.put(link, resource)));
     }
 
@@ -153,7 +153,6 @@ public class FintEducationService {
                 .toStream()
                 .filter(resource -> Optional.ofNullable(resource.getSystemId()).map(Identifikator::getIdentifikatorverdi).isPresent() &&
                         Optional.ofNullable(resource.getNavn()).isPresent())
-                .filter(resource -> resource.getElevforhold().size() > 0 || resource.getUndervisningsforhold().size() > 0)
                 .filter(resource -> oneRosterProperties.getProfile().getClazzNameFilter()
                         .stream()
                         .noneMatch(resource.getNavn()::contains))
@@ -173,7 +172,6 @@ public class FintEducationService {
                 .toStream()
                 .filter(resource -> Optional.ofNullable(resource.getSystemId()).map(Identifikator::getIdentifikatorverdi).isPresent() &&
                         Optional.ofNullable(resource.getNavn()).isPresent())
-                .filter(resource -> resource.getElevforhold().size() > 0 || resource.getUndervisningsforhold().size() > 0)
                 .filter(resource -> oneRosterProperties.getProfile().getClazzNameFilter()
                         .stream()
                         .noneMatch(resource.getNavn()::contains))

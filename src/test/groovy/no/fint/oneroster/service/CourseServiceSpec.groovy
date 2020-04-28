@@ -20,7 +20,7 @@ class CourseServiceSpec extends Specification {
         )
     }
 
-    CourseService courseService = new CourseService(fintEducationService, organisationProperties)
+    CourseService courseService = new CourseService(fintEducationService, organisationProperties, oneRosterRepository)
 
     def "getAllCourses returns a list of courses given valid orgId"() {
         when:

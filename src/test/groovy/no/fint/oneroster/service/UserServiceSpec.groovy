@@ -23,7 +23,7 @@ class UserServiceSpec extends Specification {
         getPersonnel() >> [('/personnel-resource-sourced-id'): FintObjectFactory.newPersonnel()]
     }
 
-    UserService userService = new UserService(fintEducationService, fintAdministrationService)
+    UserService userService = new UserService(fintEducationService, fintAdministrationService, oneRosterRepository)
 
     def "getAllUsers returns a list of users given valid orgId"() {
         when:

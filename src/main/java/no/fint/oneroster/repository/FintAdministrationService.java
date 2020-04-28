@@ -9,10 +9,10 @@ import no.fint.model.resource.administrasjon.personal.PersonalressursResource;
 import no.fint.model.resource.administrasjon.personal.PersonalressursResources;
 import no.fint.model.resource.felles.PersonResource;
 import no.fint.model.resource.felles.PersonResources;
+import no.fint.oneroster.repository.FintRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
 @Slf4j
@@ -20,8 +20,8 @@ import java.util.stream.Stream;
 public class FintAdministrationService {
     private final FintRepository fintRepository;
 
-    private final Map<String, PersonalressursResource> personnel = new ConcurrentHashMap<>();
-    private final Map<String, PersonResource> persons = new ConcurrentHashMap<>();
+    private final Map<String, PersonalressursResource> personnel = new HashMap<>();
+    private final Map<String, PersonResource> persons = new HashMap<>();
 
     public FintAdministrationService(FintRepository fintRepository) {
         this.fintRepository = fintRepository;

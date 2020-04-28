@@ -20,7 +20,7 @@ class OrgServiceSpec extends Specification {
         )
     }
 
-    OrgService orgService = new OrgService(fintEducationService, organisationProperties)
+    OrgService orgService = new OrgService(fintEducationService, organisationProperties, oneRosterRepository)
 
     def "getAllOrgs returns a list of orgs given valid orgId"() {
         when:

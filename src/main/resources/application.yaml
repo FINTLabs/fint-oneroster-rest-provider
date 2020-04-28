@@ -21,7 +21,7 @@ oneroster:
       name:
   profile:
     class: default
-    org: default
+
 
 fint:
   component:

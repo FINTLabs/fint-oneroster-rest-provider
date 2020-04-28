@@ -21,7 +21,7 @@ class EnrollmentServiceSpec extends Specification {
         getTeachingGroups() >> [('/teaching-group-sourced-id'): FintObjectFactory.newTeachingGroup()]
     }
 
-    EnrollmentService enrollmentService = new EnrollmentService(fintEducationService)
+    EnrollmentService enrollmentService = new EnrollmentService(fintEducationService, oneRosterRepository)
 
     def "getAllEnrollments returns a list of enrollments given valid orgId"() {
         when:

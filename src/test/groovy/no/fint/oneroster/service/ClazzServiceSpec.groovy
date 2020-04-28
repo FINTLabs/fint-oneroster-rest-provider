@@ -25,7 +25,7 @@ class ClazzServiceSpec extends Specification {
     AcademicSessionService academicSessionService = Mock()
     ClazzFactory clazzFactory = new DefaultClazzFactory()
 
-    ClazzService clazzService = new ClazzService(fintEducationService, academicSessionService, clazzFactory)
+    ClazzService clazzService = new ClazzService(fintEducationService, academicSessionService, clazzFactory, oneRosterRepository)
 
     def "getAllClazzes returns a list of clazzes given valid orgId"() {
         when:
