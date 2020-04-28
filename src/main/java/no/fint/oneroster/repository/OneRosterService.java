@@ -28,14 +28,14 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class OneRosterRepository {
+public class OneRosterService {
     private final FintEducationService fintEducationService;
     private final FintAdministrationService fintAdministrationService;
     private final OneRosterProperties oneRosterProperties;
     private final AcademicSessionService academicSessionService;
     private final ClazzFactory clazzFactory;
 
-    public OneRosterRepository(FintEducationService fintEducationService, FintAdministrationService fintAdministrationService, OneRosterProperties oneRosterProperties, AcademicSessionService academicSessionService, ClazzFactory clazzFactory) {
+    public OneRosterService(FintEducationService fintEducationService, FintAdministrationService fintAdministrationService, OneRosterProperties oneRosterProperties, AcademicSessionService academicSessionService, ClazzFactory clazzFactory) {
         this.fintEducationService = fintEducationService;
         this.fintAdministrationService = fintAdministrationService;
         this.oneRosterProperties = oneRosterProperties;

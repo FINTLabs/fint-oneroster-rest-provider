@@ -1,36 +1,34 @@
 package no.fint.oneroster.service
 
+import no.fint.oneroster.model.Org
 import no.fint.oneroster.model.vocab.OrgType
-import no.fint.oneroster.properties.OneRosterProperties
-import no.fint.oneroster.repository.FintEducationService
-import no.fint.oneroster.util.FintObjectFactory
+import no.fint.oneroster.repository.OneRosterService
 import spock.lang.Specification
 
 class OrgServiceSpec extends Specification {
 
-    FintEducationService fintEducationService = Mock {
-        getSchools() >> [('/school-sourced-id'): FintObjectFactory.newSchool()]
+    OneRosterService oneRosterService = Mock {
+        getAllOrgs() >> getOrgs()
     }
 
-    OneRosterProperties organisationProperties = Mock {
-        getOrg() >> new OneRosterProperties.Org(
-                sourcedId: 'school-owner-sourced-id',
-                name: 'School owner',
-                identifier: '0123456789'
-        )
-    }
+    OrgService orgService = new OrgService(oneRosterService)
 
-    OrgService orgService = new OrgService(fintEducationService, organisationProperties, oneRosterRepository)
-
-    def "getAllOrgs returns a list of orgs given valid orgId"() {
+    def "getAllOrgs returns a list of orgs"() {
         when:
         def orgs = orgService.getAllOrgs()
 
         then:
         orgs.size() == 2
+        orgs.first().sourcedId == 'school-owner-sourced-id'
+        orgs.first().name == 'School owner'
+        orgs.first().type == OrgType.DISTRICT
+
+        orgs.last().sourcedId == 'school-sourced-id'
+        orgs.last().name == 'School'
+        orgs.last().type == OrgType.SCHOOL
     }
 
-    def "getOrg returns an org given valid orgId and sourcedId"() {
+    def "getOrg returns an org given valid sourcedId"() {
         when:
         def org = orgService.getOrg('school-owner-sourced-id')
 
@@ -38,11 +36,9 @@ class OrgServiceSpec extends Specification {
         org.sourcedId == 'school-owner-sourced-id'
         org.name == 'School owner'
         org.type == OrgType.DISTRICT
-        org.identifier == '0123456789'
-        org.children.first().sourcedId == 'school-sourced-id'
     }
 
-    def "getAllSchools returns a list of schools given valid orgId"() {
+    def "getAllSchools returns a list of schools"() {
         when:
         def schools = orgService.getAllSchools()
 
@@ -50,7 +46,7 @@ class OrgServiceSpec extends Specification {
         schools.size() == 1
     }
 
-    def "getSchool returns a school given valid orgId and sourcedId"() {
+    def "getSchool returns a school given valid sourcedId"() {
         when:
         def school = orgService.getSchool('school-sourced-id')
 
@@ -58,7 +54,21 @@ class OrgServiceSpec extends Specification {
         school.sourcedId == 'school-sourced-id'
         school.name == 'School'
         school.type == OrgType.SCHOOL
-        school.identifier == 'identifier'
-        school.parent.sourcedId == 'school-owner-sourced-id'
+    }
+
+    List<Org> getOrgs() {
+        Org schoolOwner = new Org(
+                'school-owner-sourced-id',
+                'School owner',
+                OrgType.DISTRICT
+        )
+
+        Org school = new Org(
+                'school-sourced-id',
+                'School',
+                OrgType.SCHOOL
+        )
+
+        return [schoolOwner, school]
     }
 }

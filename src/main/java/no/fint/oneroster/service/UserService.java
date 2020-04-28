@@ -5,7 +5,7 @@ import no.fint.oneroster.exception.NotFoundException;
 import no.fint.oneroster.model.GUIDRef;
 import no.fint.oneroster.model.User;
 import no.fint.oneroster.model.vocab.RoleType;
-import no.fint.oneroster.repository.OneRosterRepository;
+import no.fint.oneroster.repository.OneRosterService;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -14,14 +14,14 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class UserService {
-    private final OneRosterRepository oneRosterRepository;
+    private final OneRosterService oneRosterService;
 
-    public UserService(OneRosterRepository oneRosterRepository) {
-        this.oneRosterRepository = oneRosterRepository;
+    public UserService(OneRosterService oneRosterService) {
+        this.oneRosterService = oneRosterService;
     }
 
     public List<User> getAllUsers() {
-        return oneRosterRepository.getAllUsers();
+        return oneRosterService.getAllUsers();
     }
 
     public User getUser(String sourcedId) {

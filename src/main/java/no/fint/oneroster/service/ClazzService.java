@@ -3,7 +3,7 @@ package no.fint.oneroster.service;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.oneroster.exception.NotFoundException;
 import no.fint.oneroster.model.Clazz;
-import no.fint.oneroster.repository.OneRosterRepository;
+import no.fint.oneroster.repository.OneRosterService;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -12,14 +12,14 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class ClazzService {
-    private final OneRosterRepository oneRosterRepository;
+    private final OneRosterService oneRosterService;
 
-    public ClazzService(OneRosterRepository oneRosterRepository) {
-        this.oneRosterRepository = oneRosterRepository;
+    public ClazzService(OneRosterService oneRosterService) {
+        this.oneRosterService = oneRosterService;
     }
 
     public List<Clazz> getAllClazzes() {
-        return oneRosterRepository.getAllClazzes();
+        return oneRosterService.getAllClazzes();
     }
 
     public Clazz getClazz(String sourcedId) {

@@ -2,7 +2,6 @@ package no.fint.oneroster.factory.clazz
 
 import no.fint.model.felles.kompleksedatatyper.Identifikator
 import no.fint.model.resource.utdanning.elev.BasisgruppeResource
-import no.fint.oneroster.factory.clazz.VTFKClazzFactory
 import no.fint.oneroster.model.AcademicSession
 import no.fint.oneroster.model.vocab.ClazzType
 import no.fint.oneroster.model.vocab.SessionType

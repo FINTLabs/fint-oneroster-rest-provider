@@ -1,6 +1,5 @@
 package no.fint.oneroster.factory.clazz
 
-import no.fint.oneroster.factory.clazz.DefaultClazzFactory
 import no.fint.oneroster.model.AcademicSession
 import no.fint.oneroster.model.vocab.ClazzType
 import no.fint.oneroster.model.vocab.SessionType

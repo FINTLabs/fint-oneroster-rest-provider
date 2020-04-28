@@ -1,35 +1,26 @@
 package no.fint.oneroster.service
 
+import no.fint.oneroster.model.Enrollment
+import no.fint.oneroster.model.GUIDRef
+import no.fint.oneroster.model.vocab.GUIDType
 import no.fint.oneroster.model.vocab.RoleType
-import no.fint.oneroster.repository.FintEducationService
-import no.fint.oneroster.util.FintObjectFactory
+import no.fint.oneroster.repository.OneRosterService
 import spock.lang.Specification
 
 class EnrollmentServiceSpec extends Specification {
 
-    FintEducationService fintEducationService = Mock {
-        getSchools() >> [('/school-sourced-id'): FintObjectFactory.newSchool()]
-        getStudents() >> [('/student-sourced-id'): FintObjectFactory.newStudent()]
-        getStudentRelations() >> [('/student-relation-sourced-id'): FintObjectFactory.newStudentRelation()]
-        getBasisGroups() >> [('/basis-group-sourced-id'): FintObjectFactory.newBasisGroup()]
-        getTeachingGroups() >> [('/teaching-group-sourced-id'): FintObjectFactory.newTeachingGroup()]
-
-        getSchools() >> [('/school-sourced-id'): FintObjectFactory.newSchool()]
-        getTeachers() >> [('/teacher-sourced-id'): FintObjectFactory.newTeacher()]
-        getTeachingRelations() >> [('/teaching-relation-sourced-id'): FintObjectFactory.newTeachingRelation()]
-        getBasisGroups() >> [('/basis-group-sourced-id'): FintObjectFactory.newBasisGroup()]
-        getTeachingGroups() >> [('/teaching-group-sourced-id'): FintObjectFactory.newTeachingGroup()]
+    OneRosterService oneRosterService = Mock {
+        getAllEnrollments() >> getEnrollments()
     }
 
-    EnrollmentService enrollmentService = new EnrollmentService(fintEducationService, oneRosterRepository)
+    EnrollmentService enrollmentService = new EnrollmentService(oneRosterService)
 
-    def "getAllEnrollments returns a list of enrollments given valid orgId"() {
+    def "getAllEnrollments returns a list of enrollments"() {
         when:
         def enrollments = enrollmentService.getAllEnrollments()
 
         then:
-        enrollments.size() == 4
-
+        enrollments.size() == 2
         enrollments.first().sourcedId == 'student-relation-sourced-id_basis-group-sourced-id'
         enrollments.first().role == RoleType.STUDENT
         enrollments.first().user.sourcedId == 'student-sourced-id'
@@ -43,7 +34,7 @@ class EnrollmentServiceSpec extends Specification {
         enrollments.last().school.sourcedId == 'school-sourced-id'
     }
 
-    def "getEnrollment returns an enrollment given valid orgId and sourcedId"() {
+    def "getEnrollment returns an enrollment given valid sourcedId"() {
         when:
         def enrollment = enrollmentService.getEnrollment('student-relation-sourced-id_basis-group-sourced-id')
 
@@ -53,5 +44,25 @@ class EnrollmentServiceSpec extends Specification {
         enrollment.user.sourcedId == 'student-sourced-id'
         enrollment.clazz.sourcedId == 'basis-group-sourced-id'
         enrollment.school.sourcedId == 'school-sourced-id'
+    }
+
+    List<Enrollment> getEnrollments() {
+        Enrollment student = new Enrollment(
+                'student-relation-sourced-id_basis-group-sourced-id',
+                GUIDRef.of(GUIDType.USER, 'student-sourced-id'),
+                GUIDRef.of(GUIDType.CLASS, 'basis-group-sourced-id'),
+                GUIDRef.of(GUIDType.ORG, 'school-sourced-id'),
+                RoleType.STUDENT
+        )
+
+        Enrollment teacher = new Enrollment(
+                'teaching-relation-sourced-id_teaching-group-sourced-id',
+                GUIDRef.of(GUIDType.USER, 'teacher-sourced-id'),
+                GUIDRef.of(GUIDType.CLASS, 'teaching-group-sourced-id'),
+                GUIDRef.of(GUIDType.ORG, 'school-sourced-id'),
+                RoleType.TEACHER
+        )
+
+        return [student, teacher]
     }
 }

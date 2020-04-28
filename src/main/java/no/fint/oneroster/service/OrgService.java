@@ -3,7 +3,7 @@ package no.fint.oneroster.service;
 import no.fint.oneroster.exception.NotFoundException;
 import no.fint.oneroster.model.Org;
 import no.fint.oneroster.model.vocab.OrgType;
-import no.fint.oneroster.repository.OneRosterRepository;
+import no.fint.oneroster.repository.OneRosterService;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -11,18 +11,18 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrgService {
-    private final OneRosterRepository oneRosterRepository;
+    private final OneRosterService oneRosterService;
 
-    public OrgService(OneRosterRepository oneRosterRepository) {
-        this.oneRosterRepository = oneRosterRepository;
+    public OrgService(OneRosterService oneRosterService) {
+        this.oneRosterService = oneRosterService;
     }
 
     public List<Org> getAllOrgs() {
-        return oneRosterRepository.getAllOrgs();
+        return oneRosterService.getAllOrgs();
     }
 
     public Org getOrg(String sourcedId) {
-        return oneRosterRepository.getAllOrgs()
+        return oneRosterService.getAllOrgs()
                 .stream()
                 .filter(org -> org.getSourcedId().equals(sourcedId))
                 .findAny()
