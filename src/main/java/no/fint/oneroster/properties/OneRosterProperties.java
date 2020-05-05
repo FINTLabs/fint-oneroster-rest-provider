@@ -2,9 +2,11 @@ package no.fint.oneroster.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @ConfigurationProperties("oneroster")
@@ -62,6 +64,10 @@ public class OneRosterProperties {
     @Data
     public static class Profile {
         private String clazz;
-        private List<String> clazzNameFilter;
+        private Set<String> clazzNameFilter;
+
+        public void setClazzNameFilter(String clazzNameFilter) {
+            this.clazzNameFilter = StringUtils.commaDelimitedListToSet(StringUtils.trimAllWhitespace(clazzNameFilter));
+        }
     }
 }
