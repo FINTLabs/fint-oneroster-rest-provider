@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static no.fint.oneroster.util.StringNormalizer.normalize;
+
 public final class UserFactory {
 
     private UserFactory() {
@@ -26,14 +28,14 @@ public final class UserFactory {
 
     public static User student(ElevResource elevResource, PersonResource personResource, List<SkoleResource> skoleResources) {
         User student = new User(
-                elevResource.getSystemId().getIdentifikatorverdi(),
+                normalize(elevResource.getSystemId().getIdentifikatorverdi()),
                 elevResource.getBrukernavn().getIdentifikatorverdi(),
                 true,
                 personResource.getNavn().getFornavn(),
                 personResource.getNavn().getEtternavn(),
                 RoleType.STUDENT,
                 skoleResources.stream()
-                        .map(skoleResource -> GUIDRef.of(GUIDType.ORG, skoleResource.getSystemId().getIdentifikatorverdi()))
+                        .map(skoleResource -> GUIDRef.of(GUIDType.ORG, normalize(skoleResource.getSystemId().getIdentifikatorverdi())))
                         .collect(Collectors.toList())
         );
 
@@ -71,14 +73,14 @@ public final class UserFactory {
 
     public static User teacher(SkoleressursResource skoleressursResource, PersonalressursResource personalressursResource, PersonResource personResource, List<SkoleResource> skoleResources) {
         User teacher = new User(
-                skoleressursResource.getSystemId().getIdentifikatorverdi(),
+                normalize(skoleressursResource.getSystemId().getIdentifikatorverdi()),
                 personalressursResource.getBrukernavn().getIdentifikatorverdi(),
                 true,
                 personResource.getNavn().getFornavn(),
                 personResource.getNavn().getEtternavn(),
                 RoleType.TEACHER,
                 skoleResources.stream()
-                        .map(skoleResource -> GUIDRef.of(GUIDType.ORG, skoleResource.getSystemId().getIdentifikatorverdi()))
+                        .map(skoleResource -> GUIDRef.of(GUIDType.ORG, normalize(skoleResource.getSystemId().getIdentifikatorverdi())))
                         .collect(Collectors.toList())
         );
 

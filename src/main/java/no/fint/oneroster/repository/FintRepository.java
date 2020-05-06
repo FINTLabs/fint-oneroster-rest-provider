@@ -61,7 +61,7 @@ public class FintRepository {
         OAuth2AuthorizedClient authorizedClient = authorizedClientManager.authorize(authorizeRequest);
 
         URI uri = UriComponentsBuilder.fromHttpUrl(endpoint)
-                .queryParam("sinceTimeStamp", sinceTimestamp.getOrDefault(endpoint, 0L))
+                .queryParam("sinceTimeStamp", sinceTimestamp.getOrDefault(endpoint + credential.getId(), 0L))
                 .build()
                 .toUri();
 
@@ -69,10 +69,11 @@ public class FintRepository {
                 .uri(uri)
                 .attributes(oauth2AuthorizedClient(authorizedClient))
                 .retrieve()
-                .bodyToMono(clazz)
-                .doOnSuccess(it -> log.info("Updated {}... ", uri));
+                .bodyToMono(clazz);
 
-        sinceTimestamp.put(endpoint, Instant.now().toEpochMilli());
+        log.info("Updated {}... ", uri);
+
+        sinceTimestamp.put(endpoint + credential.getId(), Instant.now().toEpochMilli());
 
         return resources;
     }

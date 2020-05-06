@@ -88,7 +88,6 @@ class OneRosterServiceSpec extends Specification {
         courses.first().sourcedId == 'level-sourced-id'
         courses.first().title == 'Level'
         courses.first().org.sourcedId == 'school-owner-sourced-id'
-        courses.first().courseCode == '/grep-level'
     }
 
     def "getAllEnrollments returns a list of enrollments"() {

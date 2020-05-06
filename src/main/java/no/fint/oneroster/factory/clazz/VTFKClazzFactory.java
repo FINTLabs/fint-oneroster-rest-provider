@@ -1,10 +1,12 @@
 package no.fint.oneroster.factory.clazz;
 
+import lombok.extern.slf4j.Slf4j;
 import no.fint.model.resource.utdanning.elev.BasisgruppeResource;
 import no.fint.model.resource.utdanning.timeplan.FagResource;
 import no.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
+import no.fint.model.utdanning.basisklasser.Gruppe;
 import no.fint.oneroster.model.AcademicSession;
 import no.fint.oneroster.model.Clazz;
 import no.fint.oneroster.model.GUIDRef;
@@ -18,37 +20,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Slf4j
 public class VTFKClazzFactory implements ClazzFactory {
     private final String SEPARATOR = "-";
 
-    public Clazz basisGroup(BasisgruppeResource basisgruppeResource, ArstrinnResource arstrinnResource, SkoleResource skoleResource, List<AcademicSession> terms) {
-        return new Clazz(
-                basisgruppeResource.getSystemId().getIdentifikatorverdi(),
-                basisGroupNameConverter(basisgruppeResource.getSystemId().getIdentifikatorverdi()),
-                ClazzType.HOMEROOM,
-                GUIDRef.of(GUIDType.COURSE, arstrinnResource.getSystemId().getIdentifikatorverdi()),
-                GUIDRef.of(GUIDType.ORG, skoleResource.getSystemId().getIdentifikatorverdi()),
-                terms.stream()
-                        .map(term -> GUIDRef.of(GUIDType.ACADEMICSESSION, term.getSourcedId()))
-                        .collect(Collectors.toList())
-        );
-    }
-
-    public Clazz teachingGroup(UndervisningsgruppeResource undervisningsgruppeResource, FagResource fagResource, SkoleResource skoleResource, List<AcademicSession> terms) {
-        return new Clazz(
-                undervisningsgruppeResource.getSystemId().getIdentifikatorverdi(),
-                undervisningsgruppeResource.getNavn(),
-                ClazzType.SCHEDULED,
-                GUIDRef.of(GUIDType.COURSE, fagResource.getSystemId().getIdentifikatorverdi()),
-                GUIDRef.of(GUIDType.ORG, skoleResource.getSystemId().getIdentifikatorverdi()),
-                terms.stream()
-                        .map(term -> GUIDRef.of(GUIDType.ACADEMICSESSION, term.getSourcedId()))
-                        .collect(Collectors.toList())
-        );
-    }
-
-    public String basisGroupNameConverter(String name) {
-        String between = StringUtils.substringBetween(name, "_", "@");
+    @Override
+    public String basisGroupNameConverter(Gruppe basisGroup) {
+        String between = StringUtils.substringBetween(basisGroup.getSystemId().getIdentifikatorverdi(), "_", "@");
         String school = StringUtils.substringAfterLast(between, "_");
         String group = StringUtils.substringBeforeLast(between, "_");
 
@@ -57,6 +35,26 @@ public class VTFKClazzFactory implements ClazzFactory {
                 group +
                 SEPARATOR +
                 "Klasse";
+    }
+
+    @Override
+    public String teachingGroupNameConverter(Gruppe teachingGroup) {
+        String between = StringUtils.substringBetween(teachingGroup.getSystemId().getIdentifikatorverdi(), "_", "@");
+        String school = StringUtils.substringAfterLast(between, "_");
+        String group = StringUtils.substringBeforeLast(between, "_");
+        String subject = StringUtils.substringBetween(teachingGroup.getBeskrivelse(), " i ", " ved ");
+
+        if (group.contains("_")) {
+            return schools.getOrDefault(school, school) +
+                    SEPARATOR +
+                    StringUtils.substringBeforeLast(group, "_") +
+                    SEPARATOR +
+                    subject;
+        }
+
+        return schools.getOrDefault(school, school) +
+                SEPARATOR +
+                subject;
     }
 
     private static final Map<String, String> schools = Stream.of(
@@ -78,7 +76,6 @@ public class VTFKClazzFactory implements ClazzFactory {
             new AbstractMap.SimpleImmutableEntry<>("RVS", "OF-REV"),
             new AbstractMap.SimpleImmutableEntry<>("RJUVS", "OF-RJV"),
             new AbstractMap.SimpleImmutableEntry<>("SVS", "OF-SANV"),
-            //new AbstractMap.SimpleImmutableEntry<>("SFVS", "OF-SFH"), Sandefjord folkehøyskole
             new AbstractMap.SimpleImmutableEntry<>("SFVS", "OF-SFV"),
             new AbstractMap.SimpleImmutableEntry<>("SKIVS", "OF-SKIV"),
             new AbstractMap.SimpleImmutableEntry<>("SKOVS", "OF-SKOV"),
