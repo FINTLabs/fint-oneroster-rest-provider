@@ -51,7 +51,3 @@ fint:
       endpoint:
         person:
         personnel:
-
-spring:
-  autoconfigure:
-    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
