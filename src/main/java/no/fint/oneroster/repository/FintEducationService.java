@@ -16,13 +16,14 @@ import no.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResources;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResources;
+import no.fint.model.utdanning.basisklasser.Gruppe;
 import no.fint.oneroster.properties.OneRosterProperties;
-import no.fint.oneroster.repository.FintRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 @Slf4j
@@ -151,11 +152,9 @@ public class FintEducationService {
     public void updateBasisGroups() {
         fintRepository.getResources(BasisgruppeResources.class, "education", "basis-group")
                 .toStream()
-                .filter(resource -> Optional.ofNullable(resource.getSystemId()).map(Identifikator::getIdentifikatorverdi).isPresent() &&
-                        Optional.ofNullable(resource.getNavn()).isPresent())
-                .filter(resource -> oneRosterProperties.getProfile().getClazzNameFilter()
+                .filter(validGroup().and(resource -> oneRosterProperties.getProfile().getClazzFilter()
                         .stream()
-                        .noneMatch(resource.getNavn()::contains))
+                        .noneMatch(filter -> resource.getNavn().concat(resource.getBeskrivelse()).contains(filter))))
                 .forEach(resource -> this.getSelfLinks(resource).forEach(link -> basisGroups.put(link, resource)));
     }
 
@@ -170,11 +169,9 @@ public class FintEducationService {
     public void updateTeachingGroups() {
         fintRepository.getResources(UndervisningsgruppeResources.class, "education", "teaching-group")
                 .toStream()
-                .filter(resource -> Optional.ofNullable(resource.getSystemId()).map(Identifikator::getIdentifikatorverdi).isPresent() &&
-                        Optional.ofNullable(resource.getNavn()).isPresent())
-                .filter(resource -> oneRosterProperties.getProfile().getClazzNameFilter()
+                .filter(validGroup().and(resource -> oneRosterProperties.getProfile().getClazzFilter()
                         .stream()
-                        .noneMatch(resource.getNavn()::contains))
+                        .noneMatch(filter -> resource.getNavn().concat(resource.getBeskrivelse()).contains(filter))))
                 .forEach(resource -> this.getSelfLinks(resource).forEach(link -> teachingGroups.put(link, resource)));
     }
 
@@ -189,8 +186,7 @@ public class FintEducationService {
     public void updateLevels() {
         fintRepository.getResources(ArstrinnResources.class, "education", "level")
                 .toStream()
-                .filter(resource -> Optional.ofNullable(resource.getSystemId()).map(Identifikator::getIdentifikatorverdi).isPresent() &&
-                        Optional.ofNullable(resource.getNavn()).isPresent())
+                .filter(validGroup())
                 .forEach(resource -> this.getSelfLinks(resource).forEach(link -> levels.put(link, resource)));
     }
 
@@ -205,8 +201,7 @@ public class FintEducationService {
     public void updateSubjects() {
         fintRepository.getResources(FagResources.class, "education", "subject")
                 .toStream()
-                .filter(resource -> Optional.ofNullable(resource.getSystemId()).map(Identifikator::getIdentifikatorverdi).isPresent() &&
-                        Optional.ofNullable(resource.getNavn()).isPresent())
+                .filter(validGroup())
                 .forEach(resource -> this.getSelfLinks(resource).forEach(link -> subjects.put(link, resource)));
     }
 
@@ -214,5 +209,12 @@ public class FintEducationService {
         return resource.getSelfLinks().stream()
                 .map(Link::getHref)
                 .map(String::toLowerCase);
+    }
+
+    private Predicate<Gruppe> validGroup() {
+        return resource ->
+                Optional.ofNullable(resource.getSystemId()).map(Identifikator::getIdentifikatorverdi).isPresent() &&
+                        Optional.ofNullable(resource.getNavn()).isPresent() &&
+                        Optional.ofNullable(resource.getBeskrivelse()).isPresent();
     }
 }

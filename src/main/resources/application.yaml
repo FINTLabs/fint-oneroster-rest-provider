@@ -20,8 +20,8 @@ oneroster:
       end-date:
       name:
   profile:
-    class: default
-
+    clazz-factory: default
+    clazz-filter:
 
 fint:
   component:

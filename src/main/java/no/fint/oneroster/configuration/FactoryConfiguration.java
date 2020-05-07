@@ -12,7 +12,7 @@ public class FactoryConfiguration {
 
     @Bean
     @ConditionalOnProperty(
-            value = "oneroster.profile.clazz",
+            value = "oneroster.profile.clazz-factory",
             havingValue = "default",
             matchIfMissing = true)
     public ClazzFactory clazzFactory() {
@@ -21,7 +21,7 @@ public class FactoryConfiguration {
 
     @Bean
     @ConditionalOnProperty(
-            value = "oneroster.profile.clazz",
+            value = "oneroster.profile.clazz-factory",
             havingValue = "vtfk")
     public ClazzFactory vtfkClazzFactory() {
         return new VTFKClazzFactory();

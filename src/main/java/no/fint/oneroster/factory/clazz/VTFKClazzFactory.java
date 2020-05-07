@@ -1,21 +1,10 @@
 package no.fint.oneroster.factory.clazz;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fint.model.resource.utdanning.elev.BasisgruppeResource;
-import no.fint.model.resource.utdanning.timeplan.FagResource;
-import no.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource;
-import no.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResource;
-import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
 import no.fint.model.utdanning.basisklasser.Gruppe;
-import no.fint.oneroster.model.AcademicSession;
-import no.fint.oneroster.model.Clazz;
-import no.fint.oneroster.model.GUIDRef;
-import no.fint.oneroster.model.vocab.ClazzType;
-import no.fint.oneroster.model.vocab.GUIDType;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.AbstractMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -28,7 +17,7 @@ public class VTFKClazzFactory implements ClazzFactory {
     public String basisGroupNameConverter(Gruppe basisGroup) {
         String between = StringUtils.substringBetween(basisGroup.getSystemId().getIdentifikatorverdi(), "_", "@");
         String school = StringUtils.substringAfterLast(between, "_");
-        String group = StringUtils.substringBeforeLast(between, "_");
+        String group = StringUtils.substringBetween(basisGroup.getBeskrivelse(), "Basisgruppe ", " ved ");
 
         return schools.getOrDefault(school, school) +
                 SEPARATOR +
@@ -41,20 +30,14 @@ public class VTFKClazzFactory implements ClazzFactory {
     public String teachingGroupNameConverter(Gruppe teachingGroup) {
         String between = StringUtils.substringBetween(teachingGroup.getSystemId().getIdentifikatorverdi(), "_", "@");
         String school = StringUtils.substringAfterLast(between, "_");
-        String group = StringUtils.substringBeforeLast(between, "_");
+        String group = StringUtils.substringBetween(teachingGroup.getBeskrivelse(), "Undervisningsgruppa ", " i ");
         String subject = StringUtils.substringBetween(teachingGroup.getBeskrivelse(), " i ", " ved ");
 
-        if (group.contains("_")) {
-            return schools.getOrDefault(school, school) +
+        return schools.getOrDefault(school, school) +
                     SEPARATOR +
                     StringUtils.substringBeforeLast(group, "_") +
                     SEPARATOR +
                     subject;
-        }
-
-        return schools.getOrDefault(school, school) +
-                SEPARATOR +
-                subject;
     }
 
     private static final Map<String, String> schools = Stream.of(

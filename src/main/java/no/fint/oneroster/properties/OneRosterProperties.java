@@ -5,7 +5,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Set;
 
 @Data
@@ -63,11 +62,11 @@ public class OneRosterProperties {
 
     @Data
     public static class Profile {
-        private String clazz;
-        private Set<String> clazzNameFilter;
+        private String clazzFactory;
+        private Set<String> clazzFilter;
 
-        public void setClazzNameFilter(String clazzNameFilter) {
-            this.clazzNameFilter = StringUtils.commaDelimitedListToSet(StringUtils.trimAllWhitespace(clazzNameFilter));
+        public void setClazzFilter(String clazzFilter) {
+            this.clazzFilter = StringUtils.commaDelimitedListToSet(StringUtils.trimAllWhitespace(clazzFilter));
         }
     }
 }
