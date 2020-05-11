@@ -65,16 +65,14 @@ public class FintRepository {
                 .build()
                 .toUri();
 
-        Mono<T> resources = webClient.get()
+        return webClient.get()
                 .uri(uri)
                 .attributes(oauth2AuthorizedClient(authorizedClient))
                 .retrieve()
-                .bodyToMono(clazz);
-
-        log.info("Updated {}... ", uri);
-
-        sinceTimestamp.put(endpoint + credential.getId(), Instant.now().toEpochMilli());
-
-        return resources;
+                .bodyToMono(clazz)
+                .doOnSuccess(it -> {
+                    log.info("Updated {}... ", uri);
+                    sinceTimestamp.put(endpoint + credential.getId(), Instant.now().toEpochMilli());
+                });
     }
 }
