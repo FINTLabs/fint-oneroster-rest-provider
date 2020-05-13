@@ -8,14 +8,16 @@ import no.fint.oneroster.properties.OneRosterProperties;
 
 import java.util.Optional;
 
+import static no.fint.oneroster.util.StringNormalizer.normalize;
+
 public final class OrgFactory {
 
     private OrgFactory() {
     }
 
-    public static no.fint.oneroster.model.Org school(SkoleResource skoleResource) {
+    public static Org school(SkoleResource skoleResource) {
         Org school = new Org(
-                skoleResource.getSystemId().getIdentifikatorverdi(),
+                normalize(skoleResource.getSystemId().getIdentifikatorverdi()),
                 skoleResource.getNavn(),
                 OrgType.SCHOOL
         );
@@ -27,9 +29,9 @@ public final class OrgFactory {
         return school;
     }
 
-    public static no.fint.oneroster.model.Org schoolOwner(OneRosterProperties.Org org) {
+    public static Org schoolOwner(OneRosterProperties.Org org) {
         Org schoolOwner = new Org(
-                org.getSourcedId(),
+                normalize(org.getSourcedId()),
                 org.getName(),
                 OrgType.DISTRICT
         );

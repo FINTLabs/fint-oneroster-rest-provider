@@ -20,29 +20,21 @@ class AcademicSessionServiceSpec extends Specification {
 
     AcademicSessionService academicSessionService = new AcademicSessionService(oneRosterProperties)
 
-    def "getAllAcademicSessions returns a list of academicSessions given valid orgId"() {
+    def "getAllAcademicSessions returns a list of academicSessions"() {
         when:
         def academicSessions = academicSessionService.getAllAcademicSessions()
 
         then:
         academicSessions.size() == 3
-
         academicSessions.first().sourcedId == 'SY20192020'
         academicSessions.first().title == 'Skoleåret 2019/2020'
         academicSessions.first().startDate == LocalDate.of(2019, 8, 1)
         academicSessions.first().endDate == LocalDate.of(2020, 7, 31)
         academicSessions.first().type == SessionType.SCHOOLYEAR
         academicSessions.first().schoolYear == Year.of(2020)
-
-        academicSessions.last().sourcedId == 'T2SY20192020'
-        academicSessions.last().title == '2. termin 2019/2020'
-        academicSessions.last().startDate == LocalDate.of(2020, 1, 1)
-        academicSessions.last().endDate == LocalDate.of(2020, 7, 31)
-        academicSessions.last().type == SessionType.TERM
-        academicSessions.last().schoolYear == Year.of(2020)
     }
 
-    def "getAcademicSession returns an academicSession given valid orgId and sourcedId"() {
+    def "getAcademicSession returns an academicSession given valid sourcedId"() {
         given:
         def sourcedId = 'T1SY20192020'
 
@@ -58,29 +50,21 @@ class AcademicSessionServiceSpec extends Specification {
         academicSession.schoolYear == Year.of(2020)
     }
 
-    def "getAllTerms returns a list of terms given valid orgId"() {
+    def "getAllTerms returns a list of terms"() {
         when:
         def terms = academicSessionService.getAllTerms()
 
         then:
         terms.size() == 2
-
         terms.first().sourcedId == 'T1SY20192020'
         terms.first().title == '1. termin 2019/2020'
         terms.first().startDate == LocalDate.of(2019, 8, 1)
         terms.first().endDate == LocalDate.of(2019, 12, 31)
         terms.first().type == SessionType.TERM
         terms.first().schoolYear == Year.of(2020)
-
-        terms.last().sourcedId == 'T2SY20192020'
-        terms.last().title == '2. termin 2019/2020'
-        terms.last().startDate == LocalDate.of(2020, 1, 1)
-        terms.last().endDate == LocalDate.of(2020, 7, 31)
-        terms.last().type == SessionType.TERM
-        terms.last().schoolYear == Year.of(2020)
     }
 
-    def "getTerm returns a term given valid orgId and sourcedId"() {
+    def "getTerm returns a term given valid sourcedId"() {
         given:
         def sourcedId = 'T1SY20192020'
 
@@ -97,10 +81,10 @@ class AcademicSessionServiceSpec extends Specification {
     }
 
     @Ignore
-    def "getAllGradingPeriods returns a list of gradingPeriods given valid orgId"() {
+    def "getAllGradingPeriods returns a list of gradingPeriods"() {
     }
 
     @Ignore
-    def "getGradingPeriod returns a gradingPeriod given valid orgId and sourcedId"() {
+    def "getGradingPeriod returns a gradingPeriod given valid sourcedId"() {
     }
 }

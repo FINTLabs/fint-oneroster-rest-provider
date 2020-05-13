@@ -1,13 +1,9 @@
 package no.fint.oneroster.service;
 
 import no.fint.oneroster.exception.NotFoundException;
-import no.fint.oneroster.factory.OrgFactory;
-import no.fint.oneroster.model.GUIDRef;
 import no.fint.oneroster.model.Org;
-import no.fint.oneroster.model.vocab.GUIDType;
 import no.fint.oneroster.model.vocab.OrgType;
-import no.fint.oneroster.properties.OneRosterProperties;
-import no.fint.oneroster.repository.FintEducationService;
+import no.fint.oneroster.repository.OneRosterService;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -15,39 +11,18 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrgService {
+    private final OneRosterService oneRosterService;
 
-    private final FintEducationService fintEducationService;
-    private final OneRosterProperties oneRosterProperties;
-
-    public OrgService(FintEducationService fintEducationService, OneRosterProperties oneRosterProperties) {
-        this.fintEducationService = fintEducationService;
-        this.oneRosterProperties = oneRosterProperties;
+    public OrgService(OneRosterService oneRosterService) {
+        this.oneRosterService = oneRosterService;
     }
 
     public List<Org> getAllOrgs() {
-        Org schoolOwner = OrgFactory.schoolOwner(oneRosterProperties.getOrg());
-
-        List<Org> orgs = fintEducationService.getSchools()
-                .values()
-                .stream()
-                .distinct()
-                .map(OrgFactory::school)
-                .peek(school -> {
-                    if (schoolOwner.getChildren() == null) {
-                        schoolOwner.setChildren(new ArrayList<>());
-                    }
-                    school.setParent(GUIDRef.of(GUIDType.ORG, schoolOwner.getSourcedId()));
-                    schoolOwner.getChildren().add(GUIDRef.of(GUIDType.ORG, school.getSourcedId()));
-                })
-                .collect(Collectors.toList());
-
-        orgs.add(schoolOwner);
-
-        return orgs;
+        return oneRosterService.getAllOrgs();
     }
 
     public Org getOrg(String sourcedId) {
-        return getAllOrgs()
+        return oneRosterService.getAllOrgs()
                 .stream()
                 .filter(org -> org.getSourcedId().equals(sourcedId))
                 .findAny()
