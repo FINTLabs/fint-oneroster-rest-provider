@@ -32,7 +32,7 @@ public class SchedulingService {
         fintEducationService.updateLevels();
         fintEducationService.updateSubjects();
         fintAdministrationService.updatePersons();
-        fintAdministrationService.getPersonnel();
+        fintAdministrationService.updatePersonnel();
         log.info("Update complete");
     }
 }
