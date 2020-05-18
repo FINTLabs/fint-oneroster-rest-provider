@@ -25,7 +25,7 @@ public interface UserFactory {
     default User student(ElevResource elevResource, PersonResource personResource, List<SkoleResource> skoleResources) {
         User student = new User(
                 normalize(elevResource.getSystemId().getIdentifikatorverdi()),
-                elevResource.getBrukernavn().getIdentifikatorverdi(),
+                Optional.ofNullable(elevResource.getBrukernavn()).map(Identifikator::getIdentifikatorverdi).orElse(""),
                 true,
                 personResource.getNavn().getFornavn(),
                 personResource.getNavn().getEtternavn(),
@@ -56,7 +56,7 @@ public interface UserFactory {
     default User teacher(SkoleressursResource skoleressursResource, PersonalressursResource personalressursResource, PersonResource personResource, List<SkoleResource> skoleResources) {
         User teacher = new User(
                 normalize(skoleressursResource.getSystemId().getIdentifikatorverdi()),
-                personalressursResource.getBrukernavn().getIdentifikatorverdi(),
+                Optional.ofNullable(personalressursResource.getBrukernavn()).map(Identifikator::getIdentifikatorverdi).orElse(""),
                 true,
                 personResource.getNavn().getFornavn(),
                 personResource.getNavn().getEtternavn(),

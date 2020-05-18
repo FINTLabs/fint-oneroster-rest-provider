@@ -14,6 +14,7 @@ import no.fint.oneroster.model.UserId;
 import no.fint.oneroster.model.vocab.GUIDType;
 import no.fint.oneroster.model.vocab.RoleType;
 
+import javax.swing.text.html.Option;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +28,7 @@ public class ROGFKUserFactory implements UserFactory {
     public User student(ElevResource elevResource, PersonResource personResource, List<SkoleResource> skoleResources) {
         User student = new User(
                 normalize(elevResource.getSystemId().getIdentifikatorverdi()),
-                elevResource.getBrukernavn().getIdentifikatorverdi(),
+                Optional.ofNullable(elevResource.getBrukernavn()).map(Identifikator::getIdentifikatorverdi).orElse(""),
                 true,
                 personResource.getNavn().getFornavn(),
                 personResource.getNavn().getEtternavn(),
@@ -63,7 +64,7 @@ public class ROGFKUserFactory implements UserFactory {
     public User teacher(SkoleressursResource skoleressursResource, PersonalressursResource personalressursResource, PersonResource personResource, List<SkoleResource> skoleResources) {
         User teacher = new User(
                 normalize(skoleressursResource.getSystemId().getIdentifikatorverdi()),
-                personalressursResource.getBrukernavn().getIdentifikatorverdi(),
+                Optional.ofNullable(personalressursResource.getBrukernavn()).map(Identifikator::getIdentifikatorverdi).orElse(""),
                 true,
                 personResource.getNavn().getFornavn(),
                 personResource.getNavn().getEtternavn(),

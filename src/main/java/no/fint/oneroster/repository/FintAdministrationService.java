@@ -37,8 +37,6 @@ public class FintAdministrationService {
 
     public void updatePersons() {
         fintRepository.getResources(PersonResources.class, "administration", "person")
-                .filter(resource -> Optional.ofNullable(resource.getNavn()).map(Personnavn::getFornavn).isPresent() &&
-                        Optional.ofNullable(resource.getNavn()).map(Personnavn::getEtternavn).isPresent())
                 .toStream()
                 .forEach(resource -> this.getSelfLinks(resource).forEach(link -> persons.put(link, resource)));
     }
@@ -53,7 +51,6 @@ public class FintAdministrationService {
 
     public void updatePersonnel() {
         fintRepository.getResources(PersonalressursResources.class, "administration", "personnel")
-                .filter(resource -> Optional.ofNullable(resource.getBrukernavn()).map(Identifikator::getIdentifikatorverdi).isPresent())
                 .toStream()
                 .forEach(resource -> this.getSelfLinks(resource).forEach(link -> personnel.put(link, resource)));
     }
