@@ -1,8 +1,6 @@
 package no.fint.oneroster.repository;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fint.model.felles.kompleksedatatyper.Identifikator;
-import no.fint.model.felles.kompleksedatatyper.Personnavn;
 import no.fint.model.resource.FintLinks;
 import no.fint.model.resource.Link;
 import no.fint.model.resource.administrasjon.personal.PersonalressursResource;

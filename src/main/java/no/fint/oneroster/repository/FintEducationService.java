@@ -1,8 +1,6 @@
 package no.fint.oneroster.repository;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fint.model.felles.kompleksedatatyper.Identifikator;
-import no.fint.model.felles.kompleksedatatyper.Personnavn;
 import no.fint.model.resource.FintLinks;
 import no.fint.model.resource.Link;
 import no.fint.model.resource.felles.PersonResource;
@@ -16,14 +14,11 @@ import no.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResources;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResources;
-import no.fint.model.utdanning.basisklasser.Gruppe;
 import no.fint.oneroster.properties.OneRosterProperties;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 @Slf4j

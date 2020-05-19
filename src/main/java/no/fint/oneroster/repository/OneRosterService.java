@@ -65,6 +65,8 @@ public class OneRosterService {
 
         orgs.add(schoolOwner);
 
+        orgs.sort(Comparator.comparing(Org::getSourcedId));
+
         return orgs;
     }
 
@@ -126,6 +128,8 @@ public class OneRosterService {
                     }
                 });
 
+        clazzes.sort(Comparator.comparing(Clazz::getSourcedId));
+
         return clazzes;
     }
 
@@ -146,6 +150,8 @@ public class OneRosterService {
                 .stream()
                 .distinct()
                 .forEach(subject -> courses.add(CourseFactory.subject(subject, org)));
+
+        courses.sort(Comparator.comparing(Course::getSourcedId));
 
         return courses;
     }
@@ -246,6 +252,8 @@ public class OneRosterService {
                             });
                 });
 
+        enrollments.sort(Comparator.comparing(Enrollment::getSourcedId));
+
         return enrollments;
     }
 
@@ -326,6 +334,8 @@ public class OneRosterService {
                         users.add(userFactory.teacher(teacher, personnelResource.get(), personResource.get(), schoolResources));
                     }
                 });
+
+        users.sort(Comparator.comparing(User::getSourcedId));
 
         return users;
     }

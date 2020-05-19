@@ -14,7 +14,6 @@ import no.fint.oneroster.model.UserId;
 import no.fint.oneroster.model.vocab.GUIDType;
 import no.fint.oneroster.model.vocab.RoleType;
 
-import javax.swing.text.html.Option;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;

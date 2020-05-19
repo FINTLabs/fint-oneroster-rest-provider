@@ -40,7 +40,7 @@ class OneRosterServiceSpec extends Specification {
     OneRosterProperties oneRosterProperties = Mock {
         getOrg() >> new OneRosterProperties.Org(
                 sourcedId: 'school-owner-sourced-id',
-                name: 'Org',
+                name: 'School owner',
                 identifier: 'identifier'
         )
     }
@@ -60,11 +60,11 @@ class OneRosterServiceSpec extends Specification {
 
         then:
         orgs.size() == 2
-        orgs.first().sourcedId == 'school-sourced-id'
-        orgs.first().name == 'School'
-        orgs.first().type == OrgType.SCHOOL
+        orgs.first().sourcedId == 'school-owner-sourced-id'
+        orgs.first().name == 'School owner'
+        orgs.first().type == OrgType.DISTRICT
         orgs.first().identifier == 'identifier'
-        orgs.first().parent.sourcedId == 'school-owner-sourced-id'
+        orgs.first().children.first().sourcedId == 'school-sourced-id'
     }
 
     def "getAllClazzes returns a list of clazzes"() {
