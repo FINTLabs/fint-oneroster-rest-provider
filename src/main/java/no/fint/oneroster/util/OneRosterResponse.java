@@ -62,8 +62,7 @@ public class OneRosterResponse<T extends Base> {
         pageable.getSort().get().findFirst().ifPresent(order -> {
             try {
                 collection.sort(new BeanComparator<>(order.getProperty()));
-            } catch (Exception e) {
-                collection.sort(new BeanComparator<>("sourcedId"));
+            } catch (Exception ignored) {
             }
         });
 

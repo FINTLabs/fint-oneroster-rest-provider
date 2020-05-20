@@ -1,8 +1,6 @@
 package no.fint.oneroster.repository;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fint.model.felles.kompleksedatatyper.Identifikator;
-import no.fint.model.felles.kompleksedatatyper.Personnavn;
 import no.fint.model.resource.FintLinks;
 import no.fint.model.resource.Link;
 import no.fint.model.resource.administrasjon.personal.PersonalressursResource;
@@ -37,8 +35,6 @@ public class FintAdministrationService {
 
     public void updatePersons() {
         fintRepository.getResources(PersonResources.class, "administration", "person")
-                .filter(resource -> Optional.ofNullable(resource.getNavn()).map(Personnavn::getFornavn).isPresent() &&
-                        Optional.ofNullable(resource.getNavn()).map(Personnavn::getEtternavn).isPresent())
                 .toStream()
                 .forEach(resource -> this.getSelfLinks(resource).forEach(link -> persons.put(link, resource)));
     }
@@ -53,7 +49,6 @@ public class FintAdministrationService {
 
     public void updatePersonnel() {
         fintRepository.getResources(PersonalressursResources.class, "administration", "personnel")
-                .filter(resource -> Optional.ofNullable(resource.getBrukernavn()).map(Identifikator::getIdentifikatorverdi).isPresent())
                 .toStream()
                 .forEach(resource -> this.getSelfLinks(resource).forEach(link -> personnel.put(link, resource)));
     }

@@ -35,6 +35,7 @@ class FintObjectFactory {
         name.setMellomnavn('middle-name')
         name.setEtternavn('family-name')
         resource.setNavn(name)
+        resource.setFodselsnummer(new Identifikator(identifikatorverdi: 'identifier'))
         resource.addSelf(Link.with('/person-sourced-id'))
 
         return resource

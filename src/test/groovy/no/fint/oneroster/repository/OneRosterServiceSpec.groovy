@@ -2,6 +2,8 @@ package no.fint.oneroster.repository
 
 import no.fint.oneroster.factory.clazz.ClazzFactory
 import no.fint.oneroster.factory.clazz.DefaultClazzFactory
+import no.fint.oneroster.factory.user.DefaultUserFactory
+import no.fint.oneroster.factory.user.UserFactory
 import no.fint.oneroster.model.AcademicSession
 import no.fint.oneroster.model.vocab.ClazzType
 import no.fint.oneroster.model.vocab.OrgType
@@ -38,7 +40,7 @@ class OneRosterServiceSpec extends Specification {
     OneRosterProperties oneRosterProperties = Mock {
         getOrg() >> new OneRosterProperties.Org(
                 sourcedId: 'school-owner-sourced-id',
-                name: 'Org',
+                name: 'School owner',
                 identifier: 'identifier'
         )
     }
@@ -48,8 +50,9 @@ class OneRosterServiceSpec extends Specification {
     }
 
     ClazzFactory clazzFactory = new DefaultClazzFactory()
+    UserFactory userFactory = new DefaultUserFactory()
 
-    OneRosterService oneRosterService = new OneRosterService(fintEducationService, fintAdministrationService, oneRosterProperties, academicSessionService, clazzFactory)
+    OneRosterService oneRosterService = new OneRosterService(fintEducationService, fintAdministrationService, oneRosterProperties, academicSessionService, clazzFactory, userFactory)
 
     def "getAllOrgs returns a list of orgs"() {
         when:
@@ -57,11 +60,11 @@ class OneRosterServiceSpec extends Specification {
 
         then:
         orgs.size() == 2
-        orgs.first().sourcedId == 'school-sourced-id'
-        orgs.first().name == 'School'
-        orgs.first().type == OrgType.SCHOOL
+        orgs.first().sourcedId == 'school-owner-sourced-id'
+        orgs.first().name == 'School owner'
+        orgs.first().type == OrgType.DISTRICT
         orgs.first().identifier == 'identifier'
-        orgs.first().parent.sourcedId == 'school-owner-sourced-id'
+        orgs.first().children.first().sourcedId == 'school-sourced-id'
     }
 
     def "getAllClazzes returns a list of clazzes"() {
@@ -118,10 +121,7 @@ class OneRosterServiceSpec extends Specification {
         users.first().middleName == 'middle-name'
         users.first().familyName == 'family-name'
         users.first().role == RoleType.STUDENT
-        users.first().identifier == 'identifier'
         users.first().email == 'email'
-        users.first().sms == 'sms'
-        users.first().phone == 'phone'
         users.first().orgs.first().sourcedId == 'school-sourced-id'
     }
 

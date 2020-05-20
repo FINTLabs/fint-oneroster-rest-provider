@@ -10,7 +10,7 @@ import java.time.LocalDate
 import java.time.Year
 
 class DefaultClazzFactorySpec extends Specification {
-    DefaultClazzFactory defaultClazzFactory = new DefaultClazzFactory();
+    DefaultClazzFactory defaultClazzFactory = new DefaultClazzFactory()
 
     def "basisGroup() returns class object of type homeroom"() {
         when:

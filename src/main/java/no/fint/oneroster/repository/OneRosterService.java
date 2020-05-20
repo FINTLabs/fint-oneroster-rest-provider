@@ -14,8 +14,8 @@ import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
 import no.fint.oneroster.factory.CourseFactory;
 import no.fint.oneroster.factory.EnrollmentFactory;
 import no.fint.oneroster.factory.OrgFactory;
-import no.fint.oneroster.factory.UserFactory;
 import no.fint.oneroster.factory.clazz.ClazzFactory;
+import no.fint.oneroster.factory.user.UserFactory;
 import no.fint.oneroster.model.*;
 import no.fint.oneroster.model.vocab.GUIDType;
 import no.fint.oneroster.properties.OneRosterProperties;
@@ -34,13 +34,15 @@ public class OneRosterService {
     private final OneRosterProperties oneRosterProperties;
     private final AcademicSessionService academicSessionService;
     private final ClazzFactory clazzFactory;
+    private final UserFactory userFactory;
 
-    public OneRosterService(FintEducationService fintEducationService, FintAdministrationService fintAdministrationService, OneRosterProperties oneRosterProperties, AcademicSessionService academicSessionService, ClazzFactory clazzFactory) {
+    public OneRosterService(FintEducationService fintEducationService, FintAdministrationService fintAdministrationService, OneRosterProperties oneRosterProperties, AcademicSessionService academicSessionService, ClazzFactory clazzFactory, UserFactory userFactory) {
         this.fintEducationService = fintEducationService;
         this.fintAdministrationService = fintAdministrationService;
         this.oneRosterProperties = oneRosterProperties;
         this.academicSessionService = academicSessionService;
         this.clazzFactory = clazzFactory;
+        this.userFactory = userFactory;
     }
 
     @Cacheable(value = "orgs")
@@ -62,6 +64,8 @@ public class OneRosterService {
                 .collect(Collectors.toList());
 
         orgs.add(schoolOwner);
+
+        orgs.sort(Comparator.comparing(Org::getSourcedId));
 
         return orgs;
     }
@@ -124,6 +128,8 @@ public class OneRosterService {
                     }
                 });
 
+        clazzes.sort(Comparator.comparing(Clazz::getSourcedId));
+
         return clazzes;
     }
 
@@ -144,6 +150,8 @@ public class OneRosterService {
                 .stream()
                 .distinct()
                 .forEach(subject -> courses.add(CourseFactory.subject(subject, org)));
+
+        courses.sort(Comparator.comparing(Course::getSourcedId));
 
         return courses;
     }
@@ -244,6 +252,8 @@ public class OneRosterService {
                             });
                 });
 
+        enrollments.sort(Comparator.comparing(Enrollment::getSourcedId));
+
         return enrollments;
     }
 
@@ -279,7 +289,7 @@ public class OneRosterService {
                             .collect(Collectors.toList());
 
                     if (person.isPresent() && !schoolResources.isEmpty()) {
-                        users.add(UserFactory.student(student, person.get(), schoolResources));
+                        users.add(userFactory.student(student, person.get(), schoolResources));
                     }
                 });
 
@@ -321,9 +331,11 @@ public class OneRosterService {
                             .collect(Collectors.toList());
 
                     if (personnelResource.isPresent() && personResource.isPresent() && !schoolResources.isEmpty()) {
-                        users.add(UserFactory.teacher(teacher, personnelResource.get(), personResource.get(), schoolResources));
+                        users.add(userFactory.teacher(teacher, personnelResource.get(), personResource.get(), schoolResources));
                     }
                 });
+
+        users.sort(Comparator.comparing(User::getSourcedId));
 
         return users;
     }
