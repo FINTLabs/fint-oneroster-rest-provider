@@ -55,7 +55,7 @@ public class ClazzService {
                 .stream()
                 .filter(enrollment -> enrollment.getUser().getSourcedId().equals(student.getSourcedId()))
                 .map(Enrollment::getClazz)
-                .flatMap(guidRef -> oneRosterService.getAllClazzes()
+                .flatMap(guidRef -> getAllClazzes()
                         .stream()
                         .filter(clazz -> clazz.getSourcedId().equals(guidRef.getSourcedId())))
                 .collect(Collectors.toList());
@@ -68,7 +68,7 @@ public class ClazzService {
                 .stream()
                 .filter(enrollment -> enrollment.getUser().getSourcedId().equals(teacher.getSourcedId()))
                 .map(Enrollment::getClazz)
-                .flatMap(guidRef -> oneRosterService.getAllClazzes()
+                .flatMap(guidRef -> getAllClazzes()
                         .stream()
                         .filter(clazz -> clazz.getSourcedId().equals(guidRef.getSourcedId())))
                 .collect(Collectors.toList());
