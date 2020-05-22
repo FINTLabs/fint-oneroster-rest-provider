@@ -2,9 +2,14 @@ package no.fint.oneroster.service
 
 import no.fint.oneroster.model.AcademicSession
 import no.fint.oneroster.model.Clazz
+import no.fint.oneroster.model.Enrollment
 import no.fint.oneroster.model.GUIDRef
+import no.fint.oneroster.model.Org
+import no.fint.oneroster.model.User
 import no.fint.oneroster.model.vocab.ClazzType
 import no.fint.oneroster.model.vocab.GUIDType
+import no.fint.oneroster.model.vocab.OrgType
+import no.fint.oneroster.model.vocab.RoleType
 import no.fint.oneroster.model.vocab.SessionType
 import no.fint.oneroster.repository.OneRosterService
 import spock.lang.Specification
@@ -18,7 +23,14 @@ class ClazzServiceSpec extends Specification {
         getAllClazzes() >> getClazzes()
     }
 
-    ClazzService clazzService = new ClazzService(oneRosterService)
+    EnrollmentService enrollmentService = Mock {
+        getAllEnrollments() >> getEnrollments()
+    }
+
+    UserService userService = Mock()
+    OrgService orgService = Mock()
+
+    ClazzService clazzService = new ClazzService(oneRosterService, userService, orgService, enrollmentService)
 
     def "getAllClazzes returns a list of clazzes"() {
         when:
@@ -57,6 +69,35 @@ class ClazzServiceSpec extends Specification {
         clazz.terms.first().sourcedId == 'T1SY20192020'
     }
 
+    def "getClazzesForSchool returns clazzes given av valid school sourcedId"() {
+        when:
+        def clazzes = clazzService.getClazzesForSchool('school-sourced-id')
+
+        then:
+        orgService.getSchool('school-sourced-id') >> getSchool()
+        clazzes.size() == 2
+    }
+
+    def "getClazzesForStudent returns clazzes given av valid student sourcedId"() {
+        when:
+        def clazzes = clazzService.getClazzesForStudent('student-sourced-id')
+
+        then:
+        userService.getStudent('student-sourced-id') >> getStudent()
+        enrollmentService.getAllEnrollments() >> getEnrollments()
+        clazzes.size() == 1
+    }
+
+    def "getClazzesForTeacher returns clazzes given av valid teacher sourcedId"() {
+        when:
+        def clazzes = clazzService.getClazzesForTeacher('teacher-sourced-id')
+
+        then:
+        userService.getTeacher('teacher-sourced-id') >> getTeacher()
+        enrollmentService.getAllEnrollments() >> getEnrollments()
+        clazzes.size() == 1
+    }
+
     List<Clazz> getClazzes() {
         Clazz homeroom = new Clazz(
                 'basis-group-sourced-id',
@@ -77,6 +118,58 @@ class ClazzServiceSpec extends Specification {
         )
 
         return [homeroom, scheduled]
+    }
+
+    List<Enrollment> getEnrollments() {
+        Enrollment student = new Enrollment(
+                'student-relation-sourced-id_basis-group-sourced-id',
+                GUIDRef.of(GUIDType.USER, 'student-sourced-id'),
+                GUIDRef.of(GUIDType.CLASS, 'basis-group-sourced-id'),
+                GUIDRef.of(GUIDType.ORG, 'school-sourced-id'),
+                RoleType.STUDENT
+        )
+
+        Enrollment teacher = new Enrollment(
+                'teaching-relation-sourced-id_teaching-group-sourced-id',
+                GUIDRef.of(GUIDType.USER, 'teacher-sourced-id'),
+                GUIDRef.of(GUIDType.CLASS, 'teaching-group-sourced-id'),
+                GUIDRef.of(GUIDType.ORG, 'school-sourced-id'),
+                RoleType.TEACHER
+        )
+
+        return [student, teacher]
+    }
+
+    User getStudent() {
+        return new User(
+                'student-sourced-id',
+                'username',
+                true,
+                'given-name',
+                'family-name',
+                RoleType.STUDENT,
+                [GUIDRef.of(GUIDType.ORG, 'school-sourced-id')]
+        )
+    }
+
+    User getTeacher() {
+        return new User(
+                'teacher-sourced-id',
+                'username',
+                true,
+                'given-name',
+                'family-name',
+                RoleType.TEACHER,
+                [GUIDRef.of(GUIDType.ORG, 'school-sourced-id')]
+        )
+    }
+
+    Org getSchool() {
+        return new Org(
+                'school-sourced-id',
+                'School',
+                OrgType.SCHOOL
+        )
     }
 
     AcademicSession getTerm() {

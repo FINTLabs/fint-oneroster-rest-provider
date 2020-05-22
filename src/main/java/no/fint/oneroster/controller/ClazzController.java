@@ -51,11 +51,47 @@ public class ClazzController {
     }
 
     @GetMapping("/schools/{sourcedId}/classes")
-    public ResponseEntity<?> getClassesForSchool(@PathVariable String sourcedId, Pageable pageable,
+    public ResponseEntity<?> getClazzesForSchool(@PathVariable String sourcedId, Pageable pageable,
                                                  @RequestParam(value = "filter", required = false) String filter,
                                                  @RequestParam(value = "fields", required = false) String fields) {
 
         List<Clazz> clazzes = clazzService.getClazzesForSchool(sourcedId);
+
+        OneRosterResponse<Clazz> oneRosterResponse = new OneRosterResponse<>(Clazz.class, "classes")
+                .collection(clazzes)
+                .filter(filter)
+                .pagingAndSorting(pageable)
+                .fieldSelection(fields);
+
+        return ResponseEntity.ok()
+                .headers(oneRosterResponse.getHeaders())
+                .body(oneRosterResponse.getBody());
+    }
+
+    @GetMapping("/students/{sourcedId}/classes")
+    public ResponseEntity<?> getClazzesForStudent(@PathVariable String sourcedId, Pageable pageable,
+                                                  @RequestParam(value = "filter", required = false) String filter,
+                                                  @RequestParam(value = "fields", required = false) String fields) {
+
+        List<Clazz> clazzes = clazzService.getClazzesForStudent(sourcedId);
+
+        OneRosterResponse<Clazz> oneRosterResponse = new OneRosterResponse<>(Clazz.class, "classes")
+                .collection(clazzes)
+                .filter(filter)
+                .pagingAndSorting(pageable)
+                .fieldSelection(fields);
+
+        return ResponseEntity.ok()
+                .headers(oneRosterResponse.getHeaders())
+                .body(oneRosterResponse.getBody());
+    }
+
+    @GetMapping("/teachers/{sourcedId}/classes")
+    public ResponseEntity<?> getClazzesForTeacher(@PathVariable String sourcedId, Pageable pageable,
+                                                  @RequestParam(value = "filter", required = false) String filter,
+                                                  @RequestParam(value = "fields", required = false) String fields) {
+
+        List<Clazz> clazzes = clazzService.getClazzesForTeacher(sourcedId);
 
         OneRosterResponse<Clazz> oneRosterResponse = new OneRosterResponse<>(Clazz.class, "classes")
                 .collection(clazzes)
