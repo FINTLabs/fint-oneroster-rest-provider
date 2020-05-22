@@ -4,11 +4,9 @@ import no.fint.oneroster.model.AcademicSession
 import no.fint.oneroster.model.Clazz
 import no.fint.oneroster.model.Enrollment
 import no.fint.oneroster.model.GUIDRef
-import no.fint.oneroster.model.Org
 import no.fint.oneroster.model.User
 import no.fint.oneroster.model.vocab.ClazzType
 import no.fint.oneroster.model.vocab.GUIDType
-import no.fint.oneroster.model.vocab.OrgType
 import no.fint.oneroster.model.vocab.RoleType
 import no.fint.oneroster.model.vocab.SessionType
 import no.fint.oneroster.repository.OneRosterService
@@ -20,17 +18,19 @@ import java.time.Year
 class ClazzServiceSpec extends Specification {
 
     OneRosterService oneRosterService = Mock {
-        getAllClazzes() >> getClazzes()
+        getAllClazzes() >> [getBasisGroup(), getTeachingGroup()]
     }
 
     EnrollmentService enrollmentService = Mock {
         getAllEnrollments() >> getEnrollments()
     }
 
-    UserService userService = Mock()
-    OrgService orgService = Mock()
+    UserService userService = Mock {
+        getAllStudents() >> [getStudent()]
+        getAllTeachers() >> [getTeacher()]
+    }
 
-    ClazzService clazzService = new ClazzService(oneRosterService, userService, orgService, enrollmentService)
+    ClazzService clazzService = new ClazzService(oneRosterService, userService, enrollmentService)
 
     def "getAllClazzes returns a list of clazzes"() {
         when:
@@ -69,22 +69,12 @@ class ClazzServiceSpec extends Specification {
         clazz.terms.first().sourcedId == 'T1SY20192020'
     }
 
-    def "getClazzesForSchool returns clazzes given av valid school sourcedId"() {
-        when:
-        def clazzes = clazzService.getClazzesForSchool('school-sourced-id')
-
-        then:
-        orgService.getSchool('school-sourced-id') >> getSchool()
-        clazzes.size() == 2
-    }
-
     def "getClazzesForStudent returns clazzes given av valid student sourcedId"() {
         when:
         def clazzes = clazzService.getClazzesForStudent('student-sourced-id')
 
         then:
         userService.getStudent('student-sourced-id') >> getStudent()
-        enrollmentService.getAllEnrollments() >> getEnrollments()
         clazzes.size() == 1
     }
 
@@ -94,30 +84,25 @@ class ClazzServiceSpec extends Specification {
 
         then:
         userService.getTeacher('teacher-sourced-id') >> getTeacher()
-        enrollmentService.getAllEnrollments() >> getEnrollments()
         clazzes.size() == 1
     }
 
-    List<Clazz> getClazzes() {
-        Clazz homeroom = new Clazz(
-                'basis-group-sourced-id',
-                'Basis group',
-                ClazzType.HOMEROOM,
-                GUIDRef.of(GUIDType.COURSE, 'level-sourced-id'),
-                GUIDRef.of(GUIDType.ORG, 'school-sourced-id'),
-                [GUIDRef.of(GUIDType.ACADEMICSESSION, 'T1SY20192020')]
-        )
+    def "getStudentsForClazz returns a list of students given valid clazz sourcedId"() {
+        when:
+        def students = clazzService.getStudentsForClazz('basis-group-sourced-id')
 
-        Clazz scheduled = new Clazz(
-                'teaching-group-sourced-id',
-                'Teaching group',
-                ClazzType.SCHEDULED,
-                GUIDRef.of(GUIDType.COURSE, 'subject-sourced-id'),
-                GUIDRef.of(GUIDType.ORG, 'school-sourced-id'),
-                [GUIDRef.of(GUIDType.ACADEMICSESSION, 'T1SY20192020')]
-        )
+        then:
+        clazzService.getClazz('basis-group-sourced-id') >> getBasisGroup()
+        students.size() == 1
+    }
 
-        return [homeroom, scheduled]
+    def "getTeachersForClazz returns a list of teachers given valid clazz sourcedId"() {
+        when:
+        def teachers = clazzService.getTeachersForClazz('teaching-group-sourced-id')
+
+        then:
+        clazzService.getClazz('teaching-group-sourced-id') >> getTeachingGroup()
+        teachers.size() == 1
     }
 
     List<Enrollment> getEnrollments() {
@@ -138,6 +123,28 @@ class ClazzServiceSpec extends Specification {
         )
 
         return [student, teacher]
+    }
+
+    Clazz getBasisGroup() {
+        return new Clazz(
+                'basis-group-sourced-id',
+                'Basis group',
+                ClazzType.HOMEROOM,
+                GUIDRef.of(GUIDType.COURSE, 'level-sourced-id'),
+                GUIDRef.of(GUIDType.ORG, 'school-sourced-id'),
+                [GUIDRef.of(GUIDType.ACADEMICSESSION, 'T1SY20192020')]
+        )
+    }
+
+    Clazz getTeachingGroup() {
+        return new Clazz(
+                'teaching-group-sourced-id',
+                'Teaching group',
+                ClazzType.SCHEDULED,
+                GUIDRef.of(GUIDType.COURSE, 'subject-sourced-id'),
+                GUIDRef.of(GUIDType.ORG, 'school-sourced-id'),
+                [GUIDRef.of(GUIDType.ACADEMICSESSION, 'T1SY20192020')]
+        )
     }
 
     User getStudent() {
@@ -161,14 +168,6 @@ class ClazzServiceSpec extends Specification {
                 'family-name',
                 RoleType.TEACHER,
                 [GUIDRef.of(GUIDType.ORG, 'school-sourced-id')]
-        )
-    }
-
-    Org getSchool() {
-        return new Org(
-                'school-sourced-id',
-                'School',
-                OrgType.SCHOOL
         )
     }
 

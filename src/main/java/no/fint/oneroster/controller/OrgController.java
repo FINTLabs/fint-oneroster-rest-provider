@@ -1,7 +1,9 @@
 package no.fint.oneroster.controller;
 
-import lombok.extern.slf4j.Slf4j;
+import no.fint.oneroster.model.Clazz;
+import no.fint.oneroster.model.Enrollment;
 import no.fint.oneroster.model.Org;
+import no.fint.oneroster.model.User;
 import no.fint.oneroster.service.OrgService;
 import no.fint.oneroster.util.OneRosterResponse;
 import org.springframework.data.domain.Pageable;
@@ -10,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-@Slf4j
 @RestController
 public class OrgController {
     private final OrgService orgService;
@@ -79,5 +80,78 @@ public class OrgController {
                 .fieldSelection(fields);
 
         return ResponseEntity.ok(oneRosterResponse.getBody());
+    }
+
+    @GetMapping("/schools/{sourcedId}/classes")
+    public ResponseEntity<?> getClazzesForSchool(@PathVariable String sourcedId, Pageable pageable,
+                                                 @RequestParam(value = "filter", required = false) String filter,
+                                                 @RequestParam(value = "fields", required = false) String fields) {
+
+        List<Clazz> clazzes = orgService.getClazzesForSchool(sourcedId);
+
+        OneRosterResponse<Clazz> oneRosterResponse = new OneRosterResponse<>(Clazz.class, "classes")
+                .collection(clazzes)
+                .filter(filter)
+                .pagingAndSorting(pageable)
+                .fieldSelection(fields);
+
+        return ResponseEntity.ok()
+                .headers(oneRosterResponse.getHeaders())
+                .body(oneRosterResponse.getBody());
+    }
+
+    @GetMapping("/schools/{sourcedId}/enrollments")
+    public ResponseEntity<?> getEnrollmentsForSchool(@PathVariable String sourcedId, Pageable pageable,
+                                                     @RequestParam(value = "filter", required = false) String filter,
+                                                     @RequestParam(value = "fields", required = false) String fields) {
+
+        List<Enrollment> enrollments = orgService.getEnrollmentsForSchool(sourcedId);
+
+        OneRosterResponse<Enrollment> oneRosterResponse = new OneRosterResponse<>(Enrollment.class, "enrollments")
+                .collection(enrollments)
+                .filter(filter)
+                .pagingAndSorting(pageable)
+                .fieldSelection(fields);
+
+        return ResponseEntity.ok()
+                .headers(oneRosterResponse.getHeaders())
+                .body(oneRosterResponse.getBody());
+    }
+
+
+    @GetMapping("/schools/{sourcedId}/students")
+    public ResponseEntity<?> getStudentsForSchool(@PathVariable String sourcedId, Pageable pageable,
+                                                  @RequestParam(value = "filter", required = false) String filter,
+                                                  @RequestParam(value = "fields", required = false) String fields) {
+
+        List<User> students = orgService.getStudentsForSchool(sourcedId);
+
+        OneRosterResponse<User> oneRosterResponse = new OneRosterResponse<>(User.class, "users")
+                .collection(students)
+                .filter(filter)
+                .pagingAndSorting(pageable)
+                .fieldSelection(fields);
+
+        return ResponseEntity.ok()
+                .headers(oneRosterResponse.getHeaders())
+                .body(oneRosterResponse.getBody());
+    }
+
+    @GetMapping("/schools/{sourcedId}/teachers")
+    public ResponseEntity<?> getTeachersForSchool(@PathVariable String sourcedId, Pageable pageable,
+                                                  @RequestParam(value = "filter", required = false) String filter,
+                                                  @RequestParam(value = "fields", required = false) String fields) {
+
+        List<User> teachers = orgService.getTeachersForSchool(sourcedId);
+
+        OneRosterResponse<User> oneRosterResponse = new OneRosterResponse<>(User.class, "users")
+                .collection(teachers)
+                .filter(filter)
+                .pagingAndSorting(pageable)
+                .fieldSelection(fields);
+
+        return ResponseEntity.ok()
+                .headers(oneRosterResponse.getHeaders())
+                .body(oneRosterResponse.getBody());
     }
 }

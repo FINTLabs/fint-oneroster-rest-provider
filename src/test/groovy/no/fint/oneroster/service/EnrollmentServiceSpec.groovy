@@ -2,9 +2,7 @@ package no.fint.oneroster.service
 
 import no.fint.oneroster.model.Enrollment
 import no.fint.oneroster.model.GUIDRef
-import no.fint.oneroster.model.Org
 import no.fint.oneroster.model.vocab.GUIDType
-import no.fint.oneroster.model.vocab.OrgType
 import no.fint.oneroster.model.vocab.RoleType
 import no.fint.oneroster.repository.OneRosterService
 import spock.lang.Specification
@@ -15,9 +13,7 @@ class EnrollmentServiceSpec extends Specification {
         getAllEnrollments() >> getEnrollments()
     }
 
-    OrgService orgService = Mock()
-
-    EnrollmentService enrollmentService = new EnrollmentService(oneRosterService, orgService)
+    EnrollmentService enrollmentService = new EnrollmentService(oneRosterService)
 
     def "getAllEnrollments returns a list of enrollments"() {
         when:
@@ -50,15 +46,6 @@ class EnrollmentServiceSpec extends Specification {
         enrollment.school.sourcedId == 'school-sourced-id'
     }
 
-    def "getEnrollmentsForSchool returns enrollments given valid school sourcedId"() {
-        when:
-        def enrollments = enrollmentService.getEnrollmentsForSchool('school-sourced-id')
-
-        then:
-        orgService.getSchool('school-sourced-id') >> getSchool()
-        enrollments.size() == 2
-    }
-
     List<Enrollment> getEnrollments() {
         Enrollment student = new Enrollment(
                 'student-relation-sourced-id_basis-group-sourced-id',
@@ -77,13 +64,5 @@ class EnrollmentServiceSpec extends Specification {
         )
 
         return [student, teacher]
-    }
-
-    Org getSchool() {
-        return new Org(
-                'school-sourced-id',
-                'School',
-                OrgType.SCHOOL
-        )
     }
 }
