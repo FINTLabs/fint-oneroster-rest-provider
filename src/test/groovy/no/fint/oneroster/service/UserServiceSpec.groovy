@@ -1,9 +1,12 @@
 package no.fint.oneroster.service
 
 import no.fint.oneroster.model.GUIDRef
+import no.fint.oneroster.model.Org
 import no.fint.oneroster.model.User
 import no.fint.oneroster.model.vocab.GUIDType
+import no.fint.oneroster.model.vocab.OrgType
 import no.fint.oneroster.model.vocab.RoleType
+import no.fint.oneroster.properties.OneRosterProperties
 import no.fint.oneroster.repository.OneRosterService
 import spock.lang.Specification
 
@@ -13,7 +16,9 @@ class UserServiceSpec extends Specification {
         getAllUsers() >> getUsers()
     }
 
-    UserService userService = new UserService(oneRosterService)
+    OrgService orgService = Mock()
+
+    UserService userService = new UserService(oneRosterService, orgService)
 
     def "getAllUsers returns a list of users"() {
         when:
@@ -96,6 +101,26 @@ class UserServiceSpec extends Specification {
         teacher.orgs.first().sourcedId == 'school-sourced-id'
     }
 
+    def "getStudentsForSchool returns a list of students given valid school sourcedId"() {
+        when:
+        def students = userService.getStudentsForSchool('school-sourced-id')
+
+        then:
+        orgService.getSchool('school-sourced-id') >> getSchool()
+        students.size() == 1
+    }
+
+    def "getTeachersForSchool returns a list of teachers given valid school sourcedId"() {
+        when:
+        def teachers = userService.getTeachersForSchool('school-sourced-id')
+
+        then:
+        orgService.getSchool('school-sourced-id') >> getSchool()
+        teachers.size() == 1
+    }
+
+    
+
     List<User> getUsers() {
         User student = new User(
                 'student-sourced-id',
@@ -118,5 +143,13 @@ class UserServiceSpec extends Specification {
         )
 
         return [student, teacher]
+    }
+
+    Org getSchool() {
+        return new Org(
+                'school-sourced-id',
+                'School',
+                OrgType.SCHOOL
+        )
     }
 }
