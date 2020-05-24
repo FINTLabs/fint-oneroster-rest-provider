@@ -1,5 +1,6 @@
 package no.fint.oneroster.service
 
+import no.fint.oneroster.model.AcademicSession
 import no.fint.oneroster.model.Clazz
 import no.fint.oneroster.model.Enrollment
 import no.fint.oneroster.model.GUIDRef
@@ -9,8 +10,14 @@ import no.fint.oneroster.model.vocab.ClazzType
 import no.fint.oneroster.model.vocab.GUIDType
 import no.fint.oneroster.model.vocab.OrgType
 import no.fint.oneroster.model.vocab.RoleType
+import no.fint.oneroster.model.vocab.SessionType
+import no.fint.oneroster.properties.OneRosterProperties
 import no.fint.oneroster.repository.OneRosterService
+import org.apache.tomcat.jni.Local
 import spock.lang.Specification
+
+import java.time.LocalDate
+import java.time.Year
 
 class OrgServiceSpec extends Specification {
 
@@ -31,7 +38,11 @@ class OrgServiceSpec extends Specification {
         getAllClazzes() >> [getBasisGroup(), getTeachingGroup()]
     }
 
-    OrgService orgService = new OrgService(oneRosterService, enrollmentService, userService, clazzService)
+    AcademicSessionService academicSessionService = Mock {
+        getAllTerms() >> getTerms()
+    }
+
+    OrgService orgService = new OrgService(oneRosterService, enrollmentService, userService, clazzService, academicSessionService)
 
     def "getAllOrgs returns a list of orgs"() {
         when:
@@ -106,6 +117,23 @@ class OrgServiceSpec extends Specification {
 
         then:
         teachers.size() == 1
+    }
+
+    def "getEnrollmentsForClazzInSchool returns a list of enrollments given valid school sourcedId and clazz sourcedId"() {
+        when:
+        def enrollments = orgService.getEnrollmentsForClazzInSchool('school-sourced-id', 'basis-group-sourced-id')
+
+        then:
+        clazzService.getClazz('basis-group-sourced-id') >> getBasisGroup()
+        enrollments.size() == 1
+    }
+
+    def "getTermsForSchool returns a list of terms given valid school sourcedId"() {
+        when:
+        def terms = orgService.getTermsForSchool('school-sourced-id')
+
+        then:
+        terms.size() == 2
     }
 
     List<Org> getOrgs() {
@@ -188,5 +216,25 @@ class OrgServiceSpec extends Specification {
                 GUIDRef.of(GUIDType.ORG, 'school-sourced-id'),
                 [GUIDRef.of(GUIDType.ACADEMICSESSION, 'T1SY20192020')]
         )
+    }
+
+    List<AcademicSession> getTerms() {
+        AcademicSession firstTerm = new AcademicSession(
+                'T1SY20192020',
+                '1. termin 2019/2020',
+                LocalDate.parse('2019-08-01'),
+                LocalDate.parse('2019-12-31'),
+                SessionType.TERM,
+                Year.of(2020))
+
+        AcademicSession secondTerm = new AcademicSession(
+                'T2SY20192020',
+                '2. termin 2019/2020',
+                LocalDate.parse('2020-01-01'),
+                LocalDate.parse('2020-07-31'),
+                SessionType.TERM,
+                Year.of(2020))
+
+        return [firstTerm, secondTerm]
     }
 }

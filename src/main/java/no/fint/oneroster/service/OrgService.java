@@ -15,12 +15,14 @@ public class OrgService {
     private final EnrollmentService enrollmentService;
     private final UserService userService;
     private final ClazzService clazzService;
+    private final AcademicSessionService academicSessionService;
 
-    public OrgService(OneRosterService oneRosterService, EnrollmentService enrollmentService, UserService userService, ClazzService clazzService) {
+    public OrgService(OneRosterService oneRosterService, EnrollmentService enrollmentService, UserService userService, ClazzService clazzService, AcademicSessionService academicSessionService) {
         this.oneRosterService = oneRosterService;
         this.enrollmentService = enrollmentService;
         this.userService = userService;
         this.clazzService = clazzService;
+        this.academicSessionService = academicSessionService;
     }
 
     public List<Org> getAllOrgs() {
@@ -84,5 +86,22 @@ public class OrgService {
                 .stream()
                 .filter(teacher -> teacher.getOrgs().stream().map(GUIDRef::getSourcedId).anyMatch(school.getSourcedId()::equals))
                 .collect(Collectors.toList());
+    }
+
+    public List<Enrollment> getEnrollmentsForClazzInSchool(String schoolSourcedId, String clazzSourcedId) {
+        Org school = getSchool(schoolSourcedId);
+        Clazz clazz = clazzService.getClazz(clazzSourcedId);
+
+        return enrollmentService.getAllEnrollments()
+                .stream()
+                .filter(enrollment -> enrollment.getSchool().getSourcedId().equals(school.getSourcedId()) &&
+                        enrollment.getClazz().getSourcedId().equals(clazz.getSourcedId()))
+                .collect(Collectors.toList());
+    }
+
+    public List<AcademicSession> getTermsForSchool(String sourcedId) {
+        Org school = getSchool(sourcedId);
+
+        return academicSessionService.getAllTerms();
     }
 }
