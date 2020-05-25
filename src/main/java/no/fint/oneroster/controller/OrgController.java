@@ -1,9 +1,6 @@
 package no.fint.oneroster.controller;
 
-import no.fint.oneroster.model.Clazz;
-import no.fint.oneroster.model.Enrollment;
-import no.fint.oneroster.model.Org;
-import no.fint.oneroster.model.User;
+import no.fint.oneroster.model.*;
 import no.fint.oneroster.service.OrgService;
 import no.fint.oneroster.util.OneRosterResponse;
 import org.springframework.data.domain.Pageable;
@@ -118,6 +115,23 @@ public class OrgController {
                 .body(oneRosterResponse.getBody());
     }
 
+    @GetMapping("/schools/{schoolSourcedId}/classes/{clazzSourcedId}/enrollments")
+    public ResponseEntity<?> getEnrollmentsForClazzInSchool(@PathVariable String schoolSourcedId, @PathVariable String clazzSourcedId, Pageable pageable,
+                                                     @RequestParam(value = "filter", required = false) String filter,
+                                                     @RequestParam(value = "fields", required = false) String fields) {
+
+        List<Enrollment> enrollments = orgService.getEnrollmentsForClazzInSchool(schoolSourcedId, clazzSourcedId);
+
+        OneRosterResponse<Enrollment> oneRosterResponse = new OneRosterResponse<>(Enrollment.class, "enrollments")
+                .collection(enrollments)
+                .filter(filter)
+                .pagingAndSorting(pageable)
+                .fieldSelection(fields);
+
+        return ResponseEntity.ok()
+                .headers(oneRosterResponse.getHeaders())
+                .body(oneRosterResponse.getBody());
+    }
 
     @GetMapping("/schools/{sourcedId}/students")
     public ResponseEntity<?> getStudentsForSchool(@PathVariable String sourcedId, Pageable pageable,
@@ -146,6 +160,24 @@ public class OrgController {
 
         OneRosterResponse<User> oneRosterResponse = new OneRosterResponse<>(User.class, "users")
                 .collection(teachers)
+                .filter(filter)
+                .pagingAndSorting(pageable)
+                .fieldSelection(fields);
+
+        return ResponseEntity.ok()
+                .headers(oneRosterResponse.getHeaders())
+                .body(oneRosterResponse.getBody());
+    }
+
+    @GetMapping("/schools/{sourcedId}/terms")
+    public ResponseEntity<?> getTermsForSchool(@PathVariable String sourcedId, Pageable pageable,
+                                                  @RequestParam(value = "filter", required = false) String filter,
+                                                  @RequestParam(value = "fields", required = false) String fields) {
+
+        List<AcademicSession> terms = orgService.getTermsForSchool(sourcedId);
+
+        OneRosterResponse<AcademicSession> oneRosterResponse = new OneRosterResponse<>(AcademicSession.class, "academicSessions")
+                .collection(terms)
                 .filter(filter)
                 .pagingAndSorting(pageable)
                 .fieldSelection(fields);
