@@ -100,7 +100,7 @@ public class OrgService {
     }
 
     public List<AcademicSession> getTermsForSchool(String sourcedId) {
-        Org school = getSchool(sourcedId);
+        getSchool(sourcedId);
 
         return academicSessionService.getAllTerms();
     }

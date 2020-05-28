@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/classes")
 public class ClazzController {
     private final ClazzService clazzService;
 
@@ -18,7 +19,7 @@ public class ClazzController {
         this.clazzService = clazzService;
     }
 
-    @GetMapping("/classes")
+    @GetMapping
     public ResponseEntity<?> getAllClazzes(@RequestParam(value = "filter", required = false) String filter,
                                            @RequestParam(value = "fields", required = false) String fields,
                                            Pageable pageable) {
@@ -36,7 +37,7 @@ public class ClazzController {
                 .body(oneRosterResponse.getBody());
     }
 
-    @GetMapping("/classes/{sourcedId}")
+    @GetMapping("/{sourcedId}")
     public ResponseEntity<?> getClazz(@PathVariable String sourcedId,
                                       @RequestParam(value = "fields", required = false) String fields) {
 
@@ -49,7 +50,7 @@ public class ClazzController {
         return ResponseEntity.ok(oneRosterResponse.getBody());
     }
 
-    @GetMapping("/classes/{sourcedId}/students")
+    @GetMapping("/{sourcedId}/students")
     public ResponseEntity<?> getStudentsForClazz(@PathVariable String sourcedId, Pageable pageable,
                                                  @RequestParam(value = "filter", required = false) String filter,
                                                  @RequestParam(value = "fields", required = false) String fields) {
@@ -67,7 +68,7 @@ public class ClazzController {
                 .body(oneRosterResponse.getBody());
     }
 
-    @GetMapping("/classes/{sourcedId}/teachers")
+    @GetMapping("/{sourcedId}/teachers")
     public ResponseEntity<?> getTeachersForClazz(@PathVariable String sourcedId, Pageable pageable,
                                                  @RequestParam(value = "filter", required = false) String filter,
                                                  @RequestParam(value = "fields", required = false) String fields) {
