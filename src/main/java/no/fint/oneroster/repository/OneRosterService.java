@@ -4,11 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import no.fint.model.resource.Link;
 import no.fint.model.resource.administrasjon.personal.PersonalressursResource;
 import no.fint.model.resource.felles.PersonResource;
-import no.fint.model.resource.utdanning.elev.ElevResource;
-import no.fint.model.resource.utdanning.elev.ElevforholdResource;
-import no.fint.model.resource.utdanning.elev.SkoleressursResource;
-import no.fint.model.resource.utdanning.elev.UndervisningsforholdResource;
+import no.fint.model.resource.utdanning.elev.*;
 import no.fint.model.resource.utdanning.timeplan.FagResource;
+import no.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
 import no.fint.oneroster.factory.CourseFactory;
@@ -139,17 +137,31 @@ public class OneRosterService {
 
         List<Course> courses = new ArrayList<>();
 
-        fintEducationService.getLevels()
+        fintEducationService.getTeachingGroups()
                 .values()
                 .stream()
                 .distinct()
-                .forEach(level -> courses.add(CourseFactory.level(level, org)));
-
-        fintEducationService.getSubjects()
-                .values()
-                .stream()
+                .map(UndervisningsgruppeResource::getFag)
+                .flatMap(List::stream)
+                .map(Link::getHref)
+                .map(String::toLowerCase)
+                .map(fintEducationService.getSubjects()::get)
+                .filter(Objects::nonNull)
                 .distinct()
                 .forEach(subject -> courses.add(CourseFactory.subject(subject, org)));
+
+        fintEducationService.getBasisGroups()
+                .values()
+                .stream()
+                .distinct()
+                .map(BasisgruppeResource::getTrinn)
+                .flatMap(List::stream)
+                .map(Link::getHref)
+                .map(String::toLowerCase)
+                .map(fintEducationService.getLevels()::get)
+                .filter(Objects::nonNull)
+                .distinct()
+                .forEach(level -> courses.add(CourseFactory.level(level, org)));
 
         courses.sort(Comparator.comparing(Course::getSourcedId));
 
