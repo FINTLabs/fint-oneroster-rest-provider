@@ -62,7 +62,6 @@ public class OneRosterProperties {
 
     @Data
     public static class Profile {
-        private String clazzFactory;
         private Set<String> clazzFilter;
 
         public void setClazzFilter(String clazzFilter) {

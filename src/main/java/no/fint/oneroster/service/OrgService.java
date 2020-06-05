@@ -1,7 +1,7 @@
 package no.fint.oneroster.service;
 
 import no.fint.oneroster.exception.NotFoundException;
-import no.fint.oneroster.model.Org;
+import no.fint.oneroster.model.*;
 import no.fint.oneroster.model.vocab.OrgType;
 import no.fint.oneroster.repository.OneRosterService;
 import org.springframework.stereotype.Service;
@@ -12,9 +12,17 @@ import java.util.stream.Collectors;
 @Service
 public class OrgService {
     private final OneRosterService oneRosterService;
+    private final EnrollmentService enrollmentService;
+    private final UserService userService;
+    private final ClazzService clazzService;
+    private final AcademicSessionService academicSessionService;
 
-    public OrgService(OneRosterService oneRosterService) {
+    public OrgService(OneRosterService oneRosterService, EnrollmentService enrollmentService, UserService userService, ClazzService clazzService, AcademicSessionService academicSessionService) {
         this.oneRosterService = oneRosterService;
+        this.enrollmentService = enrollmentService;
+        this.userService = userService;
+        this.clazzService = clazzService;
+        this.academicSessionService = academicSessionService;
     }
 
     public List<Org> getAllOrgs() {
@@ -44,30 +52,56 @@ public class OrgService {
                 .orElseThrow(NotFoundException::new);
     }
 
-    /*
-    public Optional<Org> getSchoolOwner(String orgId) {
-        return fintRepository.getOrganisationalElements(orgId)
-                .values()
+    public List<Clazz> getClazzesForSchool(String sourcedId) {
+        Org school = getSchool(sourcedId);
+
+        return clazzService.getAllClazzes()
                 .stream()
-                .filter(isSchoolOwner())
-                .map(OrgFactory::schoolOwner)
-                .findAny();
+                .filter(clazz -> clazz.getSchool().getSourcedId().equals(school.getSourcedId()))
+                .collect(Collectors.toList());
     }
 
-    public static Predicate<OrganisasjonselementResource> isSchoolOwner() {
-        return organisasjonselementResource -> {
-            if (organisasjonselementResource.getOverordnet().isEmpty()) return false;
+    public List<Enrollment> getEnrollmentsForSchool(String sourcedId) {
+        Org school = getSchool(sourcedId);
 
-            return organisasjonselementResource.getSelfLinks()
-                    .stream()
-                    .map(LinkUtil::normalize)
-                    .findAny()
-                    .map(id -> organisasjonselementResource.getOverordnet()
-                            .stream()
-                            .map(LinkUtil::normalize)
-                            .anyMatch(id::equals))
-                    .orElse(false);
-        };
+        return enrollmentService.getAllEnrollments()
+                .stream()
+                .filter(enrollment -> enrollment.getSchool().getSourcedId().equals(school.getSourcedId()))
+                .collect(Collectors.toList());
     }
-     */
+
+    public List<User> getStudentsForSchool(String sourcedId) {
+        Org school = getSchool(sourcedId);
+
+        return userService.getAllStudents()
+                .stream()
+                .filter(student -> student.getOrgs().stream().map(GUIDRef::getSourcedId).anyMatch(school.getSourcedId()::equals))
+                .collect(Collectors.toList());
+    }
+
+    public List<User> getTeachersForSchool(String sourcedId) {
+        Org school = getSchool(sourcedId);
+
+        return userService.getAllTeachers()
+                .stream()
+                .filter(teacher -> teacher.getOrgs().stream().map(GUIDRef::getSourcedId).anyMatch(school.getSourcedId()::equals))
+                .collect(Collectors.toList());
+    }
+
+    public List<Enrollment> getEnrollmentsForClazzInSchool(String schoolSourcedId, String clazzSourcedId) {
+        Org school = getSchool(schoolSourcedId);
+        Clazz clazz = clazzService.getClazz(clazzSourcedId);
+
+        return enrollmentService.getAllEnrollments()
+                .stream()
+                .filter(enrollment -> enrollment.getSchool().getSourcedId().equals(school.getSourcedId()) &&
+                        enrollment.getClazz().getSourcedId().equals(clazz.getSourcedId()))
+                .collect(Collectors.toList());
+    }
+
+    public List<AcademicSession> getTermsForSchool(String sourcedId) {
+        getSchool(sourcedId);
+
+        return academicSessionService.getAllTerms();
+    }
 }

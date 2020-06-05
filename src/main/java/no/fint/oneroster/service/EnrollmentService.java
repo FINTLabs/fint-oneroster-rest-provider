@@ -7,7 +7,6 @@ import no.fint.oneroster.repository.OneRosterService;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -28,12 +27,5 @@ public class EnrollmentService {
                 .filter(enrollment -> enrollment.getSourcedId().equals(sourcedId))
                 .findAny()
                 .orElseThrow(NotFoundException::new);
-    }
-
-    public List<Enrollment> getEnrollmentsForSchool(String sourcedId) {
-        return getAllEnrollments()
-                .stream()
-                .filter(enrollment -> enrollment.getSchool().getSourcedId().equals(sourcedId))
-                .collect(Collectors.toList());
     }
 }

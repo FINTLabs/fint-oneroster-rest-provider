@@ -2,8 +2,7 @@ package no.fint.oneroster.service;
 
 import lombok.extern.slf4j.Slf4j;
 import no.fint.oneroster.exception.NotFoundException;
-import no.fint.oneroster.model.GUIDRef;
-import no.fint.oneroster.model.User;
+import no.fint.oneroster.model.*;
 import no.fint.oneroster.model.vocab.RoleType;
 import no.fint.oneroster.repository.OneRosterService;
 import org.springframework.stereotype.Service;
@@ -47,13 +46,6 @@ public class UserService {
                 .orElseThrow(NotFoundException::new);
     }
 
-    public List<User> getStudentsForSchool(String sourcedId) {
-        return getAllStudents()
-                .stream()
-                .filter(student -> student.getOrgs().stream().map(GUIDRef::getSourcedId).anyMatch(sourcedId::equals))
-                .collect(Collectors.toList());
-    }
-
     public List<User> getAllTeachers() {
         return getAllUsers()
                 .stream()
@@ -67,12 +59,5 @@ public class UserService {
                 .filter(teacher -> teacher.getSourcedId().equals(sourcedId))
                 .findAny()
                 .orElseThrow(NotFoundException::new);
-    }
-
-    public List<User> getTeachersForSchool(String sourcedId) {
-        return getAllTeachers()
-                .stream()
-                .filter(teacher -> teacher.getOrgs().stream().map(GUIDRef::getSourcedId).anyMatch(sourcedId::equals))
-                .collect(Collectors.toList());
     }
 }

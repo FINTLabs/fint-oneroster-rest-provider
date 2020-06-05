@@ -1,7 +1,7 @@
 package no.fint.oneroster.controller;
 
-import lombok.extern.slf4j.Slf4j;
 import no.fint.oneroster.model.Clazz;
+import no.fint.oneroster.model.User;
 import no.fint.oneroster.service.ClazzService;
 import no.fint.oneroster.util.OneRosterResponse;
 import org.springframework.data.domain.Pageable;
@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Slf4j
 @RestController
+@RequestMapping("/classes")
 public class ClazzController {
     private final ClazzService clazzService;
 
@@ -19,7 +19,7 @@ public class ClazzController {
         this.clazzService = clazzService;
     }
 
-    @GetMapping("/classes")
+    @GetMapping
     public ResponseEntity<?> getAllClazzes(@RequestParam(value = "filter", required = false) String filter,
                                            @RequestParam(value = "fields", required = false) String fields,
                                            Pageable pageable) {
@@ -37,7 +37,7 @@ public class ClazzController {
                 .body(oneRosterResponse.getBody());
     }
 
-    @GetMapping("/classes/{sourcedId}")
+    @GetMapping("/{sourcedId}")
     public ResponseEntity<?> getClazz(@PathVariable String sourcedId,
                                       @RequestParam(value = "fields", required = false) String fields) {
 
@@ -50,15 +50,33 @@ public class ClazzController {
         return ResponseEntity.ok(oneRosterResponse.getBody());
     }
 
-    @GetMapping("/schools/{sourcedId}/classes")
-    public ResponseEntity<?> getClassesForSchool(@PathVariable String sourcedId, Pageable pageable,
+    @GetMapping("/{sourcedId}/students")
+    public ResponseEntity<?> getStudentsForClazz(@PathVariable String sourcedId, Pageable pageable,
                                                  @RequestParam(value = "filter", required = false) String filter,
                                                  @RequestParam(value = "fields", required = false) String fields) {
 
-        List<Clazz> clazzes = clazzService.getClazzesForSchool(sourcedId);
+        List<User> students = clazzService.getStudentsForClazz(sourcedId);
 
-        OneRosterResponse<Clazz> oneRosterResponse = new OneRosterResponse<>(Clazz.class, "classes")
-                .collection(clazzes)
+        OneRosterResponse<User> oneRosterResponse = new OneRosterResponse<>(User.class, "users")
+                .collection(students)
+                .filter(filter)
+                .pagingAndSorting(pageable)
+                .fieldSelection(fields);
+
+        return ResponseEntity.ok()
+                .headers(oneRosterResponse.getHeaders())
+                .body(oneRosterResponse.getBody());
+    }
+
+    @GetMapping("/{sourcedId}/teachers")
+    public ResponseEntity<?> getTeachersForClazz(@PathVariable String sourcedId, Pageable pageable,
+                                                 @RequestParam(value = "filter", required = false) String filter,
+                                                 @RequestParam(value = "fields", required = false) String fields) {
+
+        List<User> teachers = clazzService.getTeachersForClazz(sourcedId);
+
+        OneRosterResponse<User> oneRosterResponse = new OneRosterResponse<>(User.class, "users")
+                .collection(teachers)
                 .filter(filter)
                 .pagingAndSorting(pageable)
                 .fieldSelection(fields);

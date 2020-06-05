@@ -1,6 +1,5 @@
 package no.fint.oneroster.controller;
 
-import lombok.extern.slf4j.Slf4j;
 import no.fint.oneroster.model.AcademicSession;
 import no.fint.oneroster.service.AcademicSessionService;
 import no.fint.oneroster.util.OneRosterResponse;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Slf4j
 @RestController
 public class AcademicSessionController {
     private final AcademicSessionService academicSessionService;

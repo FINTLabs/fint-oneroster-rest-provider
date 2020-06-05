@@ -23,13 +23,6 @@ public class WebConfiguration {
         };
     }
 
-    /*
-    @Bean
-    public SortHandlerMethodArgumentResolverCustomizer sortCustomizer() {
-        return sort -> sort.setFallbackSort(Sort.by("sourcedId"));
-    }
-     */
-
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer jacksonCustomizer() {
         return objectMapper -> objectMapper.serializationInclusion(JsonInclude.Include.NON_NULL);

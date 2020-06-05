@@ -88,27 +88,4 @@ public class AcademicSessionService {
                 .findAny()
                 .orElseThrow(NotFoundException::new);
     }
-
-    /*
-    public static SchoolYear getSchoolYear(LocalDate date) {
-        LocalDate fall = LocalDate.of(date.getYear(), Month.AUGUST, 1);
-
-        if (date.isBefore(fall)) {
-            return new SchoolYear(date.minusYears(1).getYear(), date.getYear());
-        } else {
-            return new SchoolYear(date.getYear(), date.plusYears(1).getYear());
-        }
-    }
-
-    @Getter @Setter
-    public static class SchoolYear {
-        private final Year begin;
-        private final Year end;
-
-        public SchoolYear(int begin, int end) {
-            this.begin = Year.of(begin);
-            this.end = Year.of(end);
-        }
-    }
-     */
 }
