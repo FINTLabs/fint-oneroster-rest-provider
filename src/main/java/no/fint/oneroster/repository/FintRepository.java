@@ -10,14 +10,9 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.net.URI;
-import java.time.Instant;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import static org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction.oauth2AuthorizedClient;
@@ -29,8 +24,6 @@ public class FintRepository {
     private final Authentication principal;
     private final OAuth2AuthorizedClientManager authorizedClientManager;
     private final FintProperties fintProperties;
-
-    private final Map<String, Long> sinceTimestamp = new ConcurrentHashMap<>();
 
     public FintRepository(WebClient webClient, Authentication principal, OAuth2AuthorizedClientManager authorizedClientManager, FintProperties fintProperties) {
         this.webClient = webClient;
@@ -60,19 +53,11 @@ public class FintRepository {
 
         OAuth2AuthorizedClient authorizedClient = authorizedClientManager.authorize(authorizeRequest);
 
-        URI uri = UriComponentsBuilder.fromHttpUrl(endpoint)
-                .queryParam("sinceTimeStamp", sinceTimestamp.getOrDefault(endpoint + credential.getId(), 0L))
-                .build()
-                .toUri();
-
         return webClient.get()
-                .uri(uri)
+                .uri(endpoint)
                 .attributes(oauth2AuthorizedClient(authorizedClient))
                 .retrieve()
                 .bodyToMono(clazz)
-                .doOnSuccess(it -> {
-                    log.info("Updated {}... ", uri);
-                    sinceTimestamp.put(endpoint + credential.getId(), Instant.now().toEpochMilli());
-                });
+                .doOnSuccess(it -> log.info("Update {}... ", endpoint));
     }
 }

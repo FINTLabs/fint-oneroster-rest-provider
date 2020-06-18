@@ -34,9 +34,14 @@ public class FintAdministrationService {
     }
 
     public void updatePersons() {
-        fintRepository.getResources(PersonResources.class, "administration", "person")
-                .toStream()
-                .forEach(resource -> this.getSelfLinks(resource).forEach(link -> persons.put(link, resource)));
+        List<PersonResource> resources = fintRepository.getResources(PersonResources.class, "administration", "person")
+                .collectList()
+                .blockOptional()
+                .orElseGet(Collections::emptyList);
+
+        if (resources.size() > 0) persons.clear();
+
+        resources.forEach(resource -> this.getSelfLinks(resource).forEach(link -> persons.put(link, resource)));
     }
 
     public Map<String, PersonalressursResource> getPersonnel() {
@@ -48,9 +53,16 @@ public class FintAdministrationService {
     }
 
     public void updatePersonnel() {
-        fintRepository.getResources(PersonalressursResources.class, "administration", "personnel")
-                .toStream()
-                .forEach(resource -> this.getSelfLinks(resource).forEach(link -> personnel.put(link, resource)));
+        List<PersonalressursResource> resources = fintRepository.getResources(PersonalressursResources.class, "administration", "personnel")
+                .collectList()
+                .blockOptional()
+                .orElseGet(Collections::emptyList);
+
+        if (resources.size() > 0) {
+            personnel.clear();
+        }
+
+        resources.forEach(resource -> this.getSelfLinks(resource).forEach(link -> personnel.put(link, resource)));
     }
 
     private <T extends FintLinks> Stream<String> getSelfLinks(T resource) {

@@ -17,8 +17,11 @@ import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResources;
 import no.fint.oneroster.properties.OneRosterProperties;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Slf4j
@@ -52,9 +55,15 @@ public class FintEducationService {
     }
 
     public void updateSchools() {
-        fintRepository.getResources(SkoleResources.class, "education", "school")
+        List<SkoleResource> resources = fintRepository.getResources(SkoleResources.class, "education", "school")
                 .toStream()
-                .forEach(resource -> this.getSelfLinks(resource).forEach(link -> schools.put(link, resource)));
+                .collect(Collectors.toList());
+
+        if (resources.size() > 0) {
+            schools.clear();
+        }
+
+        resources.forEach(resource -> this.getSelfLinks(resource).forEach(link -> schools.put(link, resource)));
     }
 
     public Map<String, PersonResource> getPersons() {
@@ -66,9 +75,14 @@ public class FintEducationService {
     }
 
     public void updatePersons() {
-        fintRepository.getResources(PersonResources.class, "education", "person")
-                .toStream()
-                .forEach(resource -> this.getSelfLinks(resource).forEach(link -> persons.put(link, resource)));
+        List<PersonResource> resources = fintRepository.getResources(PersonResources.class, "education", "person")
+                .collectList()
+                .blockOptional()
+                .orElseGet(Collections::emptyList);
+
+        if (resources.size() > 0) persons.clear();
+
+        resources.forEach(resource -> this.getSelfLinks(resource).forEach(link -> persons.put(link, resource)));
     }
 
     public Map<String, ElevResource> getStudents() {
@@ -80,9 +94,14 @@ public class FintEducationService {
     }
 
     public void updateStudents() {
-        fintRepository.getResources(ElevResources.class, "education", "student")
-                .toStream()
-                .forEach(resource -> this.getSelfLinks(resource).forEach(link -> students.put(link, resource)));
+        List<ElevResource> resources = fintRepository.getResources(ElevResources.class, "education", "student")
+                .collectList()
+                .blockOptional()
+                .orElseGet(Collections::emptyList);
+
+        if (resources.size() > 0) students.clear();
+
+        resources.forEach(resource -> this.getSelfLinks(resource).forEach(link -> students.put(link, resource)));
     }
 
     public Map<String, SkoleressursResource> getTeachers() {
@@ -94,9 +113,14 @@ public class FintEducationService {
     }
 
     public void updateTeachers() {
-        fintRepository.getResources(SkoleressursResources.class, "education", "teacher")
-                .toStream()
-                .forEach(resource -> this.getSelfLinks(resource).forEach(link -> teachers.put(link, resource)));
+        List<SkoleressursResource> resources = fintRepository.getResources(SkoleressursResources.class, "education", "teacher")
+                .collectList()
+                .blockOptional()
+                .orElseGet(Collections::emptyList);
+
+        if (resources.size() > 0) teachers.clear();
+
+        resources.forEach(resource -> this.getSelfLinks(resource).forEach(link -> teachers.put(link, resource)));
     }
 
     public Map<String, ElevforholdResource> getStudentRelations() {
@@ -108,9 +132,14 @@ public class FintEducationService {
     }
 
     public void updateStudentRelations() {
-        fintRepository.getResources(ElevforholdResources.class, "education", "student-relation")
-                .toStream()
-                .forEach(resource -> this.getSelfLinks(resource).forEach(link -> studentRelations.put(link, resource)));
+        List<ElevforholdResource> resources = fintRepository.getResources(ElevforholdResources.class, "education", "student-relation")
+                .collectList()
+                .blockOptional()
+                .orElseGet(Collections::emptyList);
+
+        if (resources.size() > 0) studentRelations.clear();
+
+        resources.forEach(resource -> this.getSelfLinks(resource).forEach(link -> studentRelations.put(link, resource)));
     }
 
     public Map<String, UndervisningsforholdResource> getTeachingRelations() {
@@ -122,9 +151,14 @@ public class FintEducationService {
     }
 
     public void updateTeachingRelations() {
-        fintRepository.getResources(UndervisningsforholdResources.class, "education", "teaching-relation")
-                .toStream()
-                .forEach(resource -> this.getSelfLinks(resource).forEach(link -> teachingRelations.put(link, resource)));
+        List<UndervisningsforholdResource> resources = fintRepository.getResources(UndervisningsforholdResources.class, "education", "teaching-relation")
+                .collectList()
+                .blockOptional()
+                .orElseGet(Collections::emptyList);
+
+        if (resources.size() > 0) teachingRelations.clear();
+
+        resources.forEach(resource -> this.getSelfLinks(resource).forEach(link -> teachingRelations.put(link, resource)));
     }
 
     public Map<String, BasisgruppeResource> getBasisGroups() {
@@ -136,8 +170,14 @@ public class FintEducationService {
     }
 
     public void updateBasisGroups() {
-        fintRepository.getResources(BasisgruppeResources.class, "education", "basis-group")
-                .toStream()
+        List<BasisgruppeResource> resources = fintRepository.getResources(BasisgruppeResources.class, "education", "basis-group")
+                .collectList()
+                .blockOptional()
+                .orElseGet(Collections::emptyList);
+
+        if (resources.size() > 0) basisGroups.clear();
+
+        resources.stream()
                 .filter(resource -> oneRosterProperties.getProfile().getClazzFilter()
                         .stream()
                         .noneMatch(filter -> resource.getNavn().concat(resource.getBeskrivelse()).contains(filter)))
@@ -153,8 +193,14 @@ public class FintEducationService {
     }
 
     public void updateTeachingGroups() {
-        fintRepository.getResources(UndervisningsgruppeResources.class, "education", "teaching-group")
-                .toStream()
+        List<UndervisningsgruppeResource> resources = fintRepository.getResources(UndervisningsgruppeResources.class, "education", "teaching-group")
+                .collectList()
+                .blockOptional()
+                .orElseGet(Collections::emptyList);
+
+        if (resources.size() > 0) teachingGroups.clear();
+
+        resources.stream()
                 .filter(resource -> oneRosterProperties.getProfile().getClazzFilter()
                         .stream()
                         .noneMatch(filter -> resource.getNavn().concat(resource.getBeskrivelse()).contains(filter)))
@@ -170,9 +216,14 @@ public class FintEducationService {
     }
 
     public void updateLevels() {
-        fintRepository.getResources(ArstrinnResources.class, "education", "level")
-                .toStream()
-                .forEach(resource -> this.getSelfLinks(resource).forEach(link -> levels.put(link, resource)));
+        List<ArstrinnResource> resources = fintRepository.getResources(ArstrinnResources.class, "education", "level")
+                .collectList()
+                .blockOptional()
+                .orElseGet(Collections::emptyList);
+
+        if (resources.size() > 0) levels.clear();
+
+        resources.forEach(resource -> this.getSelfLinks(resource).forEach(link -> levels.put(link, resource)));
     }
 
     public Map<String, FagResource> getSubjects() {
@@ -184,9 +235,14 @@ public class FintEducationService {
     }
 
     public void updateSubjects() {
-        fintRepository.getResources(FagResources.class, "education", "subject")
-                .toStream()
-                .forEach(resource -> this.getSelfLinks(resource).forEach(link -> subjects.put(link, resource)));
+        List<FagResource> resources = fintRepository.getResources(FagResources.class, "education", "subject")
+                .collectList()
+                .blockOptional()
+                .orElseGet(Collections::emptyList);
+
+        if (resources.size() > 0) subjects.clear();
+
+        resources.forEach(resource -> this.getSelfLinks(resource).forEach(link -> subjects.put(link, resource)));
     }
 
     private <T extends FintLinks> Stream<String> getSelfLinks(T resource) {
