@@ -2,6 +2,7 @@ package no.fint.oneroster.configuration;
 
 import no.fint.oneroster.factory.clazz.ClazzFactory;
 import no.fint.oneroster.factory.clazz.DefaultClazzFactory;
+import no.fint.oneroster.factory.clazz.MRFylkeClazzFactory;
 import no.fint.oneroster.factory.clazz.VTFKClazzFactory;
 import no.fint.oneroster.factory.user.DefaultUserFactory;
 import no.fint.oneroster.factory.user.ROGFKUserFactory;
@@ -28,6 +29,14 @@ public class FactoryConfiguration {
             havingValue = "vtfk")
     public ClazzFactory vtfkClazzFactory() {
         return new VTFKClazzFactory();
+    }
+
+    @Bean
+    @ConditionalOnProperty(
+            value = "oneroster.profile.clazz-factory",
+            havingValue = "mrfylke")
+    public ClazzFactory mrfylkeClazzFactory() {
+        return new MRFylkeClazzFactory();
     }
 
     @Bean

@@ -17,7 +17,6 @@ import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResources;
 import no.fint.oneroster.properties.OneRosterProperties;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
