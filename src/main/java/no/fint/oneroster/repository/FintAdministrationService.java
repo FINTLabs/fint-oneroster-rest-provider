@@ -11,6 +11,7 @@ import no.fint.oneroster.repository.FintRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Slf4j
@@ -35,9 +36,8 @@ public class FintAdministrationService {
 
     public void updatePersons() {
         List<PersonResource> resources = fintRepository.getResources(PersonResources.class, "administration", "person")
-                .collectList()
-                .blockOptional()
-                .orElseGet(Collections::emptyList);
+                .toStream()
+                .collect(Collectors.toList());
 
         if (resources.size() > 0) persons.clear();
 
@@ -54,9 +54,8 @@ public class FintAdministrationService {
 
     public void updatePersonnel() {
         List<PersonalressursResource> resources = fintRepository.getResources(PersonalressursResources.class, "administration", "personnel")
-                .collectList()
-                .blockOptional()
-                .orElseGet(Collections::emptyList);
+                .toStream()
+                .collect(Collectors.toList());
 
         if (resources.size() > 0) {
             personnel.clear();

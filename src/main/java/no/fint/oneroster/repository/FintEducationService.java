@@ -59,9 +59,7 @@ public class FintEducationService {
                 .toStream()
                 .collect(Collectors.toList());
 
-        if (resources.size() > 0) {
-            schools.clear();
-        }
+        if (resources.size() > 0) schools.clear();
 
         resources.forEach(resource -> this.getSelfLinks(resource).forEach(link -> schools.put(link, resource)));
     }
@@ -76,9 +74,8 @@ public class FintEducationService {
 
     public void updatePersons() {
         List<PersonResource> resources = fintRepository.getResources(PersonResources.class, "education", "person")
-                .collectList()
-                .blockOptional()
-                .orElseGet(Collections::emptyList);
+                .toStream()
+                .collect(Collectors.toList());
 
         if (resources.size() > 0) persons.clear();
 
@@ -95,9 +92,8 @@ public class FintEducationService {
 
     public void updateStudents() {
         List<ElevResource> resources = fintRepository.getResources(ElevResources.class, "education", "student")
-                .collectList()
-                .blockOptional()
-                .orElseGet(Collections::emptyList);
+                .toStream()
+                .collect(Collectors.toList());
 
         if (resources.size() > 0) students.clear();
 
@@ -114,9 +110,8 @@ public class FintEducationService {
 
     public void updateTeachers() {
         List<SkoleressursResource> resources = fintRepository.getResources(SkoleressursResources.class, "education", "teacher")
-                .collectList()
-                .blockOptional()
-                .orElseGet(Collections::emptyList);
+                .toStream()
+                .collect(Collectors.toList());
 
         if (resources.size() > 0) teachers.clear();
 
@@ -133,9 +128,8 @@ public class FintEducationService {
 
     public void updateStudentRelations() {
         List<ElevforholdResource> resources = fintRepository.getResources(ElevforholdResources.class, "education", "student-relation")
-                .collectList()
-                .blockOptional()
-                .orElseGet(Collections::emptyList);
+                .toStream()
+                .collect(Collectors.toList());
 
         if (resources.size() > 0) studentRelations.clear();
 
@@ -152,9 +146,8 @@ public class FintEducationService {
 
     public void updateTeachingRelations() {
         List<UndervisningsforholdResource> resources = fintRepository.getResources(UndervisningsforholdResources.class, "education", "teaching-relation")
-                .collectList()
-                .blockOptional()
-                .orElseGet(Collections::emptyList);
+                .toStream()
+                .collect(Collectors.toList());
 
         if (resources.size() > 0) teachingRelations.clear();
 
@@ -171,9 +164,8 @@ public class FintEducationService {
 
     public void updateBasisGroups() {
         List<BasisgruppeResource> resources = fintRepository.getResources(BasisgruppeResources.class, "education", "basis-group")
-                .collectList()
-                .blockOptional()
-                .orElseGet(Collections::emptyList);
+                .toStream()
+                .collect(Collectors.toList());
 
         if (resources.size() > 0) basisGroups.clear();
 
@@ -194,9 +186,8 @@ public class FintEducationService {
 
     public void updateTeachingGroups() {
         List<UndervisningsgruppeResource> resources = fintRepository.getResources(UndervisningsgruppeResources.class, "education", "teaching-group")
-                .collectList()
-                .blockOptional()
-                .orElseGet(Collections::emptyList);
+                .toStream()
+                .collect(Collectors.toList());
 
         if (resources.size() > 0) teachingGroups.clear();
 
@@ -217,9 +208,8 @@ public class FintEducationService {
 
     public void updateLevels() {
         List<ArstrinnResource> resources = fintRepository.getResources(ArstrinnResources.class, "education", "level")
-                .collectList()
-                .blockOptional()
-                .orElseGet(Collections::emptyList);
+                .toStream()
+                .collect(Collectors.toList());
 
         if (resources.size() > 0) levels.clear();
 
@@ -236,9 +226,8 @@ public class FintEducationService {
 
     public void updateSubjects() {
         List<FagResource> resources = fintRepository.getResources(FagResources.class, "education", "subject")
-                .collectList()
-                .blockOptional()
-                .orElseGet(Collections::emptyList);
+                .toStream()
+                .collect(Collectors.toList());
 
         if (resources.size() > 0) subjects.clear();
 
