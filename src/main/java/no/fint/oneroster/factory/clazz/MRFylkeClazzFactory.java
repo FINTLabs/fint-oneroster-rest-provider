@@ -7,15 +7,17 @@ public class MRFylkeClazzFactory implements ClazzFactory {
 
     @Override
     public String basisGroupNameConverter(Gruppe basisGroup) {
-        String school = StringUtils.substringAfterLast(basisGroup.getBeskrivelse(), "ved ");
+        String between = StringUtils.substringBetween(basisGroup.getSystemId().getIdentifikatorverdi(), "_", "@");
+        String school = StringUtils.substringAfterLast(between, "_");
 
-        return String.join(" ", "Basisgruppe", basisGroup.getNavn(), school);
+        return String.join(" ", basisGroup.getNavn(), school);
     }
 
     @Override
     public String teachingGroupNameConverter(Gruppe teachingGroup) {
+        String between = StringUtils.substringBetween(teachingGroup.getSystemId().getIdentifikatorverdi(), "_", "@");
+        String school = StringUtils.substringAfterLast(between, "_");
         String subject = StringUtils.substringBetween(teachingGroup.getBeskrivelse(), " i ", " ved ");
-        String school = StringUtils.substringAfterLast(teachingGroup.getBeskrivelse(), "ved ");
 
         return String.join(" ", subject, teachingGroup.getNavn(), school);
     }

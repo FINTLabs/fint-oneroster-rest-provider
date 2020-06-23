@@ -20,7 +20,7 @@ class MRFylkeClazzFactorySpec extends Specification {
         def name = mrFylkeClazzFactory.basisGroupNameConverter(getBasisGroup())
 
         then:
-        name == 'Basisgruppe 1SSB Sandefjord videregående skole'
+        name == '1SSB SFVS'
     }
 
     def "basisGroup() returns class object of type homeroom and with modified identifier as title"() {
@@ -29,7 +29,7 @@ class MRFylkeClazzFactorySpec extends Specification {
 
         then:
         clazz.sourcedId == '1_1SSB_SFVS@38026'
-        clazz.title == 'Basisgruppe 1SSB Sandefjord videregående skole'
+        clazz.title == '1SSB SFVS'
         clazz.classType == ClazzType.HOMEROOM
         clazz.course.sourcedId == 'level-sourced-id'
         clazz.school.sourcedId == 'school-sourced-id'
@@ -41,7 +41,7 @@ class MRFylkeClazzFactorySpec extends Specification {
         def name = mrFylkeClazzFactory.teachingGroupNameConverter(getTeachingGroup())
 
         then:
-        name == 'Kroppsøving 3STG/191KRO1006 Greveskogen videregående skole'
+        name == 'Kroppsøving 3STG/191KRO1006 GRVS'
     }
 
     def "teachingGroup() returns class object of type schduled and with modified identifier as title"() {
@@ -50,7 +50,7 @@ class MRFylkeClazzFactorySpec extends Specification {
 
         then:
         clazz.sourcedId == '2_3STG_191KRO1006_GRVS@38034'
-        clazz.title == 'Kroppsøving 3STG/191KRO1006 Greveskogen videregående skole'
+        clazz.title == 'Kroppsøving 3STG/191KRO1006 GRVS'
         clazz.classType == ClazzType.SCHEDULED
         clazz.course.sourcedId == 'subject-sourced-id'
         clazz.school.sourcedId == 'school-sourced-id'
