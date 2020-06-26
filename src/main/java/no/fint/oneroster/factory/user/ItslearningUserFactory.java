@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 import static no.fint.oneroster.util.StringNormalizer.normalize;
 
-public class ROGFKUserFactory implements UserFactory {
+public class ItslearningUserFactory implements UserFactory {
 
     @Override
     public User student(ElevResource elevResource, PersonResource personResource, List<SkoleResource> skoleResources) {

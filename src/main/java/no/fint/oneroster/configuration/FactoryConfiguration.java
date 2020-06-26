@@ -5,7 +5,7 @@ import no.fint.oneroster.factory.clazz.DefaultClazzFactory;
 import no.fint.oneroster.factory.clazz.MRFylkeClazzFactory;
 import no.fint.oneroster.factory.clazz.VTFKClazzFactory;
 import no.fint.oneroster.factory.user.DefaultUserFactory;
-import no.fint.oneroster.factory.user.ROGFKUserFactory;
+import no.fint.oneroster.factory.user.ItslearningUserFactory;
 import no.fint.oneroster.factory.user.UserFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -51,8 +51,8 @@ public class FactoryConfiguration {
     @Bean
     @ConditionalOnProperty(
             value = "oneroster.profile.user-factory",
-            havingValue = "rogfk")
-    public UserFactory rogfkUserFactory() {
-        return new ROGFKUserFactory();
+            havingValue = "itslearning")
+    public UserFactory itslearningUserFactory() {
+        return new ItslearningUserFactory();
     }
 }
