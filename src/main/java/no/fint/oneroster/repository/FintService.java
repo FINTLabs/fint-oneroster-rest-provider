@@ -17,7 +17,6 @@ import no.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResources;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResources;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 
 import java.util.HashMap;
@@ -30,8 +29,6 @@ import java.util.stream.Stream;
 @Service
 public class FintService {
     private final FintRepository fintRepository;
-
-    private int test = 0;
 
     private final Map<String, Object> resources = new HashMap<>();
 
