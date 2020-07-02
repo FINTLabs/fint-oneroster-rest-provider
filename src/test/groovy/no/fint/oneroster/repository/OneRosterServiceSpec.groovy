@@ -19,22 +19,28 @@ import java.time.Year
 
 class OneRosterServiceSpec extends Specification {
 
-    FintEducationService fintEducationService = Mock {
-        getSchools() >> [('/school-sourced-id'): FintObjectFactory.newSchool()]
-        getPersons() >> [('/person-sourced-id'): FintObjectFactory.newPerson()]
-        getStudents() >> [('/student-sourced-id'): FintObjectFactory.newStudent()]
-        getStudentRelations() >> [('/student-relation-sourced-id'): FintObjectFactory.newStudentRelation()]
-        getTeachers() >> [('/teacher-sourced-id'): FintObjectFactory.newTeacher()]
-        getTeachingRelations() >> [('/teaching-relation-sourced-id'): FintObjectFactory.newTeachingRelation()]
-        getBasisGroups() >> [('/basis-group-sourced-id'): FintObjectFactory.newBasisGroup()]
-        getTeachingGroups() >> [('/teaching-group-sourced-id'): FintObjectFactory.newTeachingGroup()]
-        getLevels() >> [('/level-sourced-id'): FintObjectFactory.newLevel()]
-        getSubjects() >> [('/subject-sourced-id'): FintObjectFactory.newSubject()]
-    }
-
-    FintAdministrationService fintAdministrationService = Mock {
-        getPersons() >> [('/person-sourced-id'): FintObjectFactory.newPerson()]
-        getPersonnel() >> [('/personnel-resource-sourced-id'): FintObjectFactory.newPersonnel()]
+    FintService fintService = Mock {
+        getSchools() >> [FintObjectFactory.newSchool()]
+        getSchoolById(_ as String) >> FintObjectFactory.newSchool()
+        getPersons() >> [FintObjectFactory.newPerson()]
+        getPersonById(_ as String) >> FintObjectFactory.newPerson()
+        getStudents() >> [FintObjectFactory.newStudent()]
+        getStudentById(_ as String) >> FintObjectFactory.newStudent()
+        getStudentRelations() >> [FintObjectFactory.newStudentRelation()]
+        getStudentRelationById(_ as String) >> FintObjectFactory.newStudentRelation()
+        getTeachers() >> [FintObjectFactory.newTeacher()]
+        getTeacherById(_ as String) >> FintObjectFactory.newTeacher()
+        getTeachingRelations() >> [FintObjectFactory.newTeachingRelation()]
+        getTeachingRelationById(_ as String) >> FintObjectFactory.newTeachingRelation()
+        getBasisGroups() >> [FintObjectFactory.newBasisGroup()]
+        getBasisGroupById(_ as String) >> FintObjectFactory.newBasisGroup()
+        getTeachingGroups() >> [FintObjectFactory.newTeachingGroup()]
+        getTeachingGroupById(_ as String) >> FintObjectFactory.newTeachingGroup()
+        getLevels() >> [FintObjectFactory.newLevel()]
+        getLevelById(_ as String) >> FintObjectFactory.newLevel()
+        getSubjects() >> [FintObjectFactory.newSubject()]
+        getSubjectById(_ as String) >> FintObjectFactory.newSubject()
+        getPersonnelById(_ as String) >> FintObjectFactory.newPersonnel()
     }
 
     OneRosterProperties oneRosterProperties = Mock {
@@ -52,7 +58,7 @@ class OneRosterServiceSpec extends Specification {
     ClazzFactory clazzFactory = new DefaultClazzFactory()
     UserFactory userFactory = new DefaultUserFactory()
 
-    OneRosterService oneRosterService = new OneRosterService(fintEducationService, fintAdministrationService, oneRosterProperties, academicSessionService, clazzFactory, userFactory)
+    OneRosterService oneRosterService = new OneRosterService(oneRosterProperties, academicSessionService, clazzFactory, userFactory, fintService)
 
     def "getAllOrgs returns a list of orgs"() {
         when:
