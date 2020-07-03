@@ -132,21 +132,20 @@ public class FintService {
     public void updateResources() {
         resources.clear();
 
-        Flux.merge(fintRepository.getResources(SkoleResources.class, "education", "school"),
-                fintRepository.getResources(PersonResources.class, "education", "person"),
-                fintRepository.getResources(ElevResources.class, "education", "student"),
-                fintRepository.getResources(SkoleressursResources.class, "education", "teacher"),
-                fintRepository.getResources(ElevforholdResources.class, "education", "student-relation"),
-                fintRepository.getResources(UndervisningsforholdResources.class, "education", "teaching-relation"),
-                fintRepository.getResources(BasisgruppeResources.class, "education", "basis-group"),
-                fintRepository.getResources(UndervisningsgruppeResources.class, "education", "teaching-group"),
-                fintRepository.getResources(ArstrinnResources.class, "education", "level"),
-                fintRepository.getResources(FagResources.class, "education", "subject"),
-                fintRepository.getResources(PersonalressursResources.class, "administration", "personnel"),
-                fintRepository.getResources(PersonResources.class, "administration", "person"))
-                .doOnNext(resource -> getSelfLinks(resource).forEach(link -> resources.put(link, resource)))
-                .doOnComplete(() -> log.info("Update complete"))
-                .subscribe();
+        Flux.merge(fintRepository.getEducationResources(SkoleResources.class, FintEndpoint.SCHOOL.getKey()),
+                fintRepository.getEducationResources(PersonResources.class, FintEndpoint.PERSON.getKey()),
+                fintRepository.getEducationResources(ElevResources.class, FintEndpoint.STUDENT.getKey()),
+                fintRepository.getEducationResources(SkoleressursResources.class, FintEndpoint.TEACHER.getKey()),
+                fintRepository.getEducationResources(ElevforholdResources.class, FintEndpoint.STUDENT_RELATION.getKey()),
+                fintRepository.getEducationResources(UndervisningsforholdResources.class, FintEndpoint.TEACHING_RELATION.getKey()),
+                fintRepository.getEducationResources(BasisgruppeResources.class, FintEndpoint.BASIS_GROUP.getKey()),
+                fintRepository.getEducationResources(UndervisningsgruppeResources.class, FintEndpoint.TEACHING_GROUP.getKey()),
+                fintRepository.getEducationResources(ArstrinnResources.class, FintEndpoint.LEVEL.getKey()),
+                fintRepository.getEducationResources(FagResources.class, FintEndpoint.SUBJECT.getKey()),
+                fintRepository.getAdministrationResources(PersonalressursResources.class, FintEndpoint.PERSONNEL.getKey()),
+                fintRepository.getAdministrationResources(PersonResources.class, FintEndpoint.PERSON.getKey()))
+                .toStream()
+                .forEach(resource -> getSelfLinks(resource).forEach(link -> resources.put(link, resource)));
     }
 
     private <T extends FintLinks> Stream<String> getSelfLinks(T resource) {

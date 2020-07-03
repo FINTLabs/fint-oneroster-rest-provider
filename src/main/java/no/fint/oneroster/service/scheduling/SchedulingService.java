@@ -19,5 +19,6 @@ public class SchedulingService {
     @CacheEvict(value = {"orgs", "clazzes", "courses", "enrollments", "users"}, allEntries = true)
     public void update() {
         fintService.updateResources();
+        log.info("Update complete");
     }
 }
