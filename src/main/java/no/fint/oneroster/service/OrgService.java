@@ -3,6 +3,7 @@ package no.fint.oneroster.service;
 import no.fint.oneroster.exception.NotFoundException;
 import no.fint.oneroster.model.*;
 import no.fint.oneroster.model.vocab.OrgType;
+import no.fint.oneroster.model.vocab.RoleType;
 import no.fint.oneroster.repository.OneRosterService;
 import org.springframework.stereotype.Service;
 
@@ -12,16 +13,10 @@ import java.util.stream.Collectors;
 @Service
 public class OrgService {
     private final OneRosterService oneRosterService;
-    private final EnrollmentService enrollmentService;
-    private final UserService userService;
-    private final ClazzService clazzService;
     private final AcademicSessionService academicSessionService;
 
-    public OrgService(OneRosterService oneRosterService, EnrollmentService enrollmentService, UserService userService, ClazzService clazzService, AcademicSessionService academicSessionService) {
+    public OrgService(OneRosterService oneRosterService, AcademicSessionService academicSessionService) {
         this.oneRosterService = oneRosterService;
-        this.enrollmentService = enrollmentService;
-        this.userService = userService;
-        this.clazzService = clazzService;
         this.academicSessionService = academicSessionService;
     }
 
@@ -55,7 +50,7 @@ public class OrgService {
     public List<Clazz> getClazzesForSchool(String sourcedId) {
         Org school = getSchool(sourcedId);
 
-        return clazzService.getAllClazzes()
+        return oneRosterService.getAllClazzes()
                 .stream()
                 .filter(clazz -> clazz.getSchool().getSourcedId().equals(school.getSourcedId()))
                 .collect(Collectors.toList());
@@ -64,7 +59,7 @@ public class OrgService {
     public List<Enrollment> getEnrollmentsForSchool(String sourcedId) {
         Org school = getSchool(sourcedId);
 
-        return enrollmentService.getAllEnrollments()
+        return oneRosterService.getAllEnrollments()
                 .stream()
                 .filter(enrollment -> enrollment.getSchool().getSourcedId().equals(school.getSourcedId()))
                 .collect(Collectors.toList());
@@ -73,26 +68,32 @@ public class OrgService {
     public List<User> getStudentsForSchool(String sourcedId) {
         Org school = getSchool(sourcedId);
 
-        return userService.getAllStudents()
+        return oneRosterService.getAllUsers()
                 .stream()
-                .filter(student -> student.getOrgs().stream().map(GUIDRef::getSourcedId).anyMatch(school.getSourcedId()::equals))
+                .filter(user -> user.getRole().equals(RoleType.STUDENT) &&
+                        user.getOrgs().stream().map(GUIDRef::getSourcedId).anyMatch(school.getSourcedId()::equals))
                 .collect(Collectors.toList());
     }
 
     public List<User> getTeachersForSchool(String sourcedId) {
         Org school = getSchool(sourcedId);
 
-        return userService.getAllTeachers()
+        return oneRosterService.getAllUsers()
                 .stream()
-                .filter(teacher -> teacher.getOrgs().stream().map(GUIDRef::getSourcedId).anyMatch(school.getSourcedId()::equals))
+                .filter(user -> user.getRole().equals(RoleType.STUDENT) &&
+                        user.getOrgs().stream().map(GUIDRef::getSourcedId).anyMatch(school.getSourcedId()::equals))
                 .collect(Collectors.toList());
     }
 
     public List<Enrollment> getEnrollmentsForClazzInSchool(String schoolSourcedId, String clazzSourcedId) {
         Org school = getSchool(schoolSourcedId);
-        Clazz clazz = clazzService.getClazz(clazzSourcedId);
+        Clazz clazz = oneRosterService.getAllClazzes()
+                .stream()
+                .filter(c -> c.getSourcedId().equals(clazzSourcedId))
+                .findAny()
+                .orElseThrow(NotFoundException::new);
 
-        return enrollmentService.getAllEnrollments()
+        return oneRosterService.getAllEnrollments()
                 .stream()
                 .filter(enrollment -> enrollment.getSchool().getSourcedId().equals(school.getSourcedId()) &&
                         enrollment.getClazz().getSourcedId().equals(clazz.getSourcedId()))

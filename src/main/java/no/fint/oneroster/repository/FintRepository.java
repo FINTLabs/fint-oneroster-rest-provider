@@ -65,6 +65,6 @@ public class FintRepository {
                 .attributes(oauth2AuthorizedClient(authorizedClient))
                 .retrieve()
                 .bodyToMono(clazz)
-                .doOnSuccess(it -> log.info("Update {}... ", endpoint));
+                .doOnSuccess(it -> log.info(endpoint));
     }
 }

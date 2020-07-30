@@ -23,18 +23,8 @@ class OrgServiceSpec extends Specification {
 
     OneRosterService oneRosterService = Mock {
         getAllOrgs() >> getOrgs()
-    }
-
-    EnrollmentService enrollmentService = Mock {
         getAllEnrollments() >> getEnrollments()
-    }
-
-    UserService userService = Mock {
-        getAllStudents() >> [getStudent()]
-        getAllTeachers() >> [getTeacher()]
-    }
-
-    ClazzService clazzService = Mock {
+        getAllUsers() >> [getStudent(), getTeacher()]
         getAllClazzes() >> [getBasisGroup(), getTeachingGroup()]
     }
 
@@ -42,7 +32,7 @@ class OrgServiceSpec extends Specification {
         getAllTerms() >> getTerms()
     }
 
-    OrgService orgService = new OrgService(oneRosterService, enrollmentService, userService, clazzService, academicSessionService)
+    OrgService orgService = new OrgService(oneRosterService, academicSessionService)
 
     def "getAllOrgs returns a list of orgs"() {
         when:
@@ -124,7 +114,6 @@ class OrgServiceSpec extends Specification {
         def enrollments = orgService.getEnrollmentsForClazzInSchool('school-sourced-id', 'basis-group-sourced-id')
 
         then:
-        clazzService.getClazz('basis-group-sourced-id') >> getBasisGroup()
         enrollments.size() == 1
     }
 

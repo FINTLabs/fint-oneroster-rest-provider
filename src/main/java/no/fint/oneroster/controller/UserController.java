@@ -14,11 +14,9 @@ import java.util.List;
 @RestController
 public class UserController {
     private final UserService userService;
-    private final ClazzService clazzService;
 
-    public UserController(UserService userService, ClazzService clazzService) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.clazzService = clazzService;
     }
 
     @GetMapping("/users")
@@ -119,7 +117,7 @@ public class UserController {
                                                   @RequestParam(value = "filter", required = false) String filter,
                                                   @RequestParam(value = "fields", required = false) String fields) {
 
-        List<Clazz> clazzes = clazzService.getClazzesForStudent(sourcedId);
+        List<Clazz> clazzes = userService.getClazzesForStudent(sourcedId);
 
         OneRosterResponse<Clazz> oneRosterResponse = new OneRosterResponse<>(Clazz.class, "classes")
                 .collection(clazzes)
@@ -137,7 +135,7 @@ public class UserController {
                                                   @RequestParam(value = "filter", required = false) String filter,
                                                   @RequestParam(value = "fields", required = false) String fields) {
 
-        List<Clazz> clazzes = clazzService.getClazzesForTeacher(sourcedId);
+        List<Clazz> clazzes = userService.getClazzesForTeacher(sourcedId);
 
         OneRosterResponse<Clazz> oneRosterResponse = new OneRosterResponse<>(Clazz.class, "classes")
                 .collection(clazzes)

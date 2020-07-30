@@ -19,18 +19,11 @@ class ClazzServiceSpec extends Specification {
 
     OneRosterService oneRosterService = Mock {
         getAllClazzes() >> [getBasisGroup(), getTeachingGroup()]
-    }
-
-    EnrollmentService enrollmentService = Mock {
         getAllEnrollments() >> getEnrollments()
+        getAllUsers() >> [getStudent(), getTeacher()]
     }
 
-    UserService userService = Mock {
-        getAllStudents() >> [getStudent()]
-        getAllTeachers() >> [getTeacher()]
-    }
-
-    ClazzService clazzService = new ClazzService(oneRosterService, userService, enrollmentService)
+    ClazzService clazzService = new ClazzService(oneRosterService)
 
     def "getAllClazzes returns a list of clazzes"() {
         when:
@@ -67,24 +60,6 @@ class ClazzServiceSpec extends Specification {
         clazz.school.sourcedId == 'school-sourced-id'
         clazz.terms.size() == 1
         clazz.terms.first().sourcedId == 'T1SY20192020'
-    }
-
-    def "getClazzesForStudent returns clazzes given av valid student sourcedId"() {
-        when:
-        def clazzes = clazzService.getClazzesForStudent('student-sourced-id')
-
-        then:
-        userService.getStudent('student-sourced-id') >> getStudent()
-        clazzes.size() == 1
-    }
-
-    def "getClazzesForTeacher returns clazzes given av valid teacher sourcedId"() {
-        when:
-        def clazzes = clazzService.getClazzesForTeacher('teacher-sourced-id')
-
-        then:
-        userService.getTeacher('teacher-sourced-id') >> getTeacher()
-        clazzes.size() == 1
     }
 
     def "getStudentsForClazz returns a list of students given valid clazz sourcedId"() {

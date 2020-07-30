@@ -1,7 +1,10 @@
 package no.fint.oneroster.service
 
+import no.fint.oneroster.model.Clazz
+import no.fint.oneroster.model.Enrollment
 import no.fint.oneroster.model.GUIDRef
 import no.fint.oneroster.model.User
+import no.fint.oneroster.model.vocab.ClazzType
 import no.fint.oneroster.model.vocab.GUIDType
 import no.fint.oneroster.model.vocab.RoleType
 import no.fint.oneroster.repository.OneRosterService
@@ -10,7 +13,9 @@ import spock.lang.Specification
 class UserServiceSpec extends Specification {
 
     OneRosterService oneRosterService = Mock {
-        getAllUsers() >> getUsers()
+        getAllUsers() >> [getStudent(), getTeacher()]
+        getAllEnrollments() >> [getStudentEnrollment(), getTeacherEnrollment()]
+        getAllClazzes() >> [getBasisGroup(), getTeachingGroup()]
     }
 
     UserService userService = new UserService(oneRosterService)
@@ -96,8 +101,24 @@ class UserServiceSpec extends Specification {
         teacher.orgs.first().sourcedId == 'school-sourced-id'
     }
 
-    List<User> getUsers() {
-        User student = new User(
+    def "getClazzesForStudent returns clazzes given av valid student sourcedId"() {
+        when:
+        def clazzes = userService.getClazzesForStudent('student-sourced-id')
+
+        then:
+        clazzes.size() == 1
+    }
+
+    def "getClazzesForTeacher returns clazzes given av valid teacher sourcedId"() {
+        when:
+        def clazzes = userService.getClazzesForTeacher('teacher-sourced-id')
+
+        then:
+        clazzes.size() == 1
+    }
+
+    User getStudent() {
+        return new User(
                 'student-sourced-id',
                 'username',
                 true,
@@ -106,8 +127,10 @@ class UserServiceSpec extends Specification {
                 RoleType.STUDENT,
                 [GUIDRef.of(GUIDType.ORG, 'school-sourced-id')]
         )
+    }
 
-        User teacher = new User(
+    User getTeacher() {
+        return new User(
                 'teacher-sourced-id',
                 'username',
                 true,
@@ -116,7 +139,49 @@ class UserServiceSpec extends Specification {
                 RoleType.TEACHER,
                 [GUIDRef.of(GUIDType.ORG, 'school-sourced-id')]
         )
+    }
 
-        return [student, teacher]
+    Clazz getBasisGroup() {
+        return new Clazz(
+                'basis-group-sourced-id',
+                'Basis group',
+                ClazzType.HOMEROOM,
+                GUIDRef.of(GUIDType.COURSE, 'level-sourced-id'),
+                GUIDRef.of(GUIDType.ORG, 'school-sourced-id'),
+                [GUIDRef.of(GUIDType.ACADEMICSESSION, 'T1SY20192020')]
+        )
+    }
+
+    Clazz getTeachingGroup() {
+        return new Clazz(
+                'teaching-group-sourced-id',
+                'Teaching group',
+                ClazzType.SCHEDULED,
+                GUIDRef.of(GUIDType.COURSE, 'subject-sourced-id'),
+                GUIDRef.of(GUIDType.ORG, 'school-sourced-id'),
+                [GUIDRef.of(GUIDType.ACADEMICSESSION, 'T1SY20192020')]
+        )
+    }
+
+    Enrollment getStudentEnrollment()
+    {
+        return new Enrollment(
+                'student-relation-sourced-id_basis-group-sourced-id',
+                GUIDRef.of(GUIDType.USER, 'student-sourced-id'),
+                GUIDRef.of(GUIDType.CLASS, 'basis-group-sourced-id'),
+                GUIDRef.of(GUIDType.ORG, 'school-sourced-id'),
+                RoleType.STUDENT
+        )
+    }
+
+    Enrollment getTeacherEnrollment()
+    {
+        return new Enrollment(
+                'teaching-relation-sourced-id_teaching-group-sourced-id',
+                GUIDRef.of(GUIDType.USER, 'teacher-sourced-id'),
+                GUIDRef.of(GUIDType.CLASS, 'teaching-group-sourced-id'),
+                GUIDRef.of(GUIDType.ORG, 'school-sourced-id'),
+                RoleType.TEACHER
+        )
     }
 }
