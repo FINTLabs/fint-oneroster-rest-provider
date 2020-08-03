@@ -4,11 +4,6 @@ oneroster:
     name:
     identifier:
   academic-session:
-    school-year:
-      sourced-id:
-      begin-date:
-      end-date:
-      name:
     first-term:
       sourced-id:
       begin-date:

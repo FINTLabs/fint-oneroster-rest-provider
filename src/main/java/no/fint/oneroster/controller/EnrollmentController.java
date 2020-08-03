@@ -24,7 +24,7 @@ public class EnrollmentController {
                                                Pageable pageable) {
 
         List<Enrollment> enrollments = enrollmentService.getAllEnrollments();
-
+        
         OneRosterResponse<Enrollment> oneRosterResponse = new OneRosterResponse<>(Enrollment.class, "enrollments")
                 .collection(enrollments)
                 .filter(filter)

@@ -21,16 +21,7 @@ public class AcademicSessionService {
     public List<AcademicSession> getAllAcademicSessions() {
         OneRosterProperties.AcademicSession academicSession = oneRosterProperties.getAcademicSession();
 
-        Year endYear = Year.of(academicSession.getSchoolYear().getEndDate().getYear());
-
-        AcademicSession schoolYear = new AcademicSession(
-                academicSession.getSchoolYear().getSourcedId(),
-                academicSession.getSchoolYear().getName(),
-                academicSession.getSchoolYear().getBeginDate(),
-                academicSession.getSchoolYear().getEndDate(),
-                SessionType.SCHOOLYEAR,
-                endYear
-        );
+        Year endYear = Year.of(academicSession.getSecondTerm().getEndDate().getYear());
 
         AcademicSession firstTerm = new AcademicSession(
                 academicSession.getFirstTerm().getSourcedId(),
@@ -48,7 +39,7 @@ public class AcademicSessionService {
                 SessionType.TERM,
                 endYear);
 
-        return Arrays.asList(schoolYear, firstTerm, secondTerm);
+        return Arrays.asList(firstTerm, secondTerm);
     }
 
     public AcademicSession getAcademicSession(String sourcedId) {

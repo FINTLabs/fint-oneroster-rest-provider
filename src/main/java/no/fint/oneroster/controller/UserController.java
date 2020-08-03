@@ -2,7 +2,6 @@ package no.fint.oneroster.controller;
 
 import no.fint.oneroster.model.Clazz;
 import no.fint.oneroster.model.User;
-import no.fint.oneroster.service.ClazzService;
 import no.fint.oneroster.service.UserService;
 import no.fint.oneroster.util.OneRosterResponse;
 import org.springframework.data.domain.Pageable;
