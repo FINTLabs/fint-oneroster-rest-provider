@@ -22,6 +22,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -133,6 +134,7 @@ public class OneRosterService {
                 .map(String::toLowerCase)
                 .map(fintService::getSubjectById)
                 .filter(Objects::nonNull)
+                .distinct()
                 .forEach(subject -> courses.add(CourseFactory.subject(subject, org)));
 
         fintService.getBasisGroups()
@@ -143,6 +145,7 @@ public class OneRosterService {
                 .map(String::toLowerCase)
                 .map(fintService::getLevelById)
                 .filter(Objects::nonNull)
+                .distinct()
                 .forEach(level -> courses.add(CourseFactory.level(level, org)));
 
         courses.sort(Comparator.comparing(Course::getSourcedId));
@@ -300,6 +303,7 @@ public class OneRosterService {
                     .map(String::toLowerCase)
                     .map(fintService::getTeachingRelationById)
                     .filter(Objects::nonNull)
+                    .filter(isTeacher)
                     .map(UndervisningsforholdResource::getSkole)
                     .flatMap(List::stream)
                     .map(Link::getHref)
@@ -317,4 +321,9 @@ public class OneRosterService {
 
         return users;
     }
+
+    private final Predicate<UndervisningsforholdResource> isTeacher = teachingRelation ->
+            !teachingRelation.getBasisgruppe().isEmpty() ||
+            !teachingRelation.getUndervisningsgruppe().isEmpty() ||
+            !teachingRelation.getKontaktlarergruppe().isEmpty();
 }
