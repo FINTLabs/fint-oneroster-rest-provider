@@ -9,6 +9,7 @@ public enum FintEndpoint {
     TEACHING_RELATION("teaching-relation"),
     BASIS_GROUP("basis-group"),
     TEACHING_GROUP("teaching-group"),
+    CONTACT_TEACHER_GROUP("contact-teacher-group"),
     LEVEL("level"),
     SUBJECT("subject"),
     PERSONNEL("personnel");

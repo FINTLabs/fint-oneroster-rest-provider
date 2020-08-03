@@ -9,6 +9,7 @@ import no.fint.model.resource.felles.PersonResource
 import no.fint.model.resource.utdanning.elev.BasisgruppeResource
 import no.fint.model.resource.utdanning.elev.ElevResource
 import no.fint.model.resource.utdanning.elev.ElevforholdResource
+import no.fint.model.resource.utdanning.elev.KontaktlarergruppeResource
 import no.fint.model.resource.utdanning.elev.SkoleressursResource
 import no.fint.model.resource.utdanning.elev.UndervisningsforholdResource
 import no.fint.model.resource.utdanning.timeplan.FagResource
@@ -125,6 +126,18 @@ class FintObjectFactory {
         resource.addSkole(Link.with('/school-sourced-id'))
         resource.addFag(Link.with('/subject-sourced-id'))
         resource.addSelf(Link.with('/teaching-group-sourced-id'))
+        return resource
+    }
+
+    static KontaktlarergruppeResource newContactTeacherGroup() {
+        KontaktlarergruppeResource resource = new KontaktlarergruppeResource()
+        resource.setSystemId(new Identifikator(identifikatorverdi: 'contact-teacher-group-sourced-id'))
+        resource.setPeriode([])
+        resource.setNavn('Contact teacher group')
+        resource.setBeskrivelse('Contact teacher group at school')
+        resource.addSkole(Link.with('/school-sourced-id'))
+        resource.addBasisgruppe(Link.with('/basis-group-sourced-id'))
+        resource.addSelf(Link.with('/contact-teacher-group-sourced-id'))
         return resource
     }
 

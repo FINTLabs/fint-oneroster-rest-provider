@@ -36,6 +36,8 @@ class OneRosterServiceSpec extends Specification {
         getBasisGroupById(_ as String) >> FintObjectFactory.newBasisGroup()
         getTeachingGroups() >> [FintObjectFactory.newTeachingGroup()]
         getTeachingGroupById(_ as String) >> FintObjectFactory.newTeachingGroup()
+        getContactTeacherGroups() >> [FintObjectFactory.newContactTeacherGroup()]
+        getContactTeacherGroupById(_ as String) >> FintObjectFactory.newContactTeacherGroup()
         getLevels() >> [FintObjectFactory.newLevel()]
         getLevelById(_ as String) >> FintObjectFactory.newLevel()
         getSubjects() >> [FintObjectFactory.newSubject()]
@@ -48,6 +50,10 @@ class OneRosterServiceSpec extends Specification {
                 sourcedId: 'school-owner-sourced-id',
                 name: 'School owner',
                 identifier: 'identifier'
+        )
+
+        getProfile() >> new OneRosterProperties.Profile(
+                contactTeacherGroups: true
         )
     }
 
@@ -78,7 +84,7 @@ class OneRosterServiceSpec extends Specification {
         def clazzes = oneRosterService.getAllClazzes()
 
         then:
-        clazzes.size() == 2
+        clazzes.size() == 3
         clazzes.first().sourcedId == 'basis-group-sourced-id'
         clazzes.first().title == 'Basis group'
         clazzes.first().classType == ClazzType.HOMEROOM

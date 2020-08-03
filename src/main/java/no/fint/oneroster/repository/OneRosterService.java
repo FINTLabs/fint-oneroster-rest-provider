@@ -115,6 +115,37 @@ public class OneRosterService {
             }
         });
 
+        if (oneRosterProperties.getProfile().isContactTeacherGroups()) {
+            fintService.getContactTeacherGroups().forEach(contactTeacherGroup -> {
+                Optional<ArstrinnResource> level = contactTeacherGroup.getBasisgruppe()
+                        .stream()
+                        .findFirst()
+                        .map(Link::getHref)
+                        .map(String::toLowerCase)
+                        .map(fintService::getBasisGroupById)
+                        .map(BasisgruppeResource::getTrinn)
+                        .orElseGet(Collections::emptyList)
+                        .stream()
+                        .map(Link::getHref)
+                        .map(String::toLowerCase)
+                        .map(fintService::getLevelById)
+                        .filter(Objects::nonNull)
+                        .findAny();
+
+                Optional<SkoleResource> school = contactTeacherGroup.getSkole()
+                        .stream()
+                        .map(Link::getHref)
+                        .map(String::toLowerCase)
+                        .map(fintService::getSchoolById)
+                        .filter(Objects::nonNull)
+                        .findAny();
+
+                if (level.isPresent() && school.isPresent() && !terms.isEmpty()) {
+                    clazzes.add(clazzFactory.contactTeacherGroup(contactTeacherGroup, level.get(), school.get(), terms));
+                }
+            });
+        }
+
         clazzes.sort(Comparator.comparing(Clazz::getSourcedId));
 
         return clazzes;
@@ -197,6 +228,20 @@ public class OneRosterService {
                             enrollments.add(EnrollmentFactory.student(elevforholdResource, student.get(), teachingGroup, school.get()));
                         }
                     });
+
+            if (oneRosterProperties.getProfile().isContactTeacherGroups()) {
+                elevforholdResource.getKontaktlarergruppe()
+                        .stream()
+                        .map(Link::getHref)
+                        .map(String::toLowerCase)
+                        .map(fintService::getContactTeacherGroupById)
+                        .filter(Objects::nonNull)
+                        .forEach(contactTeacherGroup -> {
+                            if (student.isPresent() && school.isPresent()) {
+                                enrollments.add(EnrollmentFactory.student(elevforholdResource, student.get(), contactTeacherGroup, school.get()));
+                            }
+                        });
+            }
         });
 
         fintService.getTeachingRelations().forEach(undervisningsforholdResource -> {
@@ -239,6 +284,20 @@ public class OneRosterService {
                             enrollments.add(EnrollmentFactory.teacher(undervisningsforholdResource, teacher.get(), teachingGroup, school.get()));
                         }
                     });
+
+            if (oneRosterProperties.getProfile().isContactTeacherGroups()) {
+                undervisningsforholdResource.getKontaktlarergruppe()
+                        .stream()
+                        .map(Link::getHref)
+                        .map(String::toLowerCase)
+                        .map(fintService::getContactTeacherGroupById)
+                        .filter(Objects::nonNull)
+                        .forEach(contactTeacherGroup -> {
+                            if (teacher.isPresent() && school.isPresent()) {
+                                enrollments.add(EnrollmentFactory.teacher(undervisningsforholdResource, teacher.get(), contactTeacherGroup, school.get()));
+                            }
+                        });
+            }
         });
 
         enrollments.sort(Comparator.comparing(Enrollment::getSourcedId));
@@ -324,6 +383,6 @@ public class OneRosterService {
 
     private final Predicate<UndervisningsforholdResource> isTeacher = teachingRelation ->
             !teachingRelation.getBasisgruppe().isEmpty() ||
-            !teachingRelation.getUndervisningsgruppe().isEmpty() ||
-            !teachingRelation.getKontaktlarergruppe().isEmpty();
+                    !teachingRelation.getUndervisningsgruppe().isEmpty() ||
+                    !teachingRelation.getKontaktlarergruppe().isEmpty();
 }

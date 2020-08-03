@@ -2,6 +2,7 @@ package no.fint.oneroster.factory.clazz;
 
 import no.fint.model.resource.Link;
 import no.fint.model.resource.utdanning.elev.BasisgruppeResource;
+import no.fint.model.resource.utdanning.elev.KontaktlarergruppeResource;
 import no.fint.model.resource.utdanning.timeplan.FagResource;
 import no.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResource;
@@ -65,11 +66,37 @@ public interface ClazzFactory {
         return teachingGroup;
     }
 
+    default Clazz contactTeacherGroup(KontaktlarergruppeResource kontaktlarergruppeResource, ArstrinnResource arstrinnResource, SkoleResource skoleResource, List<AcademicSession> terms) {
+        Clazz contactTeacherGroup = new Clazz(
+                normalize(kontaktlarergruppeResource.getSystemId().getIdentifikatorverdi()),
+                contactTeacherGroupNameConverter(kontaktlarergruppeResource),
+                ClazzType.HOMEROOM,
+                GUIDRef.of(GUIDType.COURSE, normalize(arstrinnResource.getSystemId().getIdentifikatorverdi())),
+                GUIDRef.of(GUIDType.ORG, normalize(skoleResource.getSystemId().getIdentifikatorverdi())),
+                terms.stream()
+                        .map(term -> GUIDRef.of(GUIDType.ACADEMICSESSION, term.getSourcedId()))
+                        .collect(Collectors.toList()));
+
+        arstrinnResource.getGrepreferanse()
+                .stream()
+                .map(Link::getHref)
+                .findAny()
+                .ifPresent(href -> contactTeacherGroup.setSubjectCodes(Collections.singletonList(href)));
+
+        contactTeacherGroup.setMetadata(Collections.singletonMap("additionalClassType", "mentor"));
+
+        return contactTeacherGroup;
+    }
+
     default String basisGroupNameConverter(Gruppe basisGroup) {
         return basisGroup.getNavn();
     }
 
     default String teachingGroupNameConverter(Gruppe teachingGroup) {
         return teachingGroup.getNavn();
+    }
+
+    default String contactTeacherGroupNameConverter(Gruppe contactTeacherGroup) {
+        return contactTeacherGroup.getNavn();
     }
 }

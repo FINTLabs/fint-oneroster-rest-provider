@@ -84,6 +84,14 @@ public class FintService {
         return (BasisgruppeResource) resources.get(id);
     }
 
+    public List<KontaktlarergruppeResource> getContactTeacherGroups() {
+        return getResourcesByType(KontaktlarergruppeResource.class);
+    }
+
+    public KontaktlarergruppeResource getContactTeacherGroupById(String id) {
+        return (KontaktlarergruppeResource) resources.get(id);
+    }
+
     public List<UndervisningsgruppeResource> getTeachingGroups() {
         return getResourcesByType(UndervisningsgruppeResource.class);
     }
@@ -140,6 +148,7 @@ public class FintService {
                 fintRepository.getEducationResources(UndervisningsforholdResources.class, FintEndpoint.TEACHING_RELATION.getKey()),
                 fintRepository.getEducationResources(BasisgruppeResources.class, FintEndpoint.BASIS_GROUP.getKey()),
                 fintRepository.getEducationResources(UndervisningsgruppeResources.class, FintEndpoint.TEACHING_GROUP.getKey()),
+                fintRepository.getEducationResources(KontaktlarergruppeResources.class, FintEndpoint.CONTACT_TEACHER_GROUP.getKey()),
                 fintRepository.getEducationResources(ArstrinnResources.class, FintEndpoint.LEVEL.getKey()),
                 fintRepository.getEducationResources(FagResources.class, FintEndpoint.SUBJECT.getKey()),
                 fintRepository.getAdministrationResources(PersonalressursResources.class, FintEndpoint.PERSONNEL.getKey()),

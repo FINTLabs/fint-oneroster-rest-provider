@@ -46,6 +46,7 @@ public class OneRosterProperties {
     @Data
     public static class Profile {
         private Set<String> clazzFilter;
+        private boolean contactTeacherGroups;
 
         public void setClazzFilter(String clazzFilter) {
             this.clazzFilter = StringUtils.commaDelimitedListToSet(StringUtils.trimAllWhitespace(clazzFilter));
