@@ -80,7 +80,7 @@ public class OrgService {
 
         return oneRosterService.getAllUsers()
                 .stream()
-                .filter(user -> user.getRole().equals(RoleType.STUDENT) &&
+                .filter(user -> user.getRole().equals(RoleType.TEACHER) &&
                         user.getOrgs().stream().map(GUIDRef::getSourcedId).anyMatch(school.getSourcedId()::equals))
                 .collect(Collectors.toList());
     }
