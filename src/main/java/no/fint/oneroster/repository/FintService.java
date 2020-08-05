@@ -30,7 +30,8 @@ import java.util.stream.Stream;
 public class FintService {
     private final FintRepository fintRepository;
 
-    private final Map<String, Object> resources = new HashMap<>();
+    private final Map<String, Integer> hashCodes = new HashMap<>();
+    private final Map<Integer, Object> resources = new HashMap<>();
 
     public FintService(FintRepository fintRepository) {
         this.fintRepository = fintRepository;
@@ -41,7 +42,8 @@ public class FintService {
     }
 
     public SkoleResource getSchoolById(String id) {
-        return (SkoleResource) resources.get(id);
+        Integer hashCode = hashCodes.get(id);
+        return (SkoleResource) resources.get(hashCode);
     }
 
     public List<ElevResource> getStudents() {
@@ -49,7 +51,8 @@ public class FintService {
     }
 
     public ElevResource getStudentById(String id) {
-        return (ElevResource) resources.get(id);
+        Integer hashCode = hashCodes.get(id);
+        return (ElevResource) resources.get(hashCode);
     }
 
     public List<SkoleressursResource> getTeachers() {
@@ -57,7 +60,8 @@ public class FintService {
     }
 
     public SkoleressursResource getTeacherById(String id) {
-        return (SkoleressursResource) resources.get(id);
+        Integer hashCode = hashCodes.get(id);
+        return (SkoleressursResource) resources.get(hashCode);
     }
 
     public List<ElevforholdResource> getStudentRelations() {
@@ -65,7 +69,8 @@ public class FintService {
     }
 
     public ElevforholdResource getStudentRelationById(String id) {
-        return (ElevforholdResource) resources.get(id);
+        Integer hashCode = hashCodes.get(id);
+        return (ElevforholdResource) resources.get(hashCode);
     }
 
     public List<UndervisningsforholdResource> getTeachingRelations() {
@@ -73,7 +78,8 @@ public class FintService {
     }
 
     public UndervisningsforholdResource getTeachingRelationById(String id) {
-        return (UndervisningsforholdResource) resources.get(id);
+        Integer hashCode = hashCodes.get(id);
+        return (UndervisningsforholdResource) resources.get(hashCode);
     }
 
     public List<BasisgruppeResource> getBasisGroups() {
@@ -81,7 +87,8 @@ public class FintService {
     }
 
     public BasisgruppeResource getBasisGroupById(String id) {
-        return (BasisgruppeResource) resources.get(id);
+        Integer hashCode = hashCodes.get(id);
+        return (BasisgruppeResource) resources.get(hashCode);
     }
 
     public List<KontaktlarergruppeResource> getContactTeacherGroups() {
@@ -89,7 +96,8 @@ public class FintService {
     }
 
     public KontaktlarergruppeResource getContactTeacherGroupById(String id) {
-        return (KontaktlarergruppeResource) resources.get(id);
+        Integer hashCode = hashCodes.get(id);
+        return (KontaktlarergruppeResource) resources.get(hashCode);
     }
 
     public List<UndervisningsgruppeResource> getTeachingGroups() {
@@ -97,7 +105,8 @@ public class FintService {
     }
 
     public UndervisningsgruppeResource getTeachingGroupById(String id) {
-        return (UndervisningsgruppeResource) resources.get(id);
+        Integer hashCode = hashCodes.get(id);
+        return (UndervisningsgruppeResource) resources.get(hashCode);
     }
 
     public List<ArstrinnResource> getLevels() {
@@ -105,7 +114,8 @@ public class FintService {
     }
 
     public ArstrinnResource getLevelById(String id) {
-        return (ArstrinnResource) resources.get(id);
+        Integer hashCode = hashCodes.get(id);
+        return (ArstrinnResource) resources.get(hashCode);
     }
 
     public List<FagResource> getSubjects() {
@@ -113,7 +123,8 @@ public class FintService {
     }
 
     public FagResource getSubjectById(String id) {
-        return (FagResource) resources.get(id);
+        Integer hashCode = hashCodes.get(id);
+        return (FagResource) resources.get(hashCode);
     }
 
     public List<PersonResource> getPersons() {
@@ -121,11 +132,13 @@ public class FintService {
     }
 
     public PersonResource getPersonById(String id) {
-        return (PersonResource) resources.get(id);
+        Integer hashCode = hashCodes.get(id);
+        return (PersonResource) resources.get(hashCode);
     }
 
     public PersonalressursResource getPersonnelById(String id) {
-        return (PersonalressursResource) resources.get(id);
+        Integer hashCode = hashCodes.get(id);
+        return (PersonalressursResource) resources.get(hashCode);
     }
 
     public <T> List<T> getResourcesByType(Class<T> clazz) {
@@ -133,11 +146,11 @@ public class FintService {
                 .stream()
                 .filter(clazz::isInstance)
                 .map(clazz::cast)
-                .distinct()
                 .collect(Collectors.toList());
     }
 
     public void updateResources() {
+        hashCodes.clear();
         resources.clear();
 
         Flux.merge(fintRepository.getEducationResources(SkoleResources.class, FintEndpoint.SCHOOL.getKey()),
@@ -154,7 +167,10 @@ public class FintService {
                 fintRepository.getAdministrationResources(PersonalressursResources.class, FintEndpoint.PERSONNEL.getKey()),
                 fintRepository.getAdministrationResources(PersonResources.class, FintEndpoint.PERSON.getKey()))
                 .toStream()
-                .forEach(resource -> getSelfLinks(resource).forEach(link -> resources.put(link, resource)));
+                .forEach(resource -> {
+                    getSelfLinks(resource).forEach(link -> hashCodes.put(link, resource.hashCode()));
+                    resources.putIfAbsent(resource.hashCode(), resource);
+                });
     }
 
     private <T extends FintLinks> Stream<String> getSelfLinks(T resource) {
