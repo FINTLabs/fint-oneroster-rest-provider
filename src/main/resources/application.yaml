@@ -47,3 +47,9 @@ fint:
       endpoint:
         person:
         personnel:
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info, health, metrics

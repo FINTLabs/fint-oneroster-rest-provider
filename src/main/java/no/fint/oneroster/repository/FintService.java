@@ -169,7 +169,7 @@ public class FintService {
                 .toStream()
                 .forEach(resource -> {
                     getSelfLinks(resource).forEach(link -> hashCodes.put(link, resource.hashCode()));
-                    resources.putIfAbsent(resource.hashCode(), resource);
+                    resources.put(resource.hashCode(), resource);
                 });
     }
 
