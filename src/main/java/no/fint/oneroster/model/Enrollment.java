@@ -22,8 +22,8 @@ public class Enrollment extends Base {
     private LocalDate beginDate;
     private LocalDate endDate;
 
-    public Enrollment(String sourcedId, GUIDRef user, GUIDRef clazz, GUIDRef school, RoleType role) {
-        super(sourcedId, StatusType.ACTIVE, ZonedDateTime.now(ZoneId.of("Z")));
+    public Enrollment(String sourcedId, StatusType statusType, GUIDRef user, GUIDRef clazz, GUIDRef school, RoleType role) {
+        super(sourcedId, statusType, ZonedDateTime.now(ZoneId.of("Z")));
         this.user = user;
         this.clazz = clazz;
         this.school = school;

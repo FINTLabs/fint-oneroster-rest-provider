@@ -3,6 +3,7 @@ package no.fint.oneroster.factory.clazz
 import no.fint.oneroster.model.AcademicSession
 import no.fint.oneroster.model.vocab.ClazzType
 import no.fint.oneroster.model.vocab.SessionType
+import no.fint.oneroster.model.vocab.StatusType
 import no.fint.oneroster.util.FintObjectFactory
 import spock.lang.Specification
 
@@ -19,6 +20,7 @@ class DefaultClazzFactorySpec extends Specification {
         then:
         clazz.sourcedId == 'basis-group-sourced-id'
         clazz.title == 'Basis group'
+        clazz.status == StatusType.ACTIVE
         clazz.classType == ClazzType.HOMEROOM
         clazz.course.sourcedId == 'level-sourced-id'
         clazz.school.sourcedId == 'school-sourced-id'

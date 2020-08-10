@@ -2,6 +2,7 @@ package no.fint.oneroster.util
 
 import no.fint.model.felles.kompleksedatatyper.Identifikator
 import no.fint.model.felles.kompleksedatatyper.Kontaktinformasjon
+import no.fint.model.felles.kompleksedatatyper.Periode
 import no.fint.model.felles.kompleksedatatyper.Personnavn
 import no.fint.model.resource.Link
 import no.fint.model.resource.administrasjon.personal.PersonalressursResource
@@ -16,6 +17,10 @@ import no.fint.model.resource.utdanning.timeplan.FagResource
 import no.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource
 import no.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResource
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource
+
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 class FintObjectFactory {
 
@@ -108,7 +113,8 @@ class FintObjectFactory {
     static BasisgruppeResource newBasisGroup() {
         BasisgruppeResource resource = new BasisgruppeResource()
         resource.setSystemId(new Identifikator(identifikatorverdi: 'basis-group-sourced-id'))
-        resource.setPeriode([])
+        resource.setPeriode([new Periode(start: Date.from(LocalDate.of(2020, 8, 1).atStartOfDay(ZoneId.of('Z')).toInstant()),
+                slutt: Date.from(LocalDate.of(2021, 7, 31).atStartOfDay(ZoneId.of('Z')).toInstant()))])
         resource.setNavn('Basis group')
         resource.setBeskrivelse('Basis group at school')
         resource.addSkole(Link.with('/school-sourced-id'))

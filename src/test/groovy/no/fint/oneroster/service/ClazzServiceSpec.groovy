@@ -9,6 +9,7 @@ import no.fint.oneroster.model.vocab.ClazzType
 import no.fint.oneroster.model.vocab.GUIDType
 import no.fint.oneroster.model.vocab.RoleType
 import no.fint.oneroster.model.vocab.SessionType
+import no.fint.oneroster.model.vocab.StatusType
 import no.fint.oneroster.repository.OneRosterService
 import spock.lang.Specification
 
@@ -83,6 +84,7 @@ class ClazzServiceSpec extends Specification {
     List<Enrollment> getEnrollments() {
         Enrollment student = new Enrollment(
                 'student-relation-sourced-id_basis-group-sourced-id',
+                StatusType.ACTIVE,
                 GUIDRef.of(GUIDType.USER, 'student-sourced-id'),
                 GUIDRef.of(GUIDType.CLASS, 'basis-group-sourced-id'),
                 GUIDRef.of(GUIDType.ORG, 'school-sourced-id'),
@@ -91,6 +93,7 @@ class ClazzServiceSpec extends Specification {
 
         Enrollment teacher = new Enrollment(
                 'teaching-relation-sourced-id_teaching-group-sourced-id',
+                StatusType.ACTIVE,
                 GUIDRef.of(GUIDType.USER, 'teacher-sourced-id'),
                 GUIDRef.of(GUIDType.CLASS, 'teaching-group-sourced-id'),
                 GUIDRef.of(GUIDType.ORG, 'school-sourced-id'),
@@ -103,6 +106,7 @@ class ClazzServiceSpec extends Specification {
     Clazz getBasisGroup() {
         return new Clazz(
                 'basis-group-sourced-id',
+                StatusType.ACTIVE,
                 'Basis group',
                 ClazzType.HOMEROOM,
                 GUIDRef.of(GUIDType.COURSE, 'level-sourced-id'),
@@ -114,6 +118,7 @@ class ClazzServiceSpec extends Specification {
     Clazz getTeachingGroup() {
         return new Clazz(
                 'teaching-group-sourced-id',
+                StatusType.ACTIVE,
                 'Teaching group',
                 ClazzType.SCHEDULED,
                 GUIDRef.of(GUIDType.COURSE, 'subject-sourced-id'),

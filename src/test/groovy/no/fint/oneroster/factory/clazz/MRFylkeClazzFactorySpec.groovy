@@ -1,6 +1,7 @@
 package no.fint.oneroster.factory.clazz
 
 import no.fint.model.felles.kompleksedatatyper.Identifikator
+import no.fint.model.felles.kompleksedatatyper.Periode
 import no.fint.model.resource.utdanning.elev.BasisgruppeResource
 import no.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource
 import no.fint.oneroster.model.AcademicSession
@@ -11,6 +12,7 @@ import spock.lang.Specification
 
 import java.time.LocalDate
 import java.time.Year
+import java.time.ZoneId
 
 class MRFylkeClazzFactorySpec extends Specification {
     MRFylkeClazzFactory mrFylkeClazzFactory = new MRFylkeClazzFactory()
@@ -71,6 +73,8 @@ class MRFylkeClazzFactorySpec extends Specification {
     static BasisgruppeResource getBasisGroup() {
         return new BasisgruppeResource(
                 systemId: new Identifikator(identifikatorverdi: '1_1SSB_SFVS@38026'),
+                periode: [new Periode(start: Date.from(LocalDate.of(2020, 8, 1).atStartOfDay(ZoneId.of('Z')).toInstant()),
+                        slutt: Date.from(LocalDate.of(2021, 7, 31).atStartOfDay(ZoneId.of('Z')).toInstant()))],
                 navn: '1SSB',
                 beskrivelse: 'Basisgruppe 1SSB ved Sandefjord videregående skole')
     }
@@ -78,6 +82,8 @@ class MRFylkeClazzFactorySpec extends Specification {
     static UndervisningsgruppeResource getTeachingGroup() {
         return new UndervisningsgruppeResource(
                 systemId: new Identifikator(identifikatorverdi: '2_3STG_191KRO1006_GRVS@38034'),
+                periode: [new Periode(start: Date.from(LocalDate.of(2020, 8, 1).atStartOfDay(ZoneId.of('Z')).toInstant()),
+                        slutt: Date.from(LocalDate.of(2021, 7, 31).atStartOfDay(ZoneId.of('Z')).toInstant()))],
                 navn: '3STG/191KRO1006',
                 beskrivelse: 'Undervisningsgruppa 3STG/191KRO1006 i Kroppsøving ved Greveskogen videregående skole')
     }
