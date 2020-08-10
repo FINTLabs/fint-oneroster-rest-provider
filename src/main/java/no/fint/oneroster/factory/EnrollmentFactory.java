@@ -12,6 +12,7 @@ import no.fint.oneroster.model.GUIDRef;
 import no.fint.oneroster.model.vocab.GUIDType;
 import no.fint.oneroster.model.vocab.RoleType;
 import no.fint.oneroster.model.vocab.StatusType;
+import no.fint.oneroster.util.FactoryUtil;
 
 import java.time.ZonedDateTime;
 import java.util.Date;
@@ -27,7 +28,7 @@ public final class EnrollmentFactory {
     public static <T extends Gruppe> Enrollment student(ElevforholdResource elevforholdResource, ElevResource elevResource, T gruppe, SkoleResource skoleResource) {
         return new Enrollment(
                 normalize(elevforholdResource.getSystemId().getIdentifikatorverdi() + "_" + gruppe.getSystemId().getIdentifikatorverdi()),
-                getStatusType(gruppe),
+                FactoryUtil.getStatusType(gruppe, ZonedDateTime.now()),
                 GUIDRef.of(GUIDType.USER, normalize(elevResource.getSystemId().getIdentifikatorverdi())),
                 GUIDRef.of(GUIDType.CLASS, normalize(gruppe.getSystemId().getIdentifikatorverdi())),
                 GUIDRef.of(GUIDType.ORG, normalize(skoleResource.getSystemId().getIdentifikatorverdi())),
@@ -38,30 +39,11 @@ public final class EnrollmentFactory {
     public static <T extends Gruppe> Enrollment teacher(UndervisningsforholdResource undervisningsforholdResource, SkoleressursResource skoleressursResource, T gruppe, SkoleResource skoleResource) {
         return new Enrollment(
                 normalize(undervisningsforholdResource.getSystemId().getIdentifikatorverdi() + "_" + gruppe.getSystemId().getIdentifikatorverdi()),
-                getStatusType(gruppe),
+                FactoryUtil.getStatusType(gruppe, ZonedDateTime.now()),
                 GUIDRef.of(GUIDType.USER, normalize(skoleressursResource.getSystemId().getIdentifikatorverdi())),
                 GUIDRef.of(GUIDType.CLASS, normalize(gruppe.getSystemId().getIdentifikatorverdi())),
                 GUIDRef.of(GUIDType.ORG, normalize(skoleResource.getSystemId().getIdentifikatorverdi())),
                 RoleType.TEACHER
         );
-    }
-
-    private static StatusType getStatusType(Gruppe group) {
-        List<Periode> period = group.getPeriode();
-
-        if (period.isEmpty()) return StatusType.ACTIVE;
-
-        boolean active = period.stream()
-                .findFirst()
-                .filter(begin -> {
-                    if (begin.getStart() == null) return false;
-                    return begin.getStart().compareTo(Date.from(ZonedDateTime.now().toInstant())) <= 0;
-                })
-                .filter(end -> {
-                    if (end.getSlutt() == null) return true;
-                    return end.getSlutt().compareTo(Date.from(ZonedDateTime.now().toInstant())) >= 0;
-                }).isPresent();
-
-        return active ? StatusType.ACTIVE : StatusType.TOBEDELETED;
     }
 }

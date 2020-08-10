@@ -15,6 +15,7 @@ import no.fint.oneroster.model.GUIDRef;
 import no.fint.oneroster.model.vocab.ClazzType;
 import no.fint.oneroster.model.vocab.GUIDType;
 import no.fint.oneroster.model.vocab.StatusType;
+import no.fint.oneroster.util.FactoryUtil;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public interface ClazzFactory {
     default Clazz basisGroup(BasisgruppeResource basisgruppeResource, ArstrinnResource arstrinnResource, SkoleResource skoleResource, List<AcademicSession> terms) {
         Clazz basisGroup = new Clazz(
                 normalize(basisgruppeResource.getSystemId().getIdentifikatorverdi()),
-                getStatusType(basisgruppeResource),
+                FactoryUtil.getStatusType(basisgruppeResource, ZonedDateTime.now()),
                 basisGroupNameConverter(basisgruppeResource),
                 ClazzType.HOMEROOM,
                 GUIDRef.of(GUIDType.COURSE, normalize(arstrinnResource.getSystemId().getIdentifikatorverdi())),
@@ -51,7 +52,7 @@ public interface ClazzFactory {
     default Clazz teachingGroup(UndervisningsgruppeResource undervisningsgruppeResource, FagResource fagResource, SkoleResource skoleResource, List<AcademicSession> terms) {
         Clazz teachingGroup = new Clazz(
                 normalize(undervisningsgruppeResource.getSystemId().getIdentifikatorverdi()),
-                getStatusType(undervisningsgruppeResource),
+                FactoryUtil.getStatusType(undervisningsgruppeResource, ZonedDateTime.now()),
                 teachingGroupNameConverter(undervisningsgruppeResource),
                 ClazzType.SCHEDULED,
                 GUIDRef.of(GUIDType.COURSE, normalize(fagResource.getSystemId().getIdentifikatorverdi())),
@@ -75,7 +76,7 @@ public interface ClazzFactory {
     default Clazz contactTeacherGroup(KontaktlarergruppeResource kontaktlarergruppeResource, ArstrinnResource arstrinnResource, SkoleResource skoleResource, List<AcademicSession> terms) {
         Clazz contactTeacherGroup = new Clazz(
                 normalize(kontaktlarergruppeResource.getSystemId().getIdentifikatorverdi()),
-                getStatusType(kontaktlarergruppeResource),
+                FactoryUtil.getStatusType(kontaktlarergruppeResource, ZonedDateTime.now()),
                 contactTeacherGroupNameConverter(kontaktlarergruppeResource),
                 ClazzType.HOMEROOM,
                 GUIDRef.of(GUIDType.COURSE, normalize(arstrinnResource.getSystemId().getIdentifikatorverdi())),
@@ -105,24 +106,5 @@ public interface ClazzFactory {
 
     default String contactTeacherGroupNameConverter(Gruppe contactTeacherGroup) {
         return contactTeacherGroup.getNavn();
-    }
-
-    default StatusType getStatusType(Gruppe group) {
-        List<Periode> period = group.getPeriode();
-
-        if (period.isEmpty()) return StatusType.ACTIVE;
-
-        boolean active = period.stream()
-                .findFirst()
-                .filter(begin -> {
-                    if (begin.getStart() == null) return false;
-                    return begin.getStart().compareTo(Date.from(ZonedDateTime.now().toInstant())) <= 0;
-                })
-                .filter(end -> {
-                    if (end.getSlutt() == null) return true;
-                    return end.getSlutt().compareTo(Date.from(ZonedDateTime.now().toInstant())) >= 0;
-                }).isPresent();
-
-        return active ? StatusType.ACTIVE : StatusType.TOBEDELETED;
     }
 }

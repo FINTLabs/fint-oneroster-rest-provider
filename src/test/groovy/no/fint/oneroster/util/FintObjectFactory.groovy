@@ -114,7 +114,7 @@ class FintObjectFactory {
         BasisgruppeResource resource = new BasisgruppeResource()
         resource.setSystemId(new Identifikator(identifikatorverdi: 'basis-group-sourced-id'))
         resource.setPeriode([new Periode(start: Date.from(LocalDate.of(2020, 8, 1).atStartOfDay(ZoneId.of('Z')).toInstant()),
-                slutt: Date.from(LocalDate.of(2021, 7, 31).atStartOfDay(ZoneId.of('Z')).toInstant()))])
+                slutt: Date.from(LocalDate.of(2030, 7, 31).atStartOfDay(ZoneId.of('Z')).toInstant()))])
         resource.setNavn('Basis group')
         resource.setBeskrivelse('Basis group at school')
         resource.addSkole(Link.with('/school-sourced-id'))
@@ -126,7 +126,8 @@ class FintObjectFactory {
     static UndervisningsgruppeResource newTeachingGroup() {
         UndervisningsgruppeResource resource = new UndervisningsgruppeResource()
         resource.setSystemId(new Identifikator(identifikatorverdi: 'teaching-group-sourced-id'))
-        resource.setPeriode([])
+        resource.setPeriode([new Periode(start: Date.from(LocalDate.of(2020, 8, 1).atStartOfDay(ZoneId.of('Z')).toInstant()),
+                slutt: Date.from(LocalDate.of(2030, 7, 31).atStartOfDay(ZoneId.of('Z')).toInstant()))])
         resource.setNavn('Teaching group')
         resource.setBeskrivelse('Teaching group at school')
         resource.addSkole(Link.with('/school-sourced-id'))
@@ -138,7 +139,8 @@ class FintObjectFactory {
     static KontaktlarergruppeResource newContactTeacherGroup() {
         KontaktlarergruppeResource resource = new KontaktlarergruppeResource()
         resource.setSystemId(new Identifikator(identifikatorverdi: 'contact-teacher-group-sourced-id'))
-        resource.setPeriode([])
+        resource.setPeriode([new Periode(start: Date.from(LocalDate.of(2020, 8, 1).atStartOfDay(ZoneId.of('Z')).toInstant()),
+                slutt: Date.from(LocalDate.of(2030, 7, 31).atStartOfDay(ZoneId.of('Z')).toInstant()))])
         resource.setNavn('Contact teacher group')
         resource.setBeskrivelse('Contact teacher group at school')
         resource.addSkole(Link.with('/school-sourced-id'))

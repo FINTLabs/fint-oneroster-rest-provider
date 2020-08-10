@@ -20,7 +20,6 @@ class DefaultClazzFactorySpec extends Specification {
         then:
         clazz.sourcedId == 'basis-group-sourced-id'
         clazz.title == 'Basis group'
-        clazz.status == StatusType.ACTIVE
         clazz.classType == ClazzType.HOMEROOM
         clazz.course.sourcedId == 'level-sourced-id'
         clazz.school.sourcedId == 'school-sourced-id'
