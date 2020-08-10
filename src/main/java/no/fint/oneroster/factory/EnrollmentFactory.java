@@ -1,6 +1,5 @@
 package no.fint.oneroster.factory;
 
-import no.fint.model.felles.kompleksedatatyper.Periode;
 import no.fint.model.resource.utdanning.elev.ElevResource;
 import no.fint.model.resource.utdanning.elev.ElevforholdResource;
 import no.fint.model.resource.utdanning.elev.SkoleressursResource;
@@ -11,12 +10,9 @@ import no.fint.oneroster.model.Enrollment;
 import no.fint.oneroster.model.GUIDRef;
 import no.fint.oneroster.model.vocab.GUIDType;
 import no.fint.oneroster.model.vocab.RoleType;
-import no.fint.oneroster.model.vocab.StatusType;
 import no.fint.oneroster.util.FactoryUtil;
 
 import java.time.ZonedDateTime;
-import java.util.Date;
-import java.util.List;
 
 import static no.fint.oneroster.util.StringNormalizer.normalize;
 

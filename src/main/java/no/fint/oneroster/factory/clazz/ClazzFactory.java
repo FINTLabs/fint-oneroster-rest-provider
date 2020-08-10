@@ -1,6 +1,5 @@
 package no.fint.oneroster.factory.clazz;
 
-import no.fint.model.felles.kompleksedatatyper.Periode;
 import no.fint.model.resource.Link;
 import no.fint.model.resource.utdanning.elev.BasisgruppeResource;
 import no.fint.model.resource.utdanning.elev.KontaktlarergruppeResource;
@@ -14,13 +13,11 @@ import no.fint.oneroster.model.Clazz;
 import no.fint.oneroster.model.GUIDRef;
 import no.fint.oneroster.model.vocab.ClazzType;
 import no.fint.oneroster.model.vocab.GUIDType;
-import no.fint.oneroster.model.vocab.StatusType;
 import no.fint.oneroster.util.FactoryUtil;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
