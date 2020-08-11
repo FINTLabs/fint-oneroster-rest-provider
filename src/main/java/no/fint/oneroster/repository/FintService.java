@@ -168,8 +168,8 @@ public class FintService {
                 fintRepository.getAdministrationResources(PersonResources.class, FintEndpoint.PERSON.getKey()))
                 .toStream()
                 .forEach(resource -> {
-                    getSelfLinks(resource).forEach(link -> hashCodes.put(link, resource.hashCode()));
-                    resources.put(resource.hashCode(), resource);
+                    getSelfLinks(resource).forEach(link -> hashCodes.put(link, resource.getSelfLinks().hashCode()));
+                    resources.put(resource.getSelfLinks().hashCode(), resource);
                 });
     }
 
