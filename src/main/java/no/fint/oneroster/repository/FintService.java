@@ -30,8 +30,8 @@ import java.util.stream.Stream;
 public class FintService {
     private final FintRepository fintRepository;
 
-    private final Map<String, Integer> hashCodes = new HashMap<>();
-    private final Map<Integer, FintLinks> resources = new HashMap<>();
+    private final Map<String, String> selfLinks = new HashMap<>();
+    private final Map<String, FintLinks> resources = new HashMap<>();
 
     public FintService(FintRepository fintRepository) {
         this.fintRepository = fintRepository;
@@ -42,8 +42,8 @@ public class FintService {
     }
 
     public SkoleResource getSchoolById(String id) {
-        Integer hashCode = hashCodes.get(id);
-        return (SkoleResource) resources.get(hashCode);
+        String selfLinks = this.selfLinks.get(id);
+        return (SkoleResource) resources.get(selfLinks);
     }
 
     public List<ElevResource> getStudents() {
@@ -51,8 +51,8 @@ public class FintService {
     }
 
     public ElevResource getStudentById(String id) {
-        Integer hashCode = hashCodes.get(id);
-        return (ElevResource) resources.get(hashCode);
+        String selfLinks = this.selfLinks.get(id);
+        return (ElevResource) resources.get(selfLinks);
     }
 
     public List<SkoleressursResource> getTeachers() {
@@ -60,8 +60,8 @@ public class FintService {
     }
 
     public SkoleressursResource getTeacherById(String id) {
-        Integer hashCode = hashCodes.get(id);
-        return (SkoleressursResource) resources.get(hashCode);
+        String selfLinks = this.selfLinks.get(id);
+        return (SkoleressursResource) resources.get(selfLinks);
     }
 
     public List<ElevforholdResource> getStudentRelations() {
@@ -69,8 +69,8 @@ public class FintService {
     }
 
     public ElevforholdResource getStudentRelationById(String id) {
-        Integer hashCode = hashCodes.get(id);
-        return (ElevforholdResource) resources.get(hashCode);
+        String selfLinks = this.selfLinks.get(id);
+        return (ElevforholdResource) resources.get(selfLinks);
     }
 
     public List<UndervisningsforholdResource> getTeachingRelations() {
@@ -78,8 +78,8 @@ public class FintService {
     }
 
     public UndervisningsforholdResource getTeachingRelationById(String id) {
-        Integer hashCode = hashCodes.get(id);
-        return (UndervisningsforholdResource) resources.get(hashCode);
+        String selfLinks = this.selfLinks.get(id);
+        return (UndervisningsforholdResource) resources.get(selfLinks);
     }
 
     public List<BasisgruppeResource> getBasisGroups() {
@@ -87,8 +87,8 @@ public class FintService {
     }
 
     public BasisgruppeResource getBasisGroupById(String id) {
-        Integer hashCode = hashCodes.get(id);
-        return (BasisgruppeResource) resources.get(hashCode);
+        String selfLinks = this.selfLinks.get(id);
+        return (BasisgruppeResource) resources.get(selfLinks);
     }
 
     public List<KontaktlarergruppeResource> getContactTeacherGroups() {
@@ -96,8 +96,8 @@ public class FintService {
     }
 
     public KontaktlarergruppeResource getContactTeacherGroupById(String id) {
-        Integer hashCode = hashCodes.get(id);
-        return (KontaktlarergruppeResource) resources.get(hashCode);
+        String selfLinks = this.selfLinks.get(id);
+        return (KontaktlarergruppeResource) resources.get(selfLinks);
     }
 
     public List<UndervisningsgruppeResource> getTeachingGroups() {
@@ -105,8 +105,8 @@ public class FintService {
     }
 
     public UndervisningsgruppeResource getTeachingGroupById(String id) {
-        Integer hashCode = hashCodes.get(id);
-        return (UndervisningsgruppeResource) resources.get(hashCode);
+        String selfLinks = this.selfLinks.get(id);
+        return (UndervisningsgruppeResource) resources.get(selfLinks);
     }
 
     public List<ArstrinnResource> getLevels() {
@@ -114,8 +114,8 @@ public class FintService {
     }
 
     public ArstrinnResource getLevelById(String id) {
-        Integer hashCode = hashCodes.get(id);
-        return (ArstrinnResource) resources.get(hashCode);
+        String selfLinks = this.selfLinks.get(id);
+        return (ArstrinnResource) resources.get(selfLinks);
     }
 
     public List<FagResource> getSubjects() {
@@ -123,8 +123,8 @@ public class FintService {
     }
 
     public FagResource getSubjectById(String id) {
-        Integer hashCode = hashCodes.get(id);
-        return (FagResource) resources.get(hashCode);
+        String selfLinks = this.selfLinks.get(id);
+        return (FagResource) resources.get(selfLinks);
     }
 
     public List<PersonResource> getPersons() {
@@ -132,13 +132,13 @@ public class FintService {
     }
 
     public PersonResource getPersonById(String id) {
-        Integer hashCode = hashCodes.get(id);
-        return (PersonResource) resources.get(hashCode);
+        String selfLinks = this.selfLinks.get(id);
+        return (PersonResource) resources.get(selfLinks);
     }
 
     public PersonalressursResource getPersonnelById(String id) {
-        Integer hashCode = hashCodes.get(id);
-        return (PersonalressursResource) resources.get(hashCode);
+        String selfLinks = this.selfLinks.get(id);
+        return (PersonalressursResource) resources.get(selfLinks);
     }
 
     public <T> List<T> getResourcesByType(Class<T> clazz) {
@@ -150,7 +150,7 @@ public class FintService {
     }
 
     public void updateResources() {
-        hashCodes.clear();
+        selfLinks.clear();
         resources.clear();
 
         Flux.merge(fintRepository.getEducationResources(SkoleResources.class, FintEndpoint.SCHOOL.getKey()),
@@ -168,8 +168,8 @@ public class FintService {
                 fintRepository.getAdministrationResources(PersonResources.class, FintEndpoint.PERSON.getKey()))
                 .toStream()
                 .forEach(resource -> {
-                    getSelfLinks(resource).forEach(link -> hashCodes.put(link, resource.getSelfLinks().hashCode()));
-                    resources.put(resource.getSelfLinks().hashCode(), resource);
+                    getSelfLinks(resource).forEach(link -> selfLinks.put(link, resource.getSelfLinks().toString()));
+                    resources.put(resource.getSelfLinks().toString(), resource);
                 });
     }
 
