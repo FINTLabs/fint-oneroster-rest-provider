@@ -31,7 +31,7 @@ public class FintService {
     private final FintRepository fintRepository;
 
     private final Map<String, Integer> hashCodes = new HashMap<>();
-    private final Map<Integer, Object> resources = new HashMap<>();
+    private final Map<Integer, FintLinks> resources = new HashMap<>();
 
     public FintService(FintRepository fintRepository) {
         this.fintRepository = fintRepository;
