@@ -18,11 +18,7 @@ import java.time.Year
 
 class ClazzServiceSpec extends Specification {
 
-    OneRosterService oneRosterService = Mock {
-        getAllClazzes() >> [getBasisGroup(), getTeachingGroup()]
-        getAllEnrollments() >> getEnrollments()
-        getAllUsers() >> [getStudent(), getTeacher()]
-    }
+    OneRosterService oneRosterService = Mock()
 
     ClazzService clazzService = new ClazzService(oneRosterService)
 
@@ -31,6 +27,7 @@ class ClazzServiceSpec extends Specification {
         def clazzes = clazzService.getAllClazzes()
 
         then:
+        oneRosterService.getClazzes() >> [getBasisGroup(), getTeachingGroup()]
         clazzes.size() == 2
         clazzes.first().sourcedId == 'basis-group-sourced-id'
         clazzes.first().title == 'Basis group'
@@ -54,6 +51,7 @@ class ClazzServiceSpec extends Specification {
         def clazz = clazzService.getClazz('basis-group-sourced-id')
 
         then:
+        oneRosterService.getClazzById(_ as String) >> getBasisGroup()
         clazz.sourcedId == 'basis-group-sourced-id'
         clazz.title == 'Basis group'
         clazz.classType == ClazzType.HOMEROOM
@@ -68,7 +66,9 @@ class ClazzServiceSpec extends Specification {
         def students = clazzService.getStudentsForClazz('basis-group-sourced-id')
 
         then:
-        clazzService.getClazz('basis-group-sourced-id') >> getBasisGroup()
+        oneRosterService.getClazzById(_ as String) >> getBasisGroup()
+        oneRosterService.getEnrollments() >> [getStudentEnrollment(), getTeacherEnrollment()]
+        oneRosterService.getUsers() >> [getStudent(), getTeacher()]
         students.size() == 1
     }
 
@@ -77,12 +77,14 @@ class ClazzServiceSpec extends Specification {
         def teachers = clazzService.getTeachersForClazz('teaching-group-sourced-id')
 
         then:
-        clazzService.getClazz('teaching-group-sourced-id') >> getTeachingGroup()
+        oneRosterService.getClazzById(_ as String) >> getTeachingGroup()
+        oneRosterService.getEnrollments() >> [getStudentEnrollment(), getTeacherEnrollment()]
+        oneRosterService.getUsers() >> [getStudent(), getTeacher()]
         teachers.size() == 1
     }
 
-    List<Enrollment> getEnrollments() {
-        Enrollment student = new Enrollment(
+    Enrollment getStudentEnrollment() {
+        return new Enrollment(
                 'student-relation-sourced-id_basis-group-sourced-id',
                 StatusType.ACTIVE,
                 GUIDRef.of(GUIDType.USER, 'student-sourced-id'),
@@ -90,8 +92,10 @@ class ClazzServiceSpec extends Specification {
                 GUIDRef.of(GUIDType.ORG, 'school-sourced-id'),
                 RoleType.STUDENT
         )
+    }
 
-        Enrollment teacher = new Enrollment(
+    Enrollment getTeacherEnrollment() {
+        return new Enrollment(
                 'teaching-relation-sourced-id_teaching-group-sourced-id',
                 StatusType.ACTIVE,
                 GUIDRef.of(GUIDType.USER, 'teacher-sourced-id'),
@@ -99,8 +103,6 @@ class ClazzServiceSpec extends Specification {
                 GUIDRef.of(GUIDType.ORG, 'school-sourced-id'),
                 RoleType.TEACHER
         )
-
-        return [student, teacher]
     }
 
     Clazz getBasisGroup() {

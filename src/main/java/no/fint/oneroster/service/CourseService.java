@@ -6,6 +6,7 @@ import no.fint.oneroster.repository.OneRosterService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CourseService {
@@ -16,14 +17,11 @@ public class CourseService {
     }
 
     public List<Course> getAllCourses() {
-        return oneRosterService.getAllCourses();
+        return oneRosterService.getCourses();
     }
 
     public Course getCourse(String sourcedId) {
-        return getAllCourses()
-                .stream()
-                .filter(course -> course.getSourcedId().equals(sourcedId))
-                .findAny()
+        return Optional.ofNullable(oneRosterService.getCourseById(sourcedId))
                 .orElseThrow(NotFoundException::new);
     }
 }

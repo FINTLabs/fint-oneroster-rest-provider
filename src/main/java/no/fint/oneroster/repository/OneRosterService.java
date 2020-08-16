@@ -18,7 +18,6 @@ import no.fint.oneroster.model.*;
 import no.fint.oneroster.model.vocab.GUIDType;
 import no.fint.oneroster.properties.OneRosterProperties;
 import no.fint.oneroster.service.AcademicSessionService;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -34,6 +33,8 @@ public class OneRosterService {
     private final UserFactory userFactory;
     private final FintService fintService;
 
+    private final Map<String, ? super Base> resources = Collections.synchronizedMap(new HashMap<>());
+
     public OneRosterService(OneRosterProperties oneRosterProperties, AcademicSessionService academicSessionService, ClazzFactory clazzFactory, UserFactory userFactory, FintService fintService) {
         this.oneRosterProperties = oneRosterProperties;
         this.academicSessionService = academicSessionService;
@@ -42,11 +43,18 @@ public class OneRosterService {
         this.fintService = fintService;
     }
 
-    @Cacheable(value = "orgs")
-    public List<Org> getAllOrgs() {
+    public List<Org> getOrgs() {
+        return getResourcesByType(Org.class);
+    }
+
+    public Org getOrgById(String sourcedId) {
+        return (Org) resources.get(sourcedId);
+    }
+
+    private void updateOrgs() {
         Org schoolOwner = OrgFactory.schoolOwner(oneRosterProperties.getOrg());
 
-        List<Org> orgs = fintService.getSchools()
+        fintService.getSchools()
                 .stream()
                 .map(OrgFactory::school)
                 .peek(school -> {
@@ -56,20 +64,21 @@ public class OneRosterService {
                     school.setParent(GUIDRef.of(GUIDType.ORG, schoolOwner.getSourcedId()));
                     schoolOwner.getChildren().add(GUIDRef.of(GUIDType.ORG, school.getSourcedId()));
                 })
-                .collect(Collectors.toList());
+                .forEach(school -> resources.put(school.getSourcedId(), school));
 
-        orgs.add(schoolOwner);
-
-        orgs.sort(Comparator.comparing(Org::getSourcedId));
-
-        return orgs;
+        resources.put(schoolOwner.getSourcedId(), schoolOwner);
     }
 
-    @Cacheable(value = "clazzes")
-    public List<Clazz> getAllClazzes() {
-        List<AcademicSession> terms = academicSessionService.getAllTerms();
+    public List<Clazz> getClazzes() {
+        return getResourcesByType(Clazz.class);
+    }
 
-        List<Clazz> clazzes = new ArrayList<>();
+    public Clazz getClazzById(String sourcedId) {
+        return (Clazz) resources.get(sourcedId);
+    }
+
+    private void updateClazzes() {
+        List<AcademicSession> terms = academicSessionService.getAllTerms();
 
         fintService.getBasisGroups().forEach(basisGroup -> {
             Optional<ArstrinnResource> level = basisGroup.getTrinn()
@@ -89,7 +98,8 @@ public class OneRosterService {
                     .findAny();
 
             if (level.isPresent() && school.isPresent() && !terms.isEmpty()) {
-                clazzes.add(clazzFactory.basisGroup(basisGroup, level.get(), school.get(), terms));
+                Clazz clazz = clazzFactory.basisGroup(basisGroup, level.get(), school.get(), terms);
+                resources.put(clazz.getSourcedId(), clazz);
             }
         });
 
@@ -111,7 +121,8 @@ public class OneRosterService {
                     .findAny();
 
             if (subject.isPresent() && school.isPresent() && !terms.isEmpty()) {
-                clazzes.add(clazzFactory.teachingGroup(teachingGroup, subject.get(), school.get(), terms));
+                Clazz clazz = clazzFactory.teachingGroup(teachingGroup, subject.get(), school.get(), terms);
+                resources.put(clazz.getSourcedId(), clazz);
             }
         });
 
@@ -141,21 +152,23 @@ public class OneRosterService {
                         .findAny();
 
                 if (level.isPresent() && school.isPresent() && !terms.isEmpty()) {
-                    clazzes.add(clazzFactory.contactTeacherGroup(contactTeacherGroup, level.get(), school.get(), terms));
+                    Clazz clazz = clazzFactory.contactTeacherGroup(contactTeacherGroup, level.get(), school.get(), terms);
+                    resources.put(clazz.getSourcedId(), clazz);
                 }
             });
         }
-
-        clazzes.sort(Comparator.comparing(Clazz::getSourcedId));
-
-        return clazzes;
     }
 
-    @Cacheable(value = "courses")
-    public List<Course> getAllCourses() {
-        OneRosterProperties.Org org = oneRosterProperties.getOrg();
+    public List<Course> getCourses() {
+        return getResourcesByType(Course.class);
+    }
 
-        List<Course> courses = new ArrayList<>();
+    public Course getCourseById(String sourcedId) {
+        return (Course) resources.get(sourcedId);
+    }
+
+    private void updateCourses() {
+        OneRosterProperties.Org org = oneRosterProperties.getOrg();
 
         fintService.getTeachingGroups()
                 .stream()
@@ -166,7 +179,10 @@ public class OneRosterService {
                 .map(fintService::getSubjectById)
                 .filter(Objects::nonNull)
                 .distinct()
-                .forEach(subject -> courses.add(CourseFactory.subject(subject, org)));
+                .forEach(subject -> {
+                    Course course = CourseFactory.subject(subject, org);
+                    resources.put(course.getSourcedId(), course);
+                });
 
         fintService.getBasisGroups()
                 .stream()
@@ -177,17 +193,21 @@ public class OneRosterService {
                 .map(fintService::getLevelById)
                 .filter(Objects::nonNull)
                 .distinct()
-                .forEach(level -> courses.add(CourseFactory.level(level, org)));
-
-        courses.sort(Comparator.comparing(Course::getSourcedId));
-
-        return courses;
+                .forEach(level -> {
+                    Course course = CourseFactory.level(level, org);
+                    resources.put(course.getSourcedId(), course);
+                });
     }
 
-    @Cacheable(value = "enrollments")
-    public List<Enrollment> getAllEnrollments() {
-        List<Enrollment> enrollments = new ArrayList<>();
+    public List<Enrollment> getEnrollments() {
+        return getResourcesByType(Enrollment.class);
+    }
 
+    public Enrollment getEnrollmentById(String sourcedId) {
+        return (Enrollment) resources.get(sourcedId);
+    }
+
+    private void updateEnrollments() {
         fintService.getStudentRelations().forEach(elevforholdResource -> {
             Optional<ElevResource> student = elevforholdResource.getElev()
                     .stream()
@@ -213,7 +233,8 @@ public class OneRosterService {
                     .filter(Objects::nonNull)
                     .forEach(basisGroup -> {
                         if (student.isPresent() && school.isPresent()) {
-                            enrollments.add(EnrollmentFactory.student(elevforholdResource, student.get(), basisGroup, school.get()));
+                            Enrollment enrollment = EnrollmentFactory.student(elevforholdResource, student.get(), basisGroup, school.get());
+                            resources.put(enrollment.getSourcedId(), enrollment);
                         }
                     });
 
@@ -225,7 +246,8 @@ public class OneRosterService {
                     .filter(Objects::nonNull)
                     .forEach(teachingGroup -> {
                         if (student.isPresent() && school.isPresent()) {
-                            enrollments.add(EnrollmentFactory.student(elevforholdResource, student.get(), teachingGroup, school.get()));
+                            Enrollment enrollment = EnrollmentFactory.student(elevforholdResource, student.get(), teachingGroup, school.get());
+                            resources.put(enrollment.getSourcedId(), enrollment);
                         }
                     });
 
@@ -238,7 +260,8 @@ public class OneRosterService {
                         .filter(Objects::nonNull)
                         .forEach(contactTeacherGroup -> {
                             if (student.isPresent() && school.isPresent()) {
-                                enrollments.add(EnrollmentFactory.student(elevforholdResource, student.get(), contactTeacherGroup, school.get()));
+                                Enrollment enrollment = EnrollmentFactory.student(elevforholdResource, student.get(), contactTeacherGroup, school.get());
+                                resources.put(enrollment.getSourcedId(), enrollment);
                             }
                         });
             }
@@ -269,7 +292,8 @@ public class OneRosterService {
                     .filter(Objects::nonNull)
                     .forEach(basisGroup -> {
                         if (teacher.isPresent() && school.isPresent()) {
-                            enrollments.add(EnrollmentFactory.teacher(undervisningsforholdResource, teacher.get(), basisGroup, school.get()));
+                            Enrollment enrollment = EnrollmentFactory.teacher(undervisningsforholdResource, teacher.get(), basisGroup, school.get());
+                            resources.put(enrollment.getSourcedId(), enrollment);
                         }
                     });
 
@@ -281,7 +305,8 @@ public class OneRosterService {
                     .filter(Objects::nonNull)
                     .forEach(teachingGroup -> {
                         if (teacher.isPresent() && school.isPresent()) {
-                            enrollments.add(EnrollmentFactory.teacher(undervisningsforholdResource, teacher.get(), teachingGroup, school.get()));
+                            Enrollment enrollment = EnrollmentFactory.teacher(undervisningsforholdResource, teacher.get(), teachingGroup, school.get());
+                            resources.put(enrollment.getSourcedId(), enrollment);
                         }
                     });
 
@@ -294,21 +319,23 @@ public class OneRosterService {
                         .filter(Objects::nonNull)
                         .forEach(contactTeacherGroup -> {
                             if (teacher.isPresent() && school.isPresent()) {
-                                enrollments.add(EnrollmentFactory.teacher(undervisningsforholdResource, teacher.get(), contactTeacherGroup, school.get()));
+                                Enrollment enrollment = EnrollmentFactory.teacher(undervisningsforholdResource, teacher.get(), contactTeacherGroup, school.get());
+                                resources.put(enrollment.getSourcedId(), enrollment);
                             }
                         });
             }
         });
-
-        enrollments.sort(Comparator.comparing(Enrollment::getSourcedId));
-
-        return enrollments;
     }
 
-    @Cacheable(value = "users")
-    public List<User> getAllUsers() {
-        List<User> users = new ArrayList<>();
+    public List<User> getUsers() {
+        return getResourcesByType(User.class);
+    }
 
+    public User getUserById(String sourcedId) {
+        return (User) resources.get(sourcedId);
+    }
+
+    private void updateUsers() {
         fintService.getStudents().forEach(student -> {
             Optional<PersonResource> person = student.getPerson()
                     .stream()
@@ -333,7 +360,8 @@ public class OneRosterService {
                     .collect(Collectors.toList());
 
             if (person.isPresent() && !schoolResources.isEmpty()) {
-                users.add(userFactory.student(student, person.get(), schoolResources));
+                User user = userFactory.student(student, person.get(), schoolResources);
+                resources.put(user.getSourcedId(), user);
             }
         });
 
@@ -372,17 +400,35 @@ public class OneRosterService {
                     .collect(Collectors.toList());
 
             if (personnelResource.isPresent() && personResource.isPresent() && !schoolResources.isEmpty()) {
-                users.add(userFactory.teacher(teacher, personnelResource.get(), personResource.get(), schoolResources));
+                User user = userFactory.teacher(teacher, personnelResource.get(), personResource.get(), schoolResources);
+                resources.put(user.getSourcedId(), user);
             }
         });
-
-        users.sort(Comparator.comparing(User::getSourcedId));
-
-        return users;
     }
 
     private final Predicate<UndervisningsforholdResource> isTeacher = teachingRelation ->
             !teachingRelation.getBasisgruppe().isEmpty() ||
                     !teachingRelation.getUndervisningsgruppe().isEmpty() ||
                     !teachingRelation.getKontaktlarergruppe().isEmpty();
+
+    public <T extends Base> List<T> getResourcesByType(Class<T> clazz) {
+        return resources.values()
+                .stream()
+                .filter(clazz::isInstance)
+                .map(clazz::cast)
+                .sorted(Comparator.comparing(T::getSourcedId))
+                .collect(Collectors.toList());
+    }
+
+    public void updateResources() {
+        synchronized (resources) {
+            resources.clear();
+            updateOrgs();
+            updateClazzes();
+            updateCourses();
+            updateEnrollments();
+            updateUsers();
+        }
+        log.info("Update complete");
+    }
 }

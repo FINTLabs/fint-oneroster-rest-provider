@@ -66,9 +66,13 @@ class OneRosterServiceSpec extends Specification {
 
     OneRosterService oneRosterService = new OneRosterService(oneRosterProperties, academicSessionService, clazzFactory, userFactory, fintService)
 
+    def setup()  {
+        oneRosterService.updateResources()
+    }
+
     def "getAllOrgs returns a list of orgs"() {
         when:
-        def orgs = oneRosterService.getAllOrgs()
+        def orgs = oneRosterService.getOrgs()
 
         then:
         orgs.size() == 2
@@ -81,7 +85,7 @@ class OneRosterServiceSpec extends Specification {
 
     def "getAllClazzes returns a list of clazzes"() {
         when:
-        def clazzes = oneRosterService.getAllClazzes()
+        def clazzes = oneRosterService.getClazzes()
 
         then:
         clazzes.size() == 3
@@ -96,7 +100,7 @@ class OneRosterServiceSpec extends Specification {
 
     def "getAllCourses returns a list of courses"() {
         when:
-        def courses = oneRosterService.getAllCourses()
+        def courses = oneRosterService.getCourses()
 
         then:
         courses.size() == 2
@@ -107,7 +111,7 @@ class OneRosterServiceSpec extends Specification {
 
     def "getAllEnrollments returns a list of enrollments"() {
         when:
-        def enrollments = oneRosterService.getAllEnrollments()
+        def enrollments = oneRosterService.getEnrollments()
 
         then:
         enrollments.size() == 4
@@ -120,7 +124,7 @@ class OneRosterServiceSpec extends Specification {
 
     def "getAllUsers returns a list of users"() {
         when:
-        def users = oneRosterService.getAllUsers()
+        def users = oneRosterService.getUsers()
 
         then:
         users.size() == 2

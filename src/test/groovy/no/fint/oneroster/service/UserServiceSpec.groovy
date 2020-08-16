@@ -13,11 +13,7 @@ import spock.lang.Specification
 
 class UserServiceSpec extends Specification {
 
-    OneRosterService oneRosterService = Mock {
-        getAllUsers() >> [getStudent(), getTeacher()]
-        getAllEnrollments() >> [getStudentEnrollment(), getTeacherEnrollment()]
-        getAllClazzes() >> [getBasisGroup(), getTeachingGroup()]
-    }
+    OneRosterService oneRosterService = Mock()
 
     UserService userService = new UserService(oneRosterService)
 
@@ -26,6 +22,7 @@ class UserServiceSpec extends Specification {
         def users = userService.getAllUsers()
 
         then:
+        oneRosterService.getUsers() >> [getStudent(), getTeacher()]
         users.size() == 2
         users.first().sourcedId == 'student-sourced-id'
         users.first().username == 'username'
@@ -49,6 +46,7 @@ class UserServiceSpec extends Specification {
         def user = userService.getUser('student-sourced-id')
 
         then:
+        oneRosterService.getUserById(_ as String) >> getStudent()
         user.sourcedId == 'student-sourced-id'
         user.username == 'username'
         user.enabledUser
@@ -63,6 +61,7 @@ class UserServiceSpec extends Specification {
         def students = userService.getAllStudents()
 
         then:
+        oneRosterService.getUsers() >> [getStudent(), getTeacher()]
         students.size() == 1
     }
 
@@ -71,6 +70,7 @@ class UserServiceSpec extends Specification {
         def student = userService.getStudent('student-sourced-id')
 
         then:
+        oneRosterService.getUserById(_ as String) >> getStudent()
         student.sourcedId == 'student-sourced-id'
         student.username == 'username'
         student.enabledUser
@@ -85,6 +85,7 @@ class UserServiceSpec extends Specification {
         def teachers = userService.getAllTeachers()
 
         then:
+        oneRosterService.getUsers() >> [getStudent(), getTeacher()]
         teachers.size() == 1
     }
 
@@ -93,6 +94,7 @@ class UserServiceSpec extends Specification {
         def teacher = userService.getTeacher('teacher-sourced-id')
 
         then:
+        oneRosterService.getUserById(_ as String) >> getTeacher()
         teacher.sourcedId == 'teacher-sourced-id'
         teacher.username == 'username'
         teacher.enabledUser
@@ -107,6 +109,9 @@ class UserServiceSpec extends Specification {
         def clazzes = userService.getClazzesForStudent('student-sourced-id')
 
         then:
+        oneRosterService.getUserById(_ as String) >> getStudent()
+        oneRosterService.getEnrollments() >> [getStudentEnrollment(), getTeacherEnrollment()]
+        oneRosterService.getClazzes() >> [getBasisGroup(), getTeachingGroup()]
         clazzes.size() == 1
     }
 
@@ -115,6 +120,9 @@ class UserServiceSpec extends Specification {
         def clazzes = userService.getClazzesForTeacher('teacher-sourced-id')
 
         then:
+        oneRosterService.getUserById(_ as String) >> getTeacher()
+        oneRosterService.getEnrollments() >> [getStudentEnrollment(), getTeacherEnrollment()]
+        oneRosterService.getClazzes() >> [getBasisGroup(), getTeachingGroup()]
         clazzes.size() == 1
     }
 

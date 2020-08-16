@@ -10,9 +10,7 @@ import spock.lang.Specification
 
 class EnrollmentServiceSpec extends Specification {
 
-    OneRosterService oneRosterService = Mock {
-        getAllEnrollments() >> getEnrollments()
-    }
+    OneRosterService oneRosterService = Mock()
 
     EnrollmentService enrollmentService = new EnrollmentService(oneRosterService)
 
@@ -21,6 +19,7 @@ class EnrollmentServiceSpec extends Specification {
         def enrollments = enrollmentService.getAllEnrollments()
 
         then:
+        oneRosterService.getEnrollments() >> [getStudentEnrollment(), getTeacherEnrollment()]
         enrollments.size() == 2
         enrollments.first().sourcedId == 'student-relation-sourced-id_basis-group-sourced-id'
         enrollments.first().role == RoleType.STUDENT
@@ -40,6 +39,7 @@ class EnrollmentServiceSpec extends Specification {
         def enrollment = enrollmentService.getEnrollment('student-relation-sourced-id_basis-group-sourced-id')
 
         then:
+        oneRosterService.getEnrollmentById(_ as String) >> getStudentEnrollment()
         enrollment.sourcedId == 'student-relation-sourced-id_basis-group-sourced-id'
         enrollment.role == RoleType.STUDENT
         enrollment.user.sourcedId == 'student-sourced-id'
@@ -47,8 +47,8 @@ class EnrollmentServiceSpec extends Specification {
         enrollment.school.sourcedId == 'school-sourced-id'
     }
 
-    List<Enrollment> getEnrollments() {
-        Enrollment student = new Enrollment(
+    Enrollment getStudentEnrollment() {
+        return new Enrollment(
                 'student-relation-sourced-id_basis-group-sourced-id',
                 StatusType.ACTIVE,
                 GUIDRef.of(GUIDType.USER, 'student-sourced-id'),
@@ -56,8 +56,10 @@ class EnrollmentServiceSpec extends Specification {
                 GUIDRef.of(GUIDType.ORG, 'school-sourced-id'),
                 RoleType.STUDENT
         )
+    }
 
-        Enrollment teacher = new Enrollment(
+    Enrollment getTeacherEnrollment() {
+        return new Enrollment(
                 'teaching-relation-sourced-id_teaching-group-sourced-id',
                 StatusType.ACTIVE,
                 GUIDRef.of(GUIDType.USER, 'teacher-sourced-id'),
@@ -65,7 +67,5 @@ class EnrollmentServiceSpec extends Specification {
                 GUIDRef.of(GUIDType.ORG, 'school-sourced-id'),
                 RoleType.TEACHER
         )
-
-        return [student, teacher]
     }
 }

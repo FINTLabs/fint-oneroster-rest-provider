@@ -22,25 +22,22 @@ public class ClazzService {
     }
 
     public List<Clazz> getAllClazzes() {
-        return oneRosterService.getAllClazzes();
+        return oneRosterService.getClazzes();
     }
 
     public Clazz getClazz(String sourcedId) {
-        return getAllClazzes()
-                .stream()
-                .filter(clazz -> clazz.getSourcedId().equals(sourcedId))
-                .findAny()
+        return Optional.ofNullable(oneRosterService.getClazzById(sourcedId))
                 .orElseThrow(NotFoundException::new);
     }
 
     public List<User> getStudentsForClazz(String sourcedId) {
         Clazz clazz = getClazz(sourcedId);
 
-        return oneRosterService.getAllEnrollments()
+        return oneRosterService.getEnrollments()
                 .stream()
                 .filter(enrollment -> enrollment.getClazz().getSourcedId().equals(clazz.getSourcedId()))
                 .map(Enrollment::getUser)
-                .flatMap(guidRef -> oneRosterService.getAllUsers()
+                .flatMap(guidRef -> oneRosterService.getUsers()
                         .stream()
                         .filter(user -> user.getRole().equals(RoleType.STUDENT) &&
                                 user.getSourcedId().equals(guidRef.getSourcedId())))
@@ -50,11 +47,11 @@ public class ClazzService {
     public List<User> getTeachersForClazz(String sourcedId) {
         Clazz clazz = getClazz(sourcedId);
 
-        return oneRosterService.getAllEnrollments()
+        return oneRosterService.getEnrollments()
                 .stream()
                 .filter(enrollment -> enrollment.getClazz().getSourcedId().equals(clazz.getSourcedId()))
                 .map(Enrollment::getUser)
-                .flatMap(guidRef -> oneRosterService.getAllUsers()
+                .flatMap(guidRef -> oneRosterService.getUsers()
                         .stream()
                         .filter(user -> user.getRole().equals(RoleType.TEACHER) &&
                                 user.getSourcedId().equals(guidRef.getSourcedId())))

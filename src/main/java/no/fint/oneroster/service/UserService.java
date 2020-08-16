@@ -20,14 +20,11 @@ public class UserService {
     }
 
     public List<User> getAllUsers() {
-        return oneRosterService.getAllUsers();
+        return oneRosterService.getUsers();
     }
 
     public User getUser(String sourcedId) {
-        return getAllUsers()
-                .stream()
-                .filter(user -> user.getSourcedId().equals(sourcedId))
-                .findAny()
+        return Optional.ofNullable(oneRosterService.getUserById(sourcedId))
                 .orElseThrow(NotFoundException::new);
     }
 
@@ -39,10 +36,8 @@ public class UserService {
     }
 
     public User getStudent(String sourcedId) {
-        return getAllStudents()
-                .stream()
-                .filter(student -> student.getSourcedId().equals(sourcedId))
-                .findAny()
+        return Optional.ofNullable(oneRosterService.getUserById(sourcedId))
+                .filter(user -> user.getRole().equals(RoleType.STUDENT))
                 .orElseThrow(NotFoundException::new);
     }
 
@@ -54,21 +49,19 @@ public class UserService {
     }
 
     public User getTeacher(String sourcedId) {
-        return getAllTeachers()
-                .stream()
-                .filter(teacher -> teacher.getSourcedId().equals(sourcedId))
-                .findAny()
+        return Optional.ofNullable(oneRosterService.getUserById(sourcedId))
+                .filter(user -> user.getRole().equals(RoleType.TEACHER))
                 .orElseThrow(NotFoundException::new);
     }
 
     public List<Clazz> getClazzesForStudent(String sourcedId) {
         User student = getStudent(sourcedId);
 
-        return oneRosterService.getAllEnrollments()
+        return oneRosterService.getEnrollments()
                 .stream()
                 .filter(enrollment -> enrollment.getUser().getSourcedId().equals(student.getSourcedId()))
                 .map(Enrollment::getClazz)
-                .flatMap(guidRef -> oneRosterService.getAllClazzes()
+                .flatMap(guidRef -> oneRosterService.getClazzes()
                         .stream()
                         .filter(clazz -> clazz.getSourcedId().equals(guidRef.getSourcedId())))
                 .collect(Collectors.toList());
@@ -77,11 +70,11 @@ public class UserService {
     public List<Clazz> getClazzesForTeacher(String sourcedId) {
         User teacher = getTeacher(sourcedId);
 
-        return oneRosterService.getAllEnrollments()
+        return oneRosterService.getEnrollments()
                 .stream()
                 .filter(enrollment -> enrollment.getUser().getSourcedId().equals(teacher.getSourcedId()))
                 .map(Enrollment::getClazz)
-                .flatMap(guidRef -> oneRosterService.getAllClazzes()
+                .flatMap(guidRef -> oneRosterService.getClazzes()
                         .stream()
                         .filter(clazz -> clazz.getSourcedId().equals(guidRef.getSourcedId())))
                 .collect(Collectors.toList());
