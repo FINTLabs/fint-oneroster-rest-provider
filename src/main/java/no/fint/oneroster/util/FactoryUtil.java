@@ -17,14 +17,9 @@ public class FactoryUtil {
 
         boolean active = period.stream()
                 .findFirst()
-                .filter(begin -> {
-                    if (begin.getStart() == null) return false;
-                    return begin.getStart().compareTo(Date.from(zonedDateTime.toInstant())) <= 0;
-                })
-                .filter(end -> {
-                    if (end.getSlutt() == null) return true;
-                    return end.getSlutt().compareTo(Date.from(zonedDateTime.toInstant())) >= 0;
-                }).isPresent();
+                .filter(begin -> begin.getStart() != null && begin.getStart().compareTo(Date.from(zonedDateTime.toInstant())) <= 0)
+                .filter(end -> end.getSlutt() == null || end.getSlutt().compareTo(Date.from(zonedDateTime.toInstant())) >= 0)
+                .isPresent();
 
         return active ? StatusType.ACTIVE : StatusType.TOBEDELETED;
     }
