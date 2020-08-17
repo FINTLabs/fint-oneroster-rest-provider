@@ -23,9 +23,30 @@ public class SchedulingService {
     public void update() {
         try {
             fintService.updateResources();
+
+            if (emptyCaches()) {
+                log.warn("One or more empty FINT caches. Update postponed");
+                return;
+            }
+
             oneRosterService.updateResources();
         } catch (OAuth2AuthorizationException | WebClientException ex) {
             log.error(ex.getMessage(), ex);
         }
+    }
+
+    private Boolean emptyCaches() {
+        return fintService.getSchools().isEmpty() ||
+                fintService.getStudents().isEmpty() ||
+                fintService.getTeachers().isEmpty() ||
+                fintService.getStudentRelations().isEmpty() ||
+                fintService.getTeachingRelations().isEmpty() ||
+                fintService.getBasisGroups().isEmpty() ||
+                fintService.getTeachingGroups().isEmpty() ||
+                fintService.getContactTeacherGroups().isEmpty() ||
+                fintService.getSubjects().isEmpty() ||
+                fintService.getLevels().isEmpty() ||
+                fintService.getPersons().isEmpty() ||
+                fintService.getPersonnel().isEmpty();
     }
 }

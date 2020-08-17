@@ -136,6 +136,10 @@ public class FintService {
         return (PersonResource) resources.get(selfLinks);
     }
 
+    public List<PersonalressursResource> getPersonnel() {
+        return getResourcesByType(PersonalressursResource.class);
+    }
+
     public PersonalressursResource getPersonnelById(String id) {
         String selfLinks = this.selfLinks.get(id);
         return (PersonalressursResource) resources.get(selfLinks);
