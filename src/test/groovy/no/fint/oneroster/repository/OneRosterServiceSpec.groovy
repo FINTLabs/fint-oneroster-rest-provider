@@ -114,7 +114,7 @@ class OneRosterServiceSpec extends Specification {
         def enrollments = oneRosterService.getEnrollments()
 
         then:
-        enrollments.size() == 4
+        enrollments.size() == 6
         enrollments.first().sourcedId == 'student-relation-sourced-id_basis-group-sourced-id'
         enrollments.first().role == RoleType.STUDENT
         enrollments.first().user.sourcedId == 'student-sourced-id'

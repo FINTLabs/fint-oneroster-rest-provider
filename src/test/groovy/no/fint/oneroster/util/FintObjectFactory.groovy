@@ -119,6 +119,8 @@ class FintObjectFactory {
         resource.setBeskrivelse('Basis group at school')
         resource.addSkole(Link.with('/school-sourced-id'))
         resource.addTrinn(Link.with('/level-sourced-id'))
+        resource.addElevforhold(Link.with('/student-relation-sourced-id'))
+        resource.addUndervisningsforhold(Link.with('/teaching-relation-sourced-id'))
         resource.addSelf(Link.with('/basis-group-sourced-id'))
         return resource
     }
@@ -132,6 +134,8 @@ class FintObjectFactory {
         resource.setBeskrivelse('Teaching group at school')
         resource.addSkole(Link.with('/school-sourced-id'))
         resource.addFag(Link.with('/subject-sourced-id'))
+        resource.addElevforhold(Link.with('/student-relation-sourced-id'))
+        resource.addUndervisningsforhold(Link.with('/teaching-relation-sourced-id'))
         resource.addSelf(Link.with('/teaching-group-sourced-id'))
         return resource
     }
@@ -145,6 +149,8 @@ class FintObjectFactory {
         resource.setBeskrivelse('Contact teacher group at school')
         resource.addSkole(Link.with('/school-sourced-id'))
         resource.addBasisgruppe(Link.with('/basis-group-sourced-id'))
+        resource.addElevforhold(Link.with('/student-relation-sourced-id'))
+        resource.addUndervisningsforhold(Link.with('/teaching-relation-sourced-id'))
         resource.addSelf(Link.with('/contact-teacher-group-sourced-id'))
         return resource
     }
