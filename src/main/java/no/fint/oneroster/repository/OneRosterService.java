@@ -412,12 +412,14 @@ public class OneRosterService {
                     !teachingRelation.getKontaktlarergruppe().isEmpty();
 
     public <T extends Base> List<T> getResourcesByType(Class<T> clazz) {
-        return resources.values()
-                .stream()
-                .filter(clazz::isInstance)
-                .map(clazz::cast)
-                .sorted(Comparator.comparing(T::getSourcedId))
-                .collect(Collectors.toList());
+        synchronized (resources) {
+            return resources.values()
+                    .stream()
+                    .filter(clazz::isInstance)
+                    .map(clazz::cast)
+                    .sorted(Comparator.comparing(T::getSourcedId))
+                    .collect(Collectors.toList());
+        }
     }
 
     public void updateResources() {
