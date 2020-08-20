@@ -48,7 +48,11 @@ public class OneRosterService {
     }
 
     public Org getOrgById(String sourcedId) {
-        return (Org) resources.get(sourcedId);
+        try {
+            return (Org) resources.get(sourcedId);
+        } catch (ClassCastException ex) {
+            return null;
+        }
     }
 
     private void updateOrgs() {
@@ -74,7 +78,11 @@ public class OneRosterService {
     }
 
     public Clazz getClazzById(String sourcedId) {
-        return (Clazz) resources.get(sourcedId);
+        try {
+            return (Clazz) resources.get(sourcedId);
+        } catch (ClassCastException ex) {
+            return null;
+        }
     }
 
     private void updateClazzes() {
@@ -164,7 +172,11 @@ public class OneRosterService {
     }
 
     public Course getCourseById(String sourcedId) {
-        return (Course) resources.get(sourcedId);
+        try {
+            return (Course) resources.get(sourcedId);
+        } catch (ClassCastException ex) {
+            return null;
+        }
     }
 
     private void updateCourses() {
@@ -204,7 +216,11 @@ public class OneRosterService {
     }
 
     public Enrollment getEnrollmentById(String sourcedId) {
-        return (Enrollment) resources.get(sourcedId);
+        try {
+            return (Enrollment) resources.get(sourcedId);
+        } catch (ClassCastException ex) {
+            return null;
+        }
     }
 
     private void updateEnrollments() {
@@ -332,7 +348,11 @@ public class OneRosterService {
     }
 
     public User getUserById(String sourcedId) {
-        return (User) resources.get(sourcedId);
+        try {
+            return (User) resources.get(sourcedId);
+        } catch (ClassCastException ex) {
+            return null;
+        }
     }
 
     private void updateUsers() {
