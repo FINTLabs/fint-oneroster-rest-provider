@@ -61,9 +61,9 @@ public class UserService {
                 .stream()
                 .filter(enrollment -> enrollment.getUser().getSourcedId().equals(student.getSourcedId()))
                 .map(Enrollment::getClazz)
-                .flatMap(guidRef -> oneRosterService.getClazzes()
-                        .stream()
-                        .filter(clazz -> clazz.getSourcedId().equals(guidRef.getSourcedId())))
+                .map(GUIDRef::getSourcedId)
+                .map(oneRosterService::getClazzById)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
@@ -74,9 +74,9 @@ public class UserService {
                 .stream()
                 .filter(enrollment -> enrollment.getUser().getSourcedId().equals(teacher.getSourcedId()))
                 .map(Enrollment::getClazz)
-                .flatMap(guidRef -> oneRosterService.getClazzes()
-                        .stream()
-                        .filter(clazz -> clazz.getSourcedId().equals(guidRef.getSourcedId())))
+                .map(GUIDRef::getSourcedId)
+                .map(oneRosterService::getClazzById)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 }

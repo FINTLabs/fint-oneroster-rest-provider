@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.fint.oneroster.exception.NotFoundException;
 import no.fint.oneroster.model.Clazz;
 import no.fint.oneroster.model.Enrollment;
+import no.fint.oneroster.model.GUIDRef;
 import no.fint.oneroster.model.User;
 import no.fint.oneroster.model.vocab.RoleType;
 import no.fint.oneroster.repository.OneRosterService;
@@ -37,10 +38,10 @@ public class ClazzService {
                 .stream()
                 .filter(enrollment -> enrollment.getClazz().getSourcedId().equals(clazz.getSourcedId()))
                 .map(Enrollment::getUser)
-                .flatMap(guidRef -> oneRosterService.getUsers()
-                        .stream()
-                        .filter(user -> user.getRole().equals(RoleType.STUDENT) &&
-                                user.getSourcedId().equals(guidRef.getSourcedId())))
+                .map(GUIDRef::getSourcedId)
+                .map(oneRosterService::getUserById)
+                .filter(Objects::nonNull)
+                .filter(user -> user.getRole().equals(RoleType.STUDENT))
                 .collect(Collectors.toList());
     }
 
@@ -51,10 +52,10 @@ public class ClazzService {
                 .stream()
                 .filter(enrollment -> enrollment.getClazz().getSourcedId().equals(clazz.getSourcedId()))
                 .map(Enrollment::getUser)
-                .flatMap(guidRef -> oneRosterService.getUsers()
-                        .stream()
-                        .filter(user -> user.getRole().equals(RoleType.TEACHER) &&
-                                user.getSourcedId().equals(guidRef.getSourcedId())))
+                .map(GUIDRef::getSourcedId)
+                .map(oneRosterService::getUserById)
+                .filter(Objects::nonNull)
+                .filter(user -> user.getRole().equals(RoleType.TEACHER))
                 .collect(Collectors.toList());
     }
 }

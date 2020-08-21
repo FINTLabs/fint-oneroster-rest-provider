@@ -110,8 +110,8 @@ class UserServiceSpec extends Specification {
 
         then:
         oneRosterService.getUserById(_ as String) >> getStudent()
-        oneRosterService.getEnrollments() >> [getStudentEnrollment(), getTeacherEnrollment()]
-        oneRosterService.getClazzes() >> [getBasisGroup(), getTeachingGroup()]
+        oneRosterService.getEnrollments() >> [getStudentEnrollment()]
+        oneRosterService.getClazzById(_ as String) >> getBasisGroup()
         clazzes.size() == 1
     }
 
@@ -121,8 +121,8 @@ class UserServiceSpec extends Specification {
 
         then:
         oneRosterService.getUserById(_ as String) >> getTeacher()
-        oneRosterService.getEnrollments() >> [getStudentEnrollment(), getTeacherEnrollment()]
-        oneRosterService.getClazzes() >> [getBasisGroup(), getTeachingGroup()]
+        oneRosterService.getEnrollments() >> [getTeacherEnrollment()]
+        oneRosterService.getClazzById(_ as String) >> getTeachingGroup()
         clazzes.size() == 1
     }
 

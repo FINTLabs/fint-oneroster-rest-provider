@@ -67,8 +67,8 @@ class ClazzServiceSpec extends Specification {
 
         then:
         oneRosterService.getClazzById(_ as String) >> getBasisGroup()
-        oneRosterService.getEnrollments() >> [getStudentEnrollment(), getTeacherEnrollment()]
-        oneRosterService.getUsers() >> [getStudent(), getTeacher()]
+        oneRosterService.getEnrollments() >> [getStudentEnrollment()]
+        oneRosterService.getUserById(_ as String) >> getStudent()
         students.size() == 1
     }
 
@@ -78,8 +78,8 @@ class ClazzServiceSpec extends Specification {
 
         then:
         oneRosterService.getClazzById(_ as String) >> getTeachingGroup()
-        oneRosterService.getEnrollments() >> [getStudentEnrollment(), getTeacherEnrollment()]
-        oneRosterService.getUsers() >> [getStudent(), getTeacher()]
+        oneRosterService.getEnrollments() >> [getTeacherEnrollment()]
+        oneRosterService.getUserById(_ as String) >> getTeacher()
         teachers.size() == 1
     }
 
