@@ -23,25 +23,8 @@ public class OneRosterProperties {
 
     @Data
     public static class AcademicSession {
-        private SchoolYear schoolYear;
         private Term firstTerm;
         private Term secondTerm;
-    }
-
-    @Data
-    public static class SchoolYear {
-        private String sourcedId;
-        private LocalDate beginDate;
-        private LocalDate endDate;
-        private String name;
-
-        public void setBeginDate(String beginDate) {
-            this.beginDate = LocalDate.parse(beginDate);
-        }
-
-        public void setEndDate(String endDate) {
-            this.endDate = LocalDate.parse(endDate);
-        }
     }
 
     @Data
@@ -63,6 +46,7 @@ public class OneRosterProperties {
     @Data
     public static class Profile {
         private Set<String> clazzFilter;
+        private boolean contactTeacherGroups;
 
         public void setClazzFilter(String clazzFilter) {
             this.clazzFilter = StringUtils.commaDelimitedListToSet(StringUtils.trimAllWhitespace(clazzFilter));

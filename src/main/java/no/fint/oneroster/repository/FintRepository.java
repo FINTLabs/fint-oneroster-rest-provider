@@ -32,18 +32,25 @@ public class FintRepository {
         this.fintProperties = fintProperties;
     }
 
-    public <S, T extends AbstractCollectionResources<S>> Flux<S> getResources(Class<T> clazz, String componentKey, String endpointKey) {
+    public <S, T extends AbstractCollectionResources<S>> Flux<S> getEducationResources(Class<T> clazz, String endpoint) {
+        return getResources(clazz, FintComponent.EDUCATION.getKey(), endpoint);
+    }
+
+    public <S, T extends AbstractCollectionResources<S>> Flux<S> getAdministrationResources(Class<T> clazz, String endpoint) {
+        return getResources(clazz, FintComponent.ADMINISTRATION.getKey(), endpoint);
+    }
+
+    private <S, T extends AbstractCollectionResources<S>> Flux<S> getResources(Class<T> clazz, String componentKey, String endpointKey) {
         FintProperties.Component component = fintProperties.getComponent().get(componentKey);
 
         return Flux.merge(component.getRegistration().values()
                 .stream()
-                .map(credential ->
-                        get(clazz, credential, component.getEndpoint().get(endpointKey))
-                                .flatMapIterable(T::getContent))
+                .map(credential -> get(clazz, credential, component.getEndpoint().get(endpointKey))
+                        .flatMapIterable(T::getContent))
                 .collect(Collectors.toList()));
     }
 
-    public <T> Mono<T> get(Class<T> clazz, FintProperties.Registration credential, String endpoint) {
+    private <T> Mono<T> get(Class<T> clazz, FintProperties.Registration credential, String endpoint) {
         OAuth2AuthorizeRequest authorizeRequest = OAuth2AuthorizeRequest.withClientRegistrationId(credential.getId())
                 .principal(principal)
                 .attributes(attrs -> {
@@ -58,6 +65,6 @@ public class FintRepository {
                 .attributes(oauth2AuthorizedClient(authorizedClient))
                 .retrieve()
                 .bodyToMono(clazz)
-                .doOnSuccess(it -> log.info("Update {}... ", endpoint));
+                .doOnSuccess(it -> log.info(endpoint));
     }
 }

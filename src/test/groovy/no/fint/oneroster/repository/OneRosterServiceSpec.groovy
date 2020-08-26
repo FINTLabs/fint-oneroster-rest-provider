@@ -19,22 +19,30 @@ import java.time.Year
 
 class OneRosterServiceSpec extends Specification {
 
-    FintEducationService fintEducationService = Mock {
-        getSchools() >> [('/school-sourced-id'): FintObjectFactory.newSchool()]
-        getPersons() >> [('/person-sourced-id'): FintObjectFactory.newPerson()]
-        getStudents() >> [('/student-sourced-id'): FintObjectFactory.newStudent()]
-        getStudentRelations() >> [('/student-relation-sourced-id'): FintObjectFactory.newStudentRelation()]
-        getTeachers() >> [('/teacher-sourced-id'): FintObjectFactory.newTeacher()]
-        getTeachingRelations() >> [('/teaching-relation-sourced-id'): FintObjectFactory.newTeachingRelation()]
-        getBasisGroups() >> [('/basis-group-sourced-id'): FintObjectFactory.newBasisGroup()]
-        getTeachingGroups() >> [('/teaching-group-sourced-id'): FintObjectFactory.newTeachingGroup()]
-        getLevels() >> [('/level-sourced-id'): FintObjectFactory.newLevel()]
-        getSubjects() >> [('/subject-sourced-id'): FintObjectFactory.newSubject()]
-    }
-
-    FintAdministrationService fintAdministrationService = Mock {
-        getPersons() >> [('/person-sourced-id'): FintObjectFactory.newPerson()]
-        getPersonnel() >> [('/personnel-resource-sourced-id'): FintObjectFactory.newPersonnel()]
+    FintService fintService = Mock {
+        getSchools() >> [FintObjectFactory.newSchool()]
+        getSchoolById(_ as String) >> FintObjectFactory.newSchool()
+        getPersons() >> [FintObjectFactory.newPerson()]
+        getPersonById(_ as String) >> FintObjectFactory.newPerson()
+        getStudents() >> [FintObjectFactory.newStudent()]
+        getStudentById(_ as String) >> FintObjectFactory.newStudent()
+        getStudentRelations() >> [FintObjectFactory.newStudentRelation()]
+        getStudentRelationById(_ as String) >> FintObjectFactory.newStudentRelation()
+        getTeachers() >> [FintObjectFactory.newTeacher()]
+        getTeacherById(_ as String) >> FintObjectFactory.newTeacher()
+        getTeachingRelations() >> [FintObjectFactory.newTeachingRelation()]
+        getTeachingRelationById(_ as String) >> FintObjectFactory.newTeachingRelation()
+        getBasisGroups() >> [FintObjectFactory.newBasisGroup()]
+        getBasisGroupById(_ as String) >> FintObjectFactory.newBasisGroup()
+        getTeachingGroups() >> [FintObjectFactory.newTeachingGroup()]
+        getTeachingGroupById(_ as String) >> FintObjectFactory.newTeachingGroup()
+        getContactTeacherGroups() >> [FintObjectFactory.newContactTeacherGroup()]
+        getContactTeacherGroupById(_ as String) >> FintObjectFactory.newContactTeacherGroup()
+        getLevels() >> [FintObjectFactory.newLevel()]
+        getLevelById(_ as String) >> FintObjectFactory.newLevel()
+        getSubjects() >> [FintObjectFactory.newSubject()]
+        getSubjectById(_ as String) >> FintObjectFactory.newSubject()
+        getPersonnelById(_ as String) >> FintObjectFactory.newPersonnel()
     }
 
     OneRosterProperties oneRosterProperties = Mock {
@@ -42,6 +50,10 @@ class OneRosterServiceSpec extends Specification {
                 sourcedId: 'school-owner-sourced-id',
                 name: 'School owner',
                 identifier: 'identifier'
+        )
+
+        getProfile() >> new OneRosterProperties.Profile(
+                contactTeacherGroups: true
         )
     }
 
@@ -52,11 +64,15 @@ class OneRosterServiceSpec extends Specification {
     ClazzFactory clazzFactory = new DefaultClazzFactory()
     UserFactory userFactory = new DefaultUserFactory()
 
-    OneRosterService oneRosterService = new OneRosterService(fintEducationService, fintAdministrationService, oneRosterProperties, academicSessionService, clazzFactory, userFactory)
+    OneRosterService oneRosterService = new OneRosterService(oneRosterProperties, academicSessionService, clazzFactory, userFactory, fintService)
+
+    def setup()  {
+        oneRosterService.updateResources()
+    }
 
     def "getAllOrgs returns a list of orgs"() {
         when:
-        def orgs = oneRosterService.getAllOrgs()
+        def orgs = oneRosterService.getOrgs()
 
         then:
         orgs.size() == 2
@@ -69,10 +85,10 @@ class OneRosterServiceSpec extends Specification {
 
     def "getAllClazzes returns a list of clazzes"() {
         when:
-        def clazzes = oneRosterService.getAllClazzes()
+        def clazzes = oneRosterService.getClazzes()
 
         then:
-        clazzes.size() == 2
+        clazzes.size() == 3
         clazzes.first().sourcedId == 'basis-group-sourced-id'
         clazzes.first().title == 'Basis group'
         clazzes.first().classType == ClazzType.HOMEROOM
@@ -84,7 +100,7 @@ class OneRosterServiceSpec extends Specification {
 
     def "getAllCourses returns a list of courses"() {
         when:
-        def courses = oneRosterService.getAllCourses()
+        def courses = oneRosterService.getCourses()
 
         then:
         courses.size() == 2
@@ -95,10 +111,10 @@ class OneRosterServiceSpec extends Specification {
 
     def "getAllEnrollments returns a list of enrollments"() {
         when:
-        def enrollments = oneRosterService.getAllEnrollments()
+        def enrollments = oneRosterService.getEnrollments()
 
         then:
-        enrollments.size() == 4
+        enrollments.size() == 6
         enrollments.first().sourcedId == 'student-relation-sourced-id_basis-group-sourced-id'
         enrollments.first().role == RoleType.STUDENT
         enrollments.first().user.sourcedId == 'student-sourced-id'
@@ -108,7 +124,7 @@ class OneRosterServiceSpec extends Specification {
 
     def "getAllUsers returns a list of users"() {
         when:
-        def users = oneRosterService.getAllUsers()
+        def users = oneRosterService.getUsers()
 
         then:
         users.size() == 2

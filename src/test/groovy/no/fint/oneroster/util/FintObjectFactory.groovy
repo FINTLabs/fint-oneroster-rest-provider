@@ -2,6 +2,7 @@ package no.fint.oneroster.util
 
 import no.fint.model.felles.kompleksedatatyper.Identifikator
 import no.fint.model.felles.kompleksedatatyper.Kontaktinformasjon
+import no.fint.model.felles.kompleksedatatyper.Periode
 import no.fint.model.felles.kompleksedatatyper.Personnavn
 import no.fint.model.resource.Link
 import no.fint.model.resource.administrasjon.personal.PersonalressursResource
@@ -9,12 +10,17 @@ import no.fint.model.resource.felles.PersonResource
 import no.fint.model.resource.utdanning.elev.BasisgruppeResource
 import no.fint.model.resource.utdanning.elev.ElevResource
 import no.fint.model.resource.utdanning.elev.ElevforholdResource
+import no.fint.model.resource.utdanning.elev.KontaktlarergruppeResource
 import no.fint.model.resource.utdanning.elev.SkoleressursResource
 import no.fint.model.resource.utdanning.elev.UndervisningsforholdResource
 import no.fint.model.resource.utdanning.timeplan.FagResource
 import no.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource
 import no.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResource
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource
+
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 class FintObjectFactory {
 
@@ -24,6 +30,9 @@ class FintObjectFactory {
         resource.setNavn('School')
         resource.setSkolenummer(new Identifikator(identifikatorverdi: 'identifier'))
         resource.setOrganisasjonsnummer(new Identifikator(identifikatorverdi: 'identifier'))
+        resource.addBasisgruppe(Link.with('/basis-group-sourced-id'))
+        resource.addUndervisningsgruppe(Link.with('/teaching-group-sourced-id'))
+        resource.addKontaktlarergruppe(Link.with('/contact-teacher-group-sourced-id'))
         resource.addSelf(Link.with('school-sourced-id'))
         return resource
     }
@@ -107,11 +116,14 @@ class FintObjectFactory {
     static BasisgruppeResource newBasisGroup() {
         BasisgruppeResource resource = new BasisgruppeResource()
         resource.setSystemId(new Identifikator(identifikatorverdi: 'basis-group-sourced-id'))
-        resource.setPeriode([])
+        resource.setPeriode([new Periode(start: Date.from(LocalDate.of(2020, 8, 1).atStartOfDay(ZoneId.of('Z')).toInstant()),
+                slutt: Date.from(LocalDate.of(2030, 7, 31).atStartOfDay(ZoneId.of('Z')).toInstant()))])
         resource.setNavn('Basis group')
         resource.setBeskrivelse('Basis group at school')
         resource.addSkole(Link.with('/school-sourced-id'))
         resource.addTrinn(Link.with('/level-sourced-id'))
+        resource.addElevforhold(Link.with('/student-relation-sourced-id'))
+        resource.addUndervisningsforhold(Link.with('/teaching-relation-sourced-id'))
         resource.addSelf(Link.with('/basis-group-sourced-id'))
         return resource
     }
@@ -119,12 +131,30 @@ class FintObjectFactory {
     static UndervisningsgruppeResource newTeachingGroup() {
         UndervisningsgruppeResource resource = new UndervisningsgruppeResource()
         resource.setSystemId(new Identifikator(identifikatorverdi: 'teaching-group-sourced-id'))
-        resource.setPeriode([])
+        resource.setPeriode([new Periode(start: Date.from(LocalDate.of(2020, 8, 1).atStartOfDay(ZoneId.of('Z')).toInstant()),
+                slutt: Date.from(LocalDate.of(2030, 7, 31).atStartOfDay(ZoneId.of('Z')).toInstant()))])
         resource.setNavn('Teaching group')
         resource.setBeskrivelse('Teaching group at school')
         resource.addSkole(Link.with('/school-sourced-id'))
         resource.addFag(Link.with('/subject-sourced-id'))
+        resource.addElevforhold(Link.with('/student-relation-sourced-id'))
+        resource.addUndervisningsforhold(Link.with('/teaching-relation-sourced-id'))
         resource.addSelf(Link.with('/teaching-group-sourced-id'))
+        return resource
+    }
+
+    static KontaktlarergruppeResource newContactTeacherGroup() {
+        KontaktlarergruppeResource resource = new KontaktlarergruppeResource()
+        resource.setSystemId(new Identifikator(identifikatorverdi: 'contact-teacher-group-sourced-id'))
+        resource.setPeriode([new Periode(start: Date.from(LocalDate.of(2020, 8, 1).atStartOfDay(ZoneId.of('Z')).toInstant()),
+                slutt: Date.from(LocalDate.of(2030, 7, 31).atStartOfDay(ZoneId.of('Z')).toInstant()))])
+        resource.setNavn('Contact teacher group')
+        resource.setBeskrivelse('Contact teacher group at school')
+        resource.addSkole(Link.with('/school-sourced-id'))
+        resource.addBasisgruppe(Link.with('/basis-group-sourced-id'))
+        resource.addElevforhold(Link.with('/student-relation-sourced-id'))
+        resource.addUndervisningsforhold(Link.with('/teaching-relation-sourced-id'))
+        resource.addSelf(Link.with('/contact-teacher-group-sourced-id'))
         return resource
     }
 

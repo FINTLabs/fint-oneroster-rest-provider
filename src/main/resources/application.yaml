@@ -4,11 +4,6 @@ oneroster:
     name:
     identifier:
   academic-session:
-    school-year:
-      sourced-id:
-      begin-date:
-      end-date:
-      name:
     first-term:
       sourced-id:
       begin-date:
@@ -52,3 +47,9 @@ fint:
       endpoint:
         person:
         personnel:
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info, health, metrics

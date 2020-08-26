@@ -8,9 +8,7 @@ import spock.lang.Specification
 
 class CourseServiceSpec extends Specification {
 
-    OneRosterService oneRosterService = Mock {
-        getAllCourses() >> getCourses()
-    }
+    OneRosterService oneRosterService = Mock()
 
     CourseService courseService = new CourseService(oneRosterService)
 
@@ -19,6 +17,7 @@ class CourseServiceSpec extends Specification {
         def courses = courseService.getAllCourses()
 
         then:
+        oneRosterService.getCourses() >> [getLevel(), getSubject()]
         courses.size() == 2
         courses.first().sourcedId == 'level-sourced-id'
         courses.first().title == 'Level'
@@ -34,25 +33,26 @@ class CourseServiceSpec extends Specification {
         def course = courseService.getCourse('level-sourced-id')
 
         then:
+        oneRosterService.getCourseById(_ as String) >> getLevel()
         course.sourcedId == 'level-sourced-id'
         course.title == 'Level'
         course.org.sourcedId == 'school-owner-sourced-id'
     }
 
-    List<Course> getCourses() {
-        Course level = new Course(
+    Course getLevel() {
+        return new Course(
                 'level-sourced-id',
                 'Level',
                 GUIDRef.of(GUIDType.ORG, 'school-owner-sourced-id')
         )
+    }
 
-        Course subject = new Course(
+    Course getSubject() {
+        return new Course(
                 'subject-sourced-id',
                 'Subject',
                 GUIDRef.of(GUIDType.ORG, 'school-owner-sourced-id')
         )
-
-        return [level, subject]
     }
 }
 

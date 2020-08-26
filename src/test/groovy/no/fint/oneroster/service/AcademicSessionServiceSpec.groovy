@@ -12,7 +12,6 @@ class AcademicSessionServiceSpec extends Specification {
 
     OneRosterProperties oneRosterProperties = Mock {
         getAcademicSession() >> new OneRosterProperties.AcademicSession(
-                schoolYear: new OneRosterProperties.SchoolYear(sourcedId: 'SY20192020', beginDate: '2019-08-01', endDate: '2020-07-31', name: 'Skoleåret 2019/2020'),
                 firstTerm: new OneRosterProperties.Term(sourcedId: 'T1SY20192020', beginDate: '2019-08-01', endDate: '2019-12-31', name: '1. termin 2019/2020'),
                 secondTerm: new OneRosterProperties.Term(sourcedId: 'T2SY20192020', beginDate: '2020-01-01', endDate: '2020-07-31', name: '2. termin 2019/2020')
         )
@@ -25,12 +24,12 @@ class AcademicSessionServiceSpec extends Specification {
         def academicSessions = academicSessionService.getAllAcademicSessions()
 
         then:
-        academicSessions.size() == 3
-        academicSessions.first().sourcedId == 'SY20192020'
-        academicSessions.first().title == 'Skoleåret 2019/2020'
+        academicSessions.size() == 2
+        academicSessions.first().sourcedId == 'T1SY20192020'
+        academicSessions.first().title == '1. termin 2019/2020'
         academicSessions.first().startDate == LocalDate.of(2019, 8, 1)
-        academicSessions.first().endDate == LocalDate.of(2020, 7, 31)
-        academicSessions.first().type == SessionType.SCHOOLYEAR
+        academicSessions.first().endDate == LocalDate.of(2019, 12, 31)
+        academicSessions.first().type == SessionType.TERM
         academicSessions.first().schoolYear == Year.of(2020)
     }
 

@@ -18,14 +18,11 @@ public class EnrollmentService {
     }
 
     public List<Enrollment> getAllEnrollments() {
-        return oneRosterService.getAllEnrollments();
+        return oneRosterService.getEnrollments();
     }
 
     public Enrollment getEnrollment(String sourcedId) {
-        return getAllEnrollments()
-                .stream()
-                .filter(enrollment -> enrollment.getSourcedId().equals(sourcedId))
-                .findAny()
+        return Optional.ofNullable(oneRosterService.getEnrollmentById(sourcedId))
                 .orElseThrow(NotFoundException::new);
     }
 }
