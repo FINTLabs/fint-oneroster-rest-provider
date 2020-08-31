@@ -22,16 +22,21 @@ public class SchedulingService {
     @Scheduled(initialDelayString = "${scheduling.initial-delay}", fixedDelayString = "${scheduling.fixed-delay}")
     public void update() {
         try {
-            fintService.updateResources();
+            fintService.update();
 
             if (emptyCaches()) {
-                log.warn("One or more empty FINT caches. Update postponed");
+                log.warn("One or more empty FINT caches");
                 return;
             }
 
-            oneRosterService.updateResources();
+            oneRosterService.update();
         } catch (OAuth2AuthorizationException | WebClientException ex) {
             log.error(ex.getMessage(), ex);
+        } finally {
+            log.info("{} orgs, {} users, {} classes, {} courses, {} enrollments",
+                    oneRosterService.getOrgs().size(), oneRosterService.getUsers().size(),
+                    oneRosterService.getClazzes().size(), oneRosterService.getCourses().size(),
+                    oneRosterService.getEnrollments().size());
         }
     }
 

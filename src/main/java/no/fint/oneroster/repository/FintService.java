@@ -150,7 +150,7 @@ public class FintService {
                 .collect(Collectors.toList());
     }
 
-    public void updateResources() {
+    public void update() {
         selfLinks.clear();
         resources.clear();
 

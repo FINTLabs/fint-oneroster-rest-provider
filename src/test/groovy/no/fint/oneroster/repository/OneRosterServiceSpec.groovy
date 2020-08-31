@@ -67,7 +67,7 @@ class OneRosterServiceSpec extends Specification {
     OneRosterService oneRosterService = new OneRosterService(oneRosterProperties, academicSessionService, clazzFactory, userFactory, fintService)
 
     def setup()  {
-        oneRosterService.updateResources()
+        oneRosterService.update()
     }
 
     def "getAllOrgs returns a list of orgs"() {

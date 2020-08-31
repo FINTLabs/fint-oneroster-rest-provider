@@ -353,46 +353,40 @@ public class OneRosterService {
         }
     }
 
-    private void update() {
-        OneRosterProperties.Org org = oneRosterProperties.getOrg();
+    public void update() {
+        Org schoolOwner = OrgFactory.schoolOwner(oneRosterProperties.getOrg());
 
-        Org schoolOwner = OrgFactory.schoolOwner(org);
-
-        fintService.getSchools()
-                .stream()
-                .peek(this::updateBasisGroups)
-                .peek(this::updateTeachingGroups)
-                .peek(schoolResource -> {
-                    if (oneRosterProperties.getProfile().isContactTeacherGroups()) {
-                        updateContactTeacherGroups(schoolResource);
-                    }
-                })
-                .map(schoolResource -> {
-                    Org school = OrgFactory.school(schoolResource);
-
-                    if (schoolOwner.getChildren() == null) {
-                        schoolOwner.setChildren(new ArrayList<>());
-                    }
-
-                    school.setParent(GUIDRef.of(GUIDType.ORG, schoolOwner.getSourcedId()));
-                    schoolOwner.getChildren().add(GUIDRef.of(GUIDType.ORG, school.getSourcedId()));
-
-                    return school;
-                })
-                .forEach(school -> resources.put(school.getSourcedId(), school));
-
-        resources.put(schoolOwner.getSourcedId(), schoolOwner);
-
-        this.updateStudents();
-        this.updateTeachers();
-    }
-
-    public void updateResources() {
         synchronized (resources) {
             resources.clear();
-            update();
+
+            fintService.getSchools()
+                    .stream()
+                    .peek(this::updateBasisGroups)
+                    .peek(this::updateTeachingGroups)
+                    .peek(schoolResource -> {
+                        if (oneRosterProperties.getProfile().isContactTeacherGroups()) {
+                            updateContactTeacherGroups(schoolResource);
+                        }
+                    })
+                    .map(schoolResource -> {
+                        Org school = OrgFactory.school(schoolResource);
+
+                        if (schoolOwner.getChildren() == null) {
+                            schoolOwner.setChildren(new ArrayList<>());
+                        }
+
+                        school.setParent(GUIDRef.of(GUIDType.ORG, schoolOwner.getSourcedId()));
+                        schoolOwner.getChildren().add(GUIDRef.of(GUIDType.ORG, school.getSourcedId()));
+
+                        return school;
+                    })
+                    .forEach(school -> resources.put(school.getSourcedId(), school));
+
+            resources.put(schoolOwner.getSourcedId(), schoolOwner);
+
+            this.updateStudents();
+            this.updateTeachers();
         }
-        log.info("Update complete");
     }
 
     private final Predicate<UndervisningsforholdResource> isTeacher = teachingRelation ->
