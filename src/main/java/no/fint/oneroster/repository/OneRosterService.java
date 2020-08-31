@@ -47,12 +47,7 @@ public class OneRosterService {
     }
 
     public Org getOrgById(String sourcedId) {
-        try {
-            return (Org) resources.get(sourcedId);
-        } catch (ClassCastException ex) {
-            log.warn(sourcedId, ex);
-            return null;
-        }
+        return getResourceByTypeAndId(Org.class, sourcedId);
     }
 
     public List<Clazz> getClazzes() {
@@ -60,12 +55,7 @@ public class OneRosterService {
     }
 
     public Clazz getClazzById(String sourcedId) {
-        try {
-            return (Clazz) resources.get(sourcedId);
-        } catch (ClassCastException ex) {
-            log.warn(sourcedId, ex);
-            return null;
-        }
+        return getResourceByTypeAndId(Clazz.class, sourcedId);
     }
 
     public List<Course> getCourses() {
@@ -73,12 +63,7 @@ public class OneRosterService {
     }
 
     public Course getCourseById(String sourcedId) {
-        try {
-            return (Course) resources.get(sourcedId);
-        } catch (ClassCastException ex) {
-            log.warn(sourcedId, ex);
-            return null;
-        }
+        return getResourceByTypeAndId(Course.class, sourcedId);
     }
 
     public List<Enrollment> getEnrollments() {
@@ -86,12 +71,7 @@ public class OneRosterService {
     }
 
     public Enrollment getEnrollmentById(String sourcedId) {
-        try {
-            return (Enrollment) resources.get(sourcedId);
-        } catch (ClassCastException ex) {
-            log.warn(sourcedId, ex);
-            return null;
-        }
+        return getResourceByTypeAndId(Enrollment.class, sourcedId);
     }
 
     public List<User> getUsers() {
@@ -99,12 +79,7 @@ public class OneRosterService {
     }
 
     public User getUserById(String sourcedId) {
-        try {
-            return (User) resources.get(sourcedId);
-        } catch (ClassCastException ex) {
-            log.warn(sourcedId, ex);
-            return null;
-        }
+        return getResourceByTypeAndId(User.class, sourcedId);
     }
 
     private void updateBasisGroups(SkoleResource schoolResource) {
@@ -132,38 +107,30 @@ public class OneRosterService {
                         resources.put(clazz.getSourcedId(), clazz);
 
                         Course course = CourseFactory.level(level.get(), org);
-                        resources.putIfAbsent(course.getSourcedId(), course);
+                        resources.put(course.getSourcedId(), course);
+
+                        basisGroup.getElevforhold()
+                                .stream()
+                                .map(Link::getHref)
+                                .map(String::toLowerCase)
+                                .map(fintService::getStudentRelationById)
+                                .filter(Objects::nonNull)
+                                .forEach(studentRelation -> getStudent(studentRelation).ifPresent(student -> {
+                                    Enrollment enrollment = EnrollmentFactory.student(studentRelation, student, basisGroup, schoolResource);
+                                    resources.put(enrollment.getSourcedId(), enrollment);
+                                }));
+
+                        basisGroup.getUndervisningsforhold()
+                                .stream()
+                                .map(Link::getHref)
+                                .map(String::toLowerCase)
+                                .map(fintService::getTeachingRelationById)
+                                .filter(Objects::nonNull)
+                                .forEach(teachingRelation -> getTeacher(teachingRelation).ifPresent(teacher -> {
+                                    Enrollment enrollment = EnrollmentFactory.teacher(teachingRelation, teacher, basisGroup, schoolResource);
+                                    resources.put(enrollment.getSourcedId(), enrollment);
+                                }));
                     }
-
-                    basisGroup.getElevforhold()
-                            .stream()
-                            .map(Link::getHref)
-                            .map(String::toLowerCase)
-                            .map(fintService::getStudentRelationById)
-                            .filter(Objects::nonNull)
-                            .forEach(studentRelation -> {
-                                Optional<ElevResource> student = getStudent(studentRelation);
-
-                                student.ifPresent(s -> {
-                                    Enrollment enrollment = EnrollmentFactory.student(studentRelation, s, basisGroup, schoolResource);
-                                    resources.put(enrollment.getSourcedId(), enrollment);
-                                });
-                            });
-
-                    basisGroup.getUndervisningsforhold()
-                            .stream()
-                            .map(Link::getHref)
-                            .map(String::toLowerCase)
-                            .map(fintService::getTeachingRelationById)
-                            .filter(Objects::nonNull)
-                            .forEach(teachingRelation -> {
-                                Optional<SkoleressursResource> teacher = getTeacher(teachingRelation);
-
-                                teacher.ifPresent(t -> {
-                                    Enrollment enrollment = EnrollmentFactory.teacher(teachingRelation, t, basisGroup, schoolResource);
-                                    resources.put(enrollment.getSourcedId(), enrollment);
-                                });
-                            });
                 });
     }
 
@@ -192,38 +159,30 @@ public class OneRosterService {
                         resources.put(clazz.getSourcedId(), clazz);
 
                         Course course = CourseFactory.subject(subject.get(), org);
-                        resources.putIfAbsent(course.getSourcedId(), course);
+                        resources.put(course.getSourcedId(), course);
+
+                        teachingGroup.getElevforhold()
+                                .stream()
+                                .map(Link::getHref)
+                                .map(String::toLowerCase)
+                                .map(fintService::getStudentRelationById)
+                                .filter(Objects::nonNull)
+                                .forEach(studentRelation -> getStudent(studentRelation).ifPresent(student -> {
+                                    Enrollment enrollment = EnrollmentFactory.student(studentRelation, student, teachingGroup, schoolResource);
+                                    resources.put(enrollment.getSourcedId(), enrollment);
+                                }));
+
+                        teachingGroup.getUndervisningsforhold()
+                                .stream()
+                                .map(Link::getHref)
+                                .map(String::toLowerCase)
+                                .map(fintService::getTeachingRelationById)
+                                .filter(Objects::nonNull)
+                                .forEach(teachingRelation -> getTeacher(teachingRelation).ifPresent(teacher -> {
+                                    Enrollment enrollment = EnrollmentFactory.teacher(teachingRelation, teacher, teachingGroup, schoolResource);
+                                    resources.put(enrollment.getSourcedId(), enrollment);
+                                }));
                     }
-
-                    teachingGroup.getElevforhold()
-                            .stream()
-                            .map(Link::getHref)
-                            .map(String::toLowerCase)
-                            .map(fintService::getStudentRelationById)
-                            .filter(Objects::nonNull)
-                            .forEach(studentRelation -> {
-                                Optional<ElevResource> student = getStudent(studentRelation);
-
-                                student.ifPresent(s -> {
-                                    Enrollment enrollment = EnrollmentFactory.student(studentRelation, s, teachingGroup, schoolResource);
-                                    resources.put(enrollment.getSourcedId(), enrollment);
-                                });
-                            });
-
-                    teachingGroup.getUndervisningsforhold()
-                            .stream()
-                            .map(Link::getHref)
-                            .map(String::toLowerCase)
-                            .map(fintService::getTeachingRelationById)
-                            .filter(Objects::nonNull)
-                            .forEach(teachingRelation -> {
-                                Optional<SkoleressursResource> teacher = getTeacher(teachingRelation);
-
-                                teacher.ifPresent(t -> {
-                                    Enrollment enrollment = EnrollmentFactory.teacher(teachingRelation, t, teachingGroup, schoolResource);
-                                    resources.put(enrollment.getSourcedId(), enrollment);
-                                });
-                            });
                 });
     }
 
@@ -255,37 +214,29 @@ public class OneRosterService {
                     if (level.isPresent() && !terms.isEmpty()) {
                         Clazz clazz = clazzFactory.contactTeacherGroup(contactTeacherGroup, level.get(), schoolResource, terms);
                         resources.put(clazz.getSourcedId(), clazz);
+
+                        contactTeacherGroup.getElevforhold()
+                                .stream()
+                                .map(Link::getHref)
+                                .map(String::toLowerCase)
+                                .map(fintService::getStudentRelationById)
+                                .filter(Objects::nonNull)
+                                .forEach(studentRelation -> getStudent(studentRelation).ifPresent(student -> {
+                                    Enrollment enrollment = EnrollmentFactory.student(studentRelation, student, contactTeacherGroup, schoolResource);
+                                    resources.put(enrollment.getSourcedId(), enrollment);
+                                }));
+
+                        contactTeacherGroup.getUndervisningsforhold()
+                                .stream()
+                                .map(Link::getHref)
+                                .map(String::toLowerCase)
+                                .map(fintService::getTeachingRelationById)
+                                .filter(Objects::nonNull)
+                                .forEach(teachingRelation -> getTeacher(teachingRelation).ifPresent(teacher -> {
+                                    Enrollment enrollment = EnrollmentFactory.teacher(teachingRelation, teacher, contactTeacherGroup, schoolResource);
+                                    resources.put(enrollment.getSourcedId(), enrollment);
+                                }));
                     }
-
-                    contactTeacherGroup.getElevforhold()
-                            .stream()
-                            .map(Link::getHref)
-                            .map(String::toLowerCase)
-                            .map(fintService::getStudentRelationById)
-                            .filter(Objects::nonNull)
-                            .forEach(studentRelation -> {
-                                Optional<ElevResource> student = getStudent(studentRelation);
-
-                                student.ifPresent(s -> {
-                                    Enrollment enrollment = EnrollmentFactory.student(studentRelation, s, contactTeacherGroup, schoolResource);
-                                    resources.put(enrollment.getSourcedId(), enrollment);
-                                });
-                            });
-
-                    contactTeacherGroup.getUndervisningsforhold()
-                            .stream()
-                            .map(Link::getHref)
-                            .map(String::toLowerCase)
-                            .map(fintService::getTeachingRelationById)
-                            .filter(Objects::nonNull)
-                            .forEach(teachingRelation -> {
-                                Optional<SkoleressursResource> teacher = getTeacher(teachingRelation);
-
-                                teacher.ifPresent(t -> {
-                                    Enrollment enrollment = EnrollmentFactory.teacher(teachingRelation, t, contactTeacherGroup, schoolResource);
-                                    resources.put(enrollment.getSourcedId(), enrollment);
-                                });
-                            });
                 });
     }
 
@@ -382,11 +333,6 @@ public class OneRosterService {
         });
     }
 
-    private final Predicate<UndervisningsforholdResource> isTeacher = teachingRelation ->
-            !teachingRelation.getBasisgruppe().isEmpty() ||
-                    !teachingRelation.getUndervisningsgruppe().isEmpty() ||
-                    !teachingRelation.getKontaktlarergruppe().isEmpty();
-
     public <T extends Base> List<T> getResourcesByType(Class<T> clazz) {
         synchronized (resources) {
             return resources.values()
@@ -395,6 +341,15 @@ public class OneRosterService {
                     .map(clazz::cast)
                     .sorted(Comparator.comparing(T::getSourcedId))
                     .collect(Collectors.toList());
+        }
+    }
+
+    private <T extends Base> T getResourceByTypeAndId(Class<T> clazz, String sourcedId) {
+        try {
+            return clazz.cast(resources.get(sourcedId));
+        } catch (ClassCastException ex) {
+            log.warn(sourcedId, ex);
+            return null;
         }
     }
 
@@ -439,4 +394,9 @@ public class OneRosterService {
         }
         log.info("Update complete");
     }
+
+    private final Predicate<UndervisningsforholdResource> isTeacher = teachingRelation ->
+            !teachingRelation.getBasisgruppe().isEmpty() ||
+                    !teachingRelation.getUndervisningsgruppe().isEmpty() ||
+                    !teachingRelation.getKontaktlarergruppe().isEmpty();
 }

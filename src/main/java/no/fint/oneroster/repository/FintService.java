@@ -19,11 +19,8 @@ import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResources;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -172,15 +169,20 @@ public class FintService {
                 fintRepository.getAdministrationResources(PersonResources.class, FintEndpoint.PERSON.getKey()))
                 .toStream()
                 .forEach(resource -> {
-                    getSelfLinks(resource).forEach(link -> selfLinks.put(link, resource.getSelfLinks().toString()));
-                    resources.put(resource.getSelfLinks().toString(), resource);
+                    List<String> links = getSelfLinks(resource);
+                    if (links.isEmpty())
+                        return;
+                    links.forEach(link -> selfLinks.put(link, links.toString()));
+                    resources.put(links.toString(), resource);
                 });
     }
 
-    private <T extends FintLinks> Stream<String> getSelfLinks(T resource) {
-        return resource.getSelfLinks()
+    private <T extends FintLinks> List<String> getSelfLinks(T resource) {
+        return Optional.ofNullable(resource.getSelfLinks())
+                .orElseGet(Collections::emptyList)
                 .stream()
                 .map(Link::getHref)
-                .map(String::toLowerCase);
+                .map(String::toLowerCase)
+                .collect(Collectors.toList());
     }
 }
