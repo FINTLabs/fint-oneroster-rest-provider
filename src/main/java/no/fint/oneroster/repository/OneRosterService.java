@@ -1,5 +1,7 @@
 package no.fint.oneroster.repository;
 
+import com.google.common.collect.MapDifference;
+import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.model.resource.Link;
 import no.fint.model.resource.administrasjon.personal.PersonalressursResource;
@@ -354,6 +356,8 @@ public class OneRosterService {
     }
 
     public void update() {
+        Map<String, ? super Base> beforeResources = new HashMap<>(resources);
+
         Org schoolOwner = OrgFactory.schoolOwner(oneRosterProperties.getOrg());
 
         synchronized (resources) {
@@ -387,6 +391,12 @@ public class OneRosterService {
             this.updateStudents();
             this.updateTeachers();
         }
+
+        MapDifference<String, ? super Base> difference = Maps.difference(beforeResources, resources);
+
+        /*
+        TODO
+         */
     }
 
     private final Predicate<UndervisningsforholdResource> isTeacher = teachingRelation ->
