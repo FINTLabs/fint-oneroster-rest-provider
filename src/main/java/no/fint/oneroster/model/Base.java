@@ -10,7 +10,7 @@ import java.time.ZonedDateTime;
 import java.util.Map;
 
 @Getter @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = "dateLastModified")
 @JsonFilter("fields")
 public class Base {
     private final String sourcedId;
