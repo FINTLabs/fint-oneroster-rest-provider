@@ -1,7 +1,5 @@
 package no.fint.oneroster.repository;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +22,6 @@ import no.fint.oneroster.service.AcademicSessionService;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.function.BiConsumer;
@@ -277,80 +274,76 @@ public class OneRosterService {
     }
 
     private Consumer<Map<String, Base>> updateStudents() {
-        return resources -> {
-            fintService.getStudents().forEach(student -> {
-                Optional<PersonResource> person = student.getPerson()
-                        .stream()
-                        .map(Link::getHref)
-                        .map(String::toLowerCase)
-                        .map(fintService::getPersonById)
-                        .filter(Objects::nonNull)
-                        .findAny();
+        return resources -> fintService.getStudents().forEach(student -> {
+            Optional<PersonResource> person = student.getPerson()
+                    .stream()
+                    .map(Link::getHref)
+                    .map(String::toLowerCase)
+                    .map(fintService::getPersonById)
+                    .filter(Objects::nonNull)
+                    .findAny();
 
-                List<SkoleResource> schoolResources = student.getElevforhold()
-                        .stream()
-                        .map(Link::getHref)
-                        .map(String::toLowerCase)
-                        .map(fintService::getStudentRelationById)
-                        .filter(Objects::nonNull)
-                        .map(ElevforholdResource::getSkole)
-                        .flatMap(List::stream)
-                        .map(Link::getHref)
-                        .map(String::toLowerCase)
-                        .map(fintService::getSchoolById)
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toList());
+            List<SkoleResource> schoolResources = student.getElevforhold()
+                    .stream()
+                    .map(Link::getHref)
+                    .map(String::toLowerCase)
+                    .map(fintService::getStudentRelationById)
+                    .filter(Objects::nonNull)
+                    .map(ElevforholdResource::getSkole)
+                    .flatMap(List::stream)
+                    .map(Link::getHref)
+                    .map(String::toLowerCase)
+                    .map(fintService::getSchoolById)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
 
-                if (person.isPresent() && !schoolResources.isEmpty()) {
-                    User user = userFactory.student(student, person.get(), schoolResources);
-                    resources.put(user.getSourcedId(), user);
-                }
-            });
-        };
+            if (person.isPresent() && !schoolResources.isEmpty()) {
+                User user = userFactory.student(student, person.get(), schoolResources);
+                resources.put(user.getSourcedId(), user);
+            }
+        });
     }
 
     private Consumer<Map<String, Base>> updateTeachers() {
-        return resources -> {
-            fintService.getTeachers().forEach(teacher -> {
-                Optional<PersonalressursResource> personnelResource = teacher.getPersonalressurs()
-                        .stream()
-                        .map(Link::getHref)
-                        .map(String::toLowerCase)
-                        .map(fintService::getPersonnelById)
-                        .filter(Objects::nonNull)
-                        .findAny();
+        return resources -> fintService.getTeachers().forEach(teacher -> {
+            Optional<PersonalressursResource> personnelResource = teacher.getPersonalressurs()
+                    .stream()
+                    .map(Link::getHref)
+                    .map(String::toLowerCase)
+                    .map(fintService::getPersonnelById)
+                    .filter(Objects::nonNull)
+                    .findAny();
 
-                Optional<PersonResource> personResource = personnelResource
-                        .map(PersonalressursResource::getPerson)
-                        .orElseGet(Collections::emptyList)
-                        .stream()
-                        .map(Link::getHref)
-                        .map(String::toLowerCase)
-                        .map(fintService::getPersonById)
-                        .filter(Objects::nonNull)
-                        .findAny();
+            Optional<PersonResource> personResource = personnelResource
+                    .map(PersonalressursResource::getPerson)
+                    .orElseGet(Collections::emptyList)
+                    .stream()
+                    .map(Link::getHref)
+                    .map(String::toLowerCase)
+                    .map(fintService::getPersonById)
+                    .filter(Objects::nonNull)
+                    .findAny();
 
-                List<SkoleResource> schoolResources = teacher.getUndervisningsforhold()
-                        .stream()
-                        .map(Link::getHref)
-                        .map(String::toLowerCase)
-                        .map(fintService::getTeachingRelationById)
-                        .filter(Objects::nonNull)
-                        .filter(isTeacher)
-                        .map(UndervisningsforholdResource::getSkole)
-                        .flatMap(List::stream)
-                        .map(Link::getHref)
-                        .map(String::toLowerCase)
-                        .map(fintService::getSchoolById)
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toList());
+            List<SkoleResource> schoolResources = teacher.getUndervisningsforhold()
+                    .stream()
+                    .map(Link::getHref)
+                    .map(String::toLowerCase)
+                    .map(fintService::getTeachingRelationById)
+                    .filter(Objects::nonNull)
+                    .filter(isTeacher)
+                    .map(UndervisningsforholdResource::getSkole)
+                    .flatMap(List::stream)
+                    .map(Link::getHref)
+                    .map(String::toLowerCase)
+                    .map(fintService::getSchoolById)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
 
-                if (personnelResource.isPresent() && personResource.isPresent() && !schoolResources.isEmpty()) {
-                    User user = userFactory.teacher(teacher, personnelResource.get(), personResource.get(), schoolResources);
-                    resources.put(user.getSourcedId(), user);
-                }
-            });
-        };
+            if (personnelResource.isPresent() && personResource.isPresent() && !schoolResources.isEmpty()) {
+                User user = userFactory.teacher(teacher, personnelResource.get(), personResource.get(), schoolResources);
+                resources.put(user.getSourcedId(), user);
+            }
+        });
     }
 
     private BiConsumer<SkoleResource, Map<String, Base>> updateSchools(Org schoolOwner) {
