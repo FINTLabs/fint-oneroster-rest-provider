@@ -24,6 +24,9 @@ import no.fint.oneroster.service.AcademicSessionService;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -38,7 +41,7 @@ public class OneRosterService {
     private final UserFactory userFactory;
     private final FintService fintService;
 
-    private final Cache<String, Base> cache = CacheBuilder.newBuilder().build();
+    private final ConcurrentMap<String, Base> cache = new ConcurrentSkipListMap<>();
 
     public OneRosterService(OneRosterProperties oneRosterProperties, AcademicSessionService academicSessionService, ClazzFactory clazzFactory, UserFactory userFactory, FintService fintService) {
         this.oneRosterProperties = oneRosterProperties;
@@ -366,19 +369,16 @@ public class OneRosterService {
     }
 
     public <T extends Base> List<T> getResourcesByType(Class<T> clazz) {
-        return cache.asMap()
-                .values()
+        return cache.values()
                 .stream()
                 .filter(clazz::isInstance)
                 .map(clazz::cast)
-                .sorted(Comparator.comparing(T::getSourcedId))
                 .collect(Collectors.toList());
-
     }
 
     private <T extends Base> T getResourceByTypeAndId(Class<T> clazz, String sourcedId) {
         try {
-            return clazz.cast(cache.getIfPresent(sourcedId));
+            return clazz.cast(cache.get(sourcedId));
         } catch (ClassCastException ex) {
             log.warn(sourcedId, ex);
             return null;
@@ -392,9 +392,7 @@ public class OneRosterService {
 
         fintService.getSchools().forEach(schoolResource -> {
             updateSchools(schoolOwner).accept(schoolResource, resources);
-
             updateBasisGroups().accept(schoolResource, resources);
-
             updateTeachingGroups().accept(schoolResource, resources);
 
             if (oneRosterProperties.getProfile().isContactTeacherGroups()) {
@@ -405,7 +403,6 @@ public class OneRosterService {
         resources.put(schoolOwner.getSourcedId(), schoolOwner);
 
         updateStudents().accept(resources);
-
         updateTeachers().accept(resources);
 
         updateCache().accept(resources);
@@ -413,16 +410,14 @@ public class OneRosterService {
 
     private Consumer<Map<String, Base>> updateCache() {
         return resources -> {
-            MapDifference<String, Base> difference = Maps.difference(resources, cache.asMap());
+            MapDifference<String, Base> difference = Maps.difference(resources, cache);
 
             if (difference.areEqual()) {
                 return;
             }
 
             difference.entriesOnlyOnLeft().forEach(cache::put);
-
-            difference.entriesOnlyOnRight().keySet().forEach(cache::invalidate);
-
+            difference.entriesOnlyOnRight().forEach(cache::remove);
             difference.entriesDiffering().forEach((key, value) -> cache.put(key, value.leftValue()));
 
             log.info("Added {}, removed {}, replaced {} entries in cache", difference.entriesOnlyOnLeft().size(),
