@@ -88,6 +88,38 @@ public class OneRosterService {
         return getResourceByTypeAndId(User.class, sourcedId);
     }
 
+    public <T extends Base> List<T> getResourcesByType(Class<T> clazz) {
+        return cache.values()
+                .stream()
+                .filter(clazz::isInstance)
+                .map(clazz::cast)
+                .collect(Collectors.toList());
+    }
+
+    private <T extends Base> T getResourceByTypeAndId(Class<T> clazz, String sourcedId) {
+        try {
+            return clazz.cast(cache.get(sourcedId));
+        } catch (ClassCastException ex) {
+            log.warn(sourcedId, ex);
+            return null;
+        }
+    }
+
+    private BiConsumer<SkoleResource, Map<String, Base>> updateSchools(Org schoolOwner) {
+        return (schoolResource, resources) -> {
+            Org school = OrgFactory.school(schoolResource);
+
+            if (schoolOwner.getChildren() == null) {
+                schoolOwner.setChildren(new ArrayList<>());
+            }
+
+            school.setParent(GUIDRef.of(GUIDType.ORG, schoolOwner.getSourcedId()));
+            schoolOwner.getChildren().add(GUIDRef.of(GUIDType.ORG, school.getSourcedId()));
+
+            resources.put(school.getSourcedId(), school);
+        };
+    }
+
     private BiConsumer<SkoleResource, Map<String, Base>> updateBasisGroups() {
         return (schoolResource, resources) -> {
 
@@ -346,37 +378,10 @@ public class OneRosterService {
         });
     }
 
-    private BiConsumer<SkoleResource, Map<String, Base>> updateSchools(Org schoolOwner) {
-        return (schoolResource, resources) -> {
-            Org school = OrgFactory.school(schoolResource);
-
-            if (schoolOwner.getChildren() == null) {
-                schoolOwner.setChildren(new ArrayList<>());
-            }
-
-            school.setParent(GUIDRef.of(GUIDType.ORG, schoolOwner.getSourcedId()));
-            schoolOwner.getChildren().add(GUIDRef.of(GUIDType.ORG, school.getSourcedId()));
-
-            resources.put(school.getSourcedId(), school);
-        };
-    }
-
-    public <T extends Base> List<T> getResourcesByType(Class<T> clazz) {
-        return cache.values()
-                .stream()
-                .filter(clazz::isInstance)
-                .map(clazz::cast)
-                .collect(Collectors.toList());
-    }
-
-    private <T extends Base> T getResourceByTypeAndId(Class<T> clazz, String sourcedId) {
-        try {
-            return clazz.cast(cache.get(sourcedId));
-        } catch (ClassCastException ex) {
-            log.warn(sourcedId, ex);
-            return null;
-        }
-    }
+    private final Predicate<UndervisningsforholdResource> isTeacher = teachingRelation ->
+            !teachingRelation.getBasisgruppe().isEmpty() ||
+                    !teachingRelation.getUndervisningsgruppe().isEmpty() ||
+                    !teachingRelation.getKontaktlarergruppe().isEmpty();
 
     public void update() {
         Map<String, Base> resources = new HashMap<>();
@@ -384,9 +389,10 @@ public class OneRosterService {
         Org schoolOwner = OrgFactory.schoolOwner(oneRosterProperties.getOrg());
 
         fintService.getSchools().forEach(schoolResource -> {
-            updateSchools(schoolOwner).accept(schoolResource, resources);
-            updateBasisGroups().accept(schoolResource, resources);
-            updateTeachingGroups().accept(schoolResource, resources);
+            updateSchools(schoolOwner)
+                    .andThen(updateBasisGroups())
+                    .andThen(updateTeachingGroups())
+                    .accept(schoolResource, resources);
 
             if (oneRosterProperties.getProfile().isContactTeacherGroups()) {
                 updateContactTeacherGroups().accept(schoolResource, resources);
@@ -395,8 +401,7 @@ public class OneRosterService {
 
         resources.put(schoolOwner.getSourcedId(), schoolOwner);
 
-        updateStudents().accept(resources);
-        updateTeachers().accept(resources);
+        updateStudents().andThen(updateTeachers()).accept(resources);
 
         updateCache().accept(resources);
     }
@@ -413,13 +418,8 @@ public class OneRosterService {
             difference.entriesOnlyOnRight().forEach(cache::remove);
             difference.entriesDiffering().forEach((key, value) -> cache.put(key, value.leftValue()));
 
-            log.info("Added {}, removed {}, replaced {} entries in cache", difference.entriesOnlyOnLeft().size(),
+            log.info("{} created, {} deleted, {} updated", difference.entriesOnlyOnLeft().size(),
                     difference.entriesOnlyOnRight().size(), difference.entriesDiffering().size());
         };
     }
-
-    private final Predicate<UndervisningsforholdResource> isTeacher = teachingRelation ->
-            !teachingRelation.getBasisgruppe().isEmpty() ||
-                    !teachingRelation.getUndervisningsgruppe().isEmpty() ||
-                    !teachingRelation.getKontaktlarergruppe().isEmpty();
 }
