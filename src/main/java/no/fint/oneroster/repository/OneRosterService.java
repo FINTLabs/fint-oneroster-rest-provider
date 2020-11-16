@@ -40,6 +40,8 @@ public class OneRosterService {
 
     private final ConcurrentMap<String, Base> cache = new ConcurrentSkipListMap<>();
 
+    private int count = 0;
+
     public OneRosterService(OneRosterProperties oneRosterProperties, AcademicSessionService academicSessionService, ClazzFactory clazzFactory, UserFactory userFactory, FintService fintService) {
         this.oneRosterProperties = oneRosterProperties;
         this.academicSessionService = academicSessionService;
@@ -414,12 +416,40 @@ public class OneRosterService {
                 return;
             }
 
-            difference.entriesOnlyOnLeft().forEach(cache::put);
-            difference.entriesOnlyOnRight().forEach(cache::remove);
-            difference.entriesDiffering().forEach((key, value) -> cache.put(key, value.leftValue()));
+            difference.entriesOnlyOnLeft().entrySet()
+                    .stream()
+                    .sorted(Comparator.comparing(entry -> entry.getValue().getClass().getSimpleName()))
+                    .forEach(entry -> {
+                        if (count > 0) {
+                            log.info("Created: {} - {}", entry.getValue().getClass().getSimpleName(), entry.getKey());
+                        }
+                        cache.put(entry.getKey(), entry.getValue());
+                    });
+
+            difference.entriesOnlyOnRight().entrySet()
+                    .stream()
+                    .sorted(Comparator.comparing(entry -> entry.getValue().getClass().getSimpleName()))
+                    .forEach(entry -> {
+                        if (count > 0) {
+                            log.info("Deleted: {} - {}", entry.getValue().getClass().getSimpleName(), entry.getKey());
+                        }
+                        cache.remove(entry.getKey());
+                    });
+
+            difference.entriesDiffering().entrySet()
+                    .stream()
+                    .sorted(Comparator.comparing(entry -> entry.getValue().getClass().getSimpleName()))
+                    .forEach(entry -> {
+                        if (count > 0) {
+                            log.info("Updated: {} - {}", entry.getValue().getClass().getSimpleName(), entry.getKey());
+                        }
+                        cache.put(entry.getKey(), entry.getValue().leftValue());
+                    });
 
             log.info("{} created, {} deleted, {} updated", difference.entriesOnlyOnLeft().size(),
                     difference.entriesOnlyOnRight().size(), difference.entriesDiffering().size());
+
+            count++;
         };
     }
 }
