@@ -3,6 +3,7 @@ package no.fint.oneroster.model;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import no.fint.oneroster.model.vocab.RoleType;
 import no.fint.oneroster.model.vocab.StatusType;
 
@@ -11,6 +12,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@ToString(callSuper = true)
 @Getter @Setter
 @EqualsAndHashCode(callSuper = true)
 public class User extends Base {

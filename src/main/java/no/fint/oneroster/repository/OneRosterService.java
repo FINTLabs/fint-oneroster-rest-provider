@@ -441,12 +441,19 @@ public class OneRosterService {
                     .sorted(Comparator.comparing(entry -> entry.getValue().getClass().getSimpleName()))
                     .forEach(entry -> {
                         if (count > 0) {
-                            log.info("Updated: {} - {}", entry.getValue().getClass().getSimpleName(), entry.getKey());
+                            Base before = entry.getValue().rightValue();
+                            Base after = entry.getValue().leftValue();
+
+                            log.info("Updated: {} - {}", before.getClass().getSimpleName(), entry.getKey());
+
+                            if (before instanceof User) {
+                                log.info("{} - {}", before.toString(), after.toString());
+                            }
                         }
                         cache.put(entry.getKey(), entry.getValue().leftValue());
                     });
 
-            log.info("{} created, {} deleted, {} updated", difference.entriesOnlyOnLeft().size(),
+            log.info("Created: {}, deleted: {}, updated: {}", difference.entriesOnlyOnLeft().size(),
                     difference.entriesOnlyOnRight().size(), difference.entriesDiffering().size());
 
             count++;
