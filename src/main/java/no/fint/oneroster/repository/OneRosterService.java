@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -40,7 +41,7 @@ public class OneRosterService {
 
     private final ConcurrentMap<String, Base> cache = new ConcurrentSkipListMap<>();
 
-    private int count = 0;
+    private final AtomicInteger counter = new AtomicInteger();
 
     public OneRosterService(OneRosterProperties oneRosterProperties, AcademicSessionService academicSessionService, ClazzFactory clazzFactory, UserFactory userFactory, FintService fintService) {
         this.oneRosterProperties = oneRosterProperties;
@@ -412,7 +413,14 @@ public class OneRosterService {
         return resources -> {
             MapDifference<String, Base> difference = Maps.difference(resources, cache);
 
-            if (difference.areEqual()) {
+            if (difference.areEqual() ) {
+                return;
+            }
+
+            float percentage = (difference.entriesOnlyOnRight().size() * 100.0f) / cache.size();
+
+            if (!Float.isNaN(percentage) && Float.compare(percentage, 1.0f) > 0) {
+                log.warn("Too many deletes: {}% of {}", percentage, cache.size());
                 return;
             }
 
@@ -420,8 +428,8 @@ public class OneRosterService {
                     .stream()
                     .sorted(Comparator.comparing(entry -> entry.getValue().getClass().getSimpleName()))
                     .forEach(entry -> {
-                        if (count > 0) {
-                            log.info("Created: {} - {}", entry.getValue().getClass().getSimpleName(), entry.getKey());
+                        if (counter.get() > 0) {
+                            log.info("create {} - {}", entry.getValue().getClass().getSimpleName(), entry.getKey());
                         }
                         cache.put(entry.getKey(), entry.getValue());
                     });
@@ -430,8 +438,8 @@ public class OneRosterService {
                     .stream()
                     .sorted(Comparator.comparing(entry -> entry.getValue().getClass().getSimpleName()))
                     .forEach(entry -> {
-                        if (count > 0) {
-                            log.info("Deleted: {} - {}", entry.getValue().getClass().getSimpleName(), entry.getKey());
+                        if (counter.get() > 0) {
+                            log.info("delete {} - {}", entry.getValue().getClass().getSimpleName(), entry.getKey());
                         }
                         cache.remove(entry.getKey());
                     });
@@ -440,23 +448,16 @@ public class OneRosterService {
                     .stream()
                     .sorted(Comparator.comparing(entry -> entry.getValue().getClass().getSimpleName()))
                     .forEach(entry -> {
-                        if (count > 0) {
-                            Base before = entry.getValue().rightValue();
-                            Base after = entry.getValue().leftValue();
-
-                            log.info("Updated: {} - {}", before.getClass().getSimpleName(), entry.getKey());
-
-                            if (before instanceof User) {
-                                log.info("{} - {}", before.toString(), after.toString());
-                            }
+                        if (counter.get() > 0) {
+                            log.info("update {} - {}", entry.getValue().rightValue().getClass().getSimpleName(), entry.getKey());
                         }
                         cache.put(entry.getKey(), entry.getValue().leftValue());
                     });
 
-            log.info("Created: {}, deleted: {}, updated: {}", difference.entriesOnlyOnLeft().size(),
+            log.info("created: {}, deleted: {}, updated: {}", difference.entriesOnlyOnLeft().size(),
                     difference.entriesOnlyOnRight().size(), difference.entriesDiffering().size());
 
-            count++;
+            counter.getAndIncrement();
         };
     }
 }
