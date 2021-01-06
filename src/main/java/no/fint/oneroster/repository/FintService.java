@@ -39,8 +39,7 @@ public class FintService {
     }
 
     public SkoleResource getSchoolById(String id) {
-        String selfLinks = this.selfLinks.get(id);
-        return (SkoleResource) resources.get(selfLinks);
+        return getResourceByTypeAndId(SkoleResource.class, id);
     }
 
     public List<ElevResource> getStudents() {
@@ -48,8 +47,7 @@ public class FintService {
     }
 
     public ElevResource getStudentById(String id) {
-        String selfLinks = this.selfLinks.get(id);
-        return (ElevResource) resources.get(selfLinks);
+        return getResourceByTypeAndId(ElevResource.class, id);
     }
 
     public List<SkoleressursResource> getTeachers() {
@@ -57,8 +55,7 @@ public class FintService {
     }
 
     public SkoleressursResource getTeacherById(String id) {
-        String selfLinks = this.selfLinks.get(id);
-        return (SkoleressursResource) resources.get(selfLinks);
+        return getResourceByTypeAndId(SkoleressursResource.class, id);
     }
 
     public List<ElevforholdResource> getStudentRelations() {
@@ -66,8 +63,7 @@ public class FintService {
     }
 
     public ElevforholdResource getStudentRelationById(String id) {
-        String selfLinks = this.selfLinks.get(id);
-        return (ElevforholdResource) resources.get(selfLinks);
+        return getResourceByTypeAndId(ElevforholdResource.class, id);
     }
 
     public List<UndervisningsforholdResource> getTeachingRelations() {
@@ -75,8 +71,7 @@ public class FintService {
     }
 
     public UndervisningsforholdResource getTeachingRelationById(String id) {
-        String selfLinks = this.selfLinks.get(id);
-        return (UndervisningsforholdResource) resources.get(selfLinks);
+        return getResourceByTypeAndId(UndervisningsforholdResource.class, id);
     }
 
     public List<BasisgruppeResource> getBasisGroups() {
@@ -84,8 +79,7 @@ public class FintService {
     }
 
     public BasisgruppeResource getBasisGroupById(String id) {
-        String selfLinks = this.selfLinks.get(id);
-        return (BasisgruppeResource) resources.get(selfLinks);
+        return getResourceByTypeAndId(BasisgruppeResource.class, id);
     }
 
     public List<KontaktlarergruppeResource> getContactTeacherGroups() {
@@ -93,8 +87,7 @@ public class FintService {
     }
 
     public KontaktlarergruppeResource getContactTeacherGroupById(String id) {
-        String selfLinks = this.selfLinks.get(id);
-        return (KontaktlarergruppeResource) resources.get(selfLinks);
+        return getResourceByTypeAndId(KontaktlarergruppeResource.class, id);
     }
 
     public List<UndervisningsgruppeResource> getTeachingGroups() {
@@ -102,8 +95,7 @@ public class FintService {
     }
 
     public UndervisningsgruppeResource getTeachingGroupById(String id) {
-        String selfLinks = this.selfLinks.get(id);
-        return (UndervisningsgruppeResource) resources.get(selfLinks);
+        return getResourceByTypeAndId(UndervisningsgruppeResource.class, id);
     }
 
     public List<ArstrinnResource> getLevels() {
@@ -111,8 +103,7 @@ public class FintService {
     }
 
     public ArstrinnResource getLevelById(String id) {
-        String selfLinks = this.selfLinks.get(id);
-        return (ArstrinnResource) resources.get(selfLinks);
+        return getResourceByTypeAndId(ArstrinnResource.class, id);
     }
 
     public List<FagResource> getSubjects() {
@@ -120,8 +111,7 @@ public class FintService {
     }
 
     public FagResource getSubjectById(String id) {
-        String selfLinks = this.selfLinks.get(id);
-        return (FagResource) resources.get(selfLinks);
+        return getResourceByTypeAndId(FagResource.class, id);
     }
 
     public List<PersonResource> getPersons() {
@@ -129,8 +119,8 @@ public class FintService {
     }
 
     public PersonResource getPersonById(String id) {
-        String selfLinks = this.selfLinks.get(id);
-        return (PersonResource) resources.get(selfLinks);
+        return getResourceByTypeAndId(PersonResource.class, id);
+
     }
 
     public List<PersonalressursResource> getPersonnel() {
@@ -138,16 +128,25 @@ public class FintService {
     }
 
     public PersonalressursResource getPersonnelById(String id) {
-        String selfLinks = this.selfLinks.get(id);
-        return (PersonalressursResource) resources.get(selfLinks);
+        return getResourceByTypeAndId(PersonalressursResource.class, id);
     }
 
-    public <T> List<T> getResourcesByType(Class<T> clazz) {
+    public <T extends FintLinks> List<T> getResourcesByType(Class<T> clazz) {
         return resources.values()
                 .stream()
                 .filter(clazz::isInstance)
                 .map(clazz::cast)
                 .collect(Collectors.toList());
+    }
+
+    private <T extends FintLinks> T getResourceByTypeAndId(Class<T> clazz, String id) {
+        try {
+            String selfLinks = this.selfLinks.get(id);
+            return clazz.cast(resources.get(selfLinks));
+        } catch (ClassCastException ex) {
+            log.warn(id, ex);
+            return null;
+        }
     }
 
     public void update() {

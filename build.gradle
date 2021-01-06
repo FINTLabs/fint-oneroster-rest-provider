@@ -46,6 +46,7 @@ dependencies {
     implementation 'no.fint:fint-felles-resource-model-java:3.4.0'
     implementation 'no.fint:fint-model-resource:0.3.3'
 
+    implementation 'com.google.guava:guava:29.0-jre'
     implementation 'org.apache.commons:commons-lang3:3.9'
     implementation 'commons-beanutils:commons-beanutils:1.9.4'
 
