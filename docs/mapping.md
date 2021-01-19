@@ -1,34 +1,34 @@
 # IMS OneRoster v1.1
 
-## Rostering core
+## Mapping table: FINT to IMS OneRoster
 
 ### Org
 
-> district (*)
+> district
 
 OneRoster | FINT | Multiplicity
 --------- | ---- | ------------
-sourcedId        | Organisasjonselement.organisasjonsId.identifikatorverdi      | 1
-status           | active                                                       | 1
-dateLastModified | ZonedDateTime.now()                                          | 1
-name             | Organisasjonselement.navn                                    | 1
+sourcedId        | configuration                                                | 1
+status           | n/a                                                          | 1
+dateLastModified | n/a                                                          | 1
+name             | configuration                                                | 1
 type             | district                                                     | 1
-identifier       | Organisasjonselement.organisasjonsnummer.identifikatorverdi  | 0..1
+identifier       | configuration                                                | 0..1
 parent           | n/a                                                          | 0..1
-children         | Skole.systemId.identifikatorverdi                            | 0..*
+children         | skole.systemId.identifikatorverdi                            | 0..*
 metadata         | -                                                            | 0..1
 
 > school
 
 OneRoster | FINT | Multiplicity
 --------- | ---- | ------------
-sourcedId        | Skole.systemId.identifikatorverdi                        | 1
-status           | active                                                   | 1
-dateLastModified | ZonedDateTime.now()                                      | 1
-name             | Skole.navn                                               | 1
+sourcedId        | skole.systemId.identifikatorverdi                        | 1
+status           | n/a                                                      | 1
+dateLastModified | n/a                                                      | 1
+name             | skole.navn                                               | 1
 type             | school                                                   | 1
-identifier       | Skole.organisasjonsnummer.identifikatorverdi             | 0..1
-parent           | Organisasjonselement.organisasjonsId.identifikatorverdi  | 0..1
+identifier       | skole.organisasjonsnummer.identifikatorverdi             | 0..1
+parent           | org.sourcedId                                                 | 0..1
 children         | n/a                                                      | 0..*
 metadata         | -                                                        | 0..1
 
@@ -38,20 +38,20 @@ metadata         | -                                                        | 0.
 
 OneRoster | FINT | Multiplicity
 --------- | ---- | ------------
-sourcedId        | Elev.systemId.identifikatorverdi             | 1
-status           | active                                       | 1
-dateLastModified | ZonedDateTime.now()                          | 1
-username         | Elev.brukernavn.identifikatorverdi           | 1
-givenName        | Person.navn.fornavn                          | 1
-familyName       | Person.navn.etternavn                        | 1
+sourcedId        | elev.systemId.identifikatorverdi             | 1
+status           | n/a                                          | 1
+dateLastModified | n/a                                          | 1
+username         | elev.brukernavn.identifikatorverdi           | 1
+givenName        | person.navn.fornavn                          | 1
+familyName       | person.navn.etternavn                        | 1
 role             | student                                      | 1
-orgs             | Skole.systemId.identifikatorverdi            | 1..*
-userIds          | Elev.feidenavn.identifikatorverdi            | 0..*
-middleName       | Person.navn.mellomnavn                       | 0..1
-identifier       | Elev.elevnummer.identifikatorverdi           | 0..1
-email            | Elev.kontaktinformasjon.epostadresse         | 0..1
-sms              | Elev.kontaktinformasjon.mobiltelefonnummer   | 0..1
-phone            | Elev.kontaktinformasjon.telefonnummer        | 0..1
+orgs             | skole.systemId.identifikatorverdi            | 1..*
+userIds          | elev.feidenavn.identifikatorverdi            | 0..*
+middleName       | person.navn.mellomnavn                       | 0..1
+identifier       | person.fodselsnummer.identifikatorverdi      | 0..1
+email            | elev.kontaktinformasjon.epostadresse         | 0..1
+sms              | -                                            | 0..1
+phone            | -                                            | 0..1
 password         | -                                            | 0..1
 grades           | -                                            | 0..*
 agents           | -                                            | 0..*
@@ -61,20 +61,20 @@ metadata         | -                                            | 0..1
 
 OneRoster | FINT | Multiplicity
 --------- | ---- | ------------
-sourcedId        | Skoleressurs.systemId.identifikatorverdi             | 1
-status           | active                                               | 1
-dateLastModified | ZonedDateTime.now()                                  | 1
-username         | Personalressurs.brukernavn.identifikatorverdi        | 1
-givenName        | Person.navn.fornavn                                  | 1
-familyName       | Person.navn.etternavn                                | 1
+sourcedId        | skoleressurs.systemId.identifikatorverdi             | 1
+status           | n/a                                                  | 1
+dateLastModified | n/a                                                  | 1
+username         | personalressurs.brukernavn.identifikatorverdi        | 1
+givenName        | person.navn.fornavn                                  | 1
+familyName       | person.navn.etternavn                                | 1
 role             | teacher                                              | 1
-orgs             | Skole.systemId.identifikatorverdi                    | 1..*
-userIds          | Skoleressurs.feidenavn.identifikatorverdi            | 0..*
-middleName       | Person.navn.mellomnavn                               | 0..1
-identifier       | Personalressurs.ansattnummer.identifikatorverdi      | 0..1
-email            | Personalressurs.kontaktinformasjon.epostadresse      | 0..1
-sms              | Personalressurs.kontaktinformasjon.mobiltelefonnummer| 0..1
-phone            | Personalressurs.kontaktinformasjon.telefonnummer     | 0..1
+orgs             | skole.systemId.identifikatorverdi                    | 1..*
+userIds          | skoleressurs.feidenavn.identifikatorverdi            | 0..*
+middleName       | person.navn.mellomnavn                               | 0..1
+identifier       | person.fodselsnummer.identifikatorverdi              | 0..1
+email            | personalressurs.kontaktinformasjon.epostadresse      | 0..1
+sms              | -                                                    | 0..1
+phone            | -                                                    | 0..1
 password         | -                                                    | 0..1
 grades           | -                                                    | 0..*
 agents           | -                                                    | 0..*
@@ -86,12 +86,12 @@ metadata         | -                                                    | 0..1
 
 OneRoster | FINT | Multiplicity
 --------- | ---- | ------------
-sourcedId        | ?                                                        | 1
-status           | active                                                   | 1
-dateLastModified | ZonedDateTime.now()                                      | 1
-user             | Elev.systemId.identifikatorverdi                         | 1
-class            | (Basis/Undervisnings)gruppe.systemId.identifikatorverdi  | 1
-school           | Skole.systemId.identifikatorverdi                        | 1
+sourcedId        | elevforhold.systemId.identifikatorverdi + gruppe.systemId.identifikatorverdi | 1
+status           | n/a                                                      | 1
+dateLastModified | n/a                                                      | 1
+user             | elev.systemId.identifikatorverdi                         | 1
+class            | (basis/undervisnings/kontaktlærer)gruppe.systemId.identifikatorverdi | 1
+school           | skole.systemId.identifikatorverdi                        | 1
 role             | student                                                  | 1
 primary          | n/a                                                      | 0..1
 beginDate        | -                                                        | 0..1
@@ -102,12 +102,12 @@ metadata         | -                                                        | 0.
 
 OneRoster | FINT | Multiplicity
 --------- | ---- | ------------
-sourcedId        | ?                                                        | 1
-status           | active                                                   | 1
-dateLastModified | ZonedDateTime.now()                                      | 1
-user             | Skoleressurs.systemId.identifikatorverdi                 | 1
-class            | (Basis/Undervisnings)gruppe.systemId.identifikatorverdi  | 1
-school           | Skole.systemId.identifikatorverdi                        | 1
+sourcedId        | undervisningsforhold.systemId.identifikatorverdi + gruppe.systemId.identifikatorverdi | 1
+status           | n/a                                                      | 1
+dateLastModified | n/a                                                      | 1
+user             | skoleressurs.systemId.identifikatorverdi                 | 1
+class            | (basis/undervisnings/kontaktlærer)gruppe.systemId.identifikatorverdi  | 1
+school           | skole.systemId.identifikatorverdi                        | 1
 role             | teacher                                                  | 1
 primary          | -                                                        | 0..1
 beginDate        | -                                                        | 0..1
@@ -120,39 +120,39 @@ metadata         | -                                                        | 0.
 
 OneRoster | FINT | Multiplicity
 --------- | ---- | ------------
-sourcedId        | Basisgruppe.systemId.identifikatorverdi  | 1
-status           | active                                   | 1
-dateLastModified | ZonedDateTime.now()                      | 1
-title            | Basisgruppe.navn                         | 1
+sourcedId        | (basis/kontaktlærer)gruppe.systemId.identifikatorverdi  | 1
+status           | n/a                                      | 1
+dateLastModified | n/a                                      | 1
+title            | (basis/kontaktlærer)gruppe.navn                         | 1
 classType        | homeroom                                 | 1
-course           | Arstrinn.systemId.identifikatorverdi     | 1
-school           | Skole.systemId.identifikatorverdi        | 1
-terms            | AcademicSession.sourcedId (*)            | 1..*
+course           | arstrinn.systemId.identifikatorverdi     | 1
+school           | skole.systemId.identifikatorverdi        | 1
+terms            | academicSession.sourcedId                | 1..*
 classCode        | -                                        | 0..1
 location         | -                                        | 0..1
 grades           | -                                        | 0..*
 subjects         | -                                        | 0..*
 subjectCodes     | -                                        | 0..*
 periods          | -                                        | 0..*
-metadata         | -                                        | 0..1
+metadata         | additionalClassType                      | 0..1
 
 > scheduled
 
 OneRoster | FINT | Multiplicity
 --------- | ---- | ------------
-sourcedId        | Undervisningsgruppe.systemId.identifikatorverdi  | 1
-status           | active                                           | 1
-dateLastModified | ZonedDateTime.now()                              | 1
-title            | Undervisningsgruppe.navn                         | 1
+sourcedId        | undervisningsgruppe.systemId.identifikatorverdi  | 1
+status           | n/a                                              | 1
+dateLastModified | n/a                                              | 1
+title            | undervisningsgruppe.navn                         | 1
 classType        | scheduled                                        | 1
-course           | Fag.systemId.identifikatorverdi                  | 1
-school           | Skole.systemId.identifikatorverdi                | 1
-terms            | AcademicSession.sourcedId (*)                    | 1..*
+course           | fag.systemId.identifikatorverdi                  | 1
+school           | skole.systemId.identifikatorverdi                | 1
+terms            | academicSession.sourcedId                        | 1..*
 classCode        | -                                                | 0..1
 location         | -                                                | 0..1
 grades           | -                                                | 0..*
 subjects         | -                                                | 0..*
-subjectCodes     | -                                                | 0..*
+subjectCodes     | (fag/arstrinn).grepreferanse                     | 0..*
 periods          | -                                                | 0..*
 metadata         | -                                                | 0..1
 
@@ -160,16 +160,16 @@ metadata         | -                                                | 0..1
 
 OneRoster | FINT | Multiplicity
 --------- | ---- | ------------
-sourcedId        | Fag/Arstrinn.systemId.identifikatorverdi                 | 1
-status           | active                                                   | 1
-dateLastModified | ZonedDateTime.now()                                      | 1
-title            | Fag/Arstrinn.navn                                        | 1
-org              | Organisasjonselement.organisasjonsId.identifikatorverdi  | 1
-schoolYear       | - (*)                                                    | 0..1
-courseCode       | Fag/Arstrinn.grepreferanse                               | 0..1
+sourcedId        | (fag/arstrinn).systemId.identifikatorverdi               | 1
+status           | n/a                                                      | 1
+dateLastModified | n/a                                                      | 1
+title            | (fag/arstrinn).navn                                      | 1
+org              | org.sourcedId                                            | 1
+schoolYear       | -                                                        | 0..1
+courseCode       | -                                                        | 0..1
 grades           | -                                                        | 0..*
 subjects         | -                                                        | 0..*
-subjectCodes     | -                                                        | 0..*
+subjectCodes     | (fag/arstrinn).grepreferanse                             | 0..*
 metadata         | -                                                        | 0..1
 
 ### AcademicSession
@@ -178,16 +178,14 @@ metadata         | -                                                        | 0.
 
 OneRoster | FINT | Multiplicity
 --------- | ---- | ------------
-sourcedId        | Generated OR Env                     | 1
-status           | active                               | 1
-dateLastModified | ZonedDateTime.now()                  | 1
-title            | Generated OR Env                     | 1
-startDate        | Generated OR Env                     | 1
-endDate          | Generated OR Env                     | 1
+sourcedId        | configuration                        | 1
+status           | n/a                                  | 1
+dateLastModified | n/a                                  | 1
+title            | configuration                        | 1
+startDate        | configuration                        | 1
+endDate          | configuration                        | 1
 type             | term                                 | 1
-schoolYear       | Generated OR Env                     | 1
+schoolYear       | configuration                        | 1
 parent           | -                                    | 0..1
-children         | n/a                                  | 0..*
+children         | -                                    | 0..*
 metadata         | -                                    | 0..1
-
-> schoolYear?

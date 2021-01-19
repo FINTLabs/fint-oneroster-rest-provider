@@ -1,0 +1,56 @@
+{
+    "users": [
+        {
+            "sourcedId": "00004818-f4ba-4104-9282-8c85e40cf497",
+            "status": "active",
+            "dateLastModified": "2020-11-30T16:53:51.777Z",
+            "username": "brukernavn",
+            "enabledUser": true,
+            "givenName": "Fornavn",
+            "middleName": "Mellomnavn",
+            "familyName": "Etternavn",
+            "role": "student",
+            "orgs": [
+                {
+                    "sourcedId": "11004",
+                    "type": "org",
+                    "href": "http://localhost:8080/ims/oneroster/v1p1/orgs/11004"
+                }
+            ],
+            "userIds": [
+                {
+                    "type": "Feide",
+                    "identifier": "brukernavn@feide.fylke.no"
+                }
+            ],
+            "identifier": "01011028945",
+            "email": "fornavn.etternavn@skole.fylke.no"
+        },
+        {
+            "sourcedId": "002bb2de-e8b0-48f6-bd9e-ec7182dacd2a",
+            "status": "active",
+            "dateLastModified": "2020-11-30T16:53:52.006Z",
+            "username": "brukernavn",
+            "enabledUser": true,
+            "givenName": "Fornavn",
+            "middleName": "Mellomnavn",
+            "familyName": "Etternavn",
+            "role": "teacher",
+            "orgs": [
+                {
+                    "sourcedId": "11004",
+                    "type": "org",
+                    "href": "http://localhost:8080/ims/oneroster/v1p1/orgs/11004"
+                }
+            ],
+            "userIds": [
+                {
+                    "type": "Feide",
+                    "identifier": "brukernavn@feide.fylke.no"
+                }
+            ],
+            "identifier": "01018054982",
+            "email": "fornavn.etternavn@skole.fylke.no"
+        }
+    ]
+}

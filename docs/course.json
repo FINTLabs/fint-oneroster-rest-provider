@@ -1,0 +1,32 @@
+{
+    "courses": [
+        {
+            "sourcedId": "NOR1260",
+            "status": "active",
+            "dateLastModified": "2020-11-30T16:53:51.703Z",
+            "title": "Norsk, skriftlig",
+            "org": {
+                "sourcedId": "971045600",
+                "type": "org",
+                "href": "http://localhost:8080/ims/oneroster/v1p1/orgs/971045600"
+            },
+            "subjectCodes": [
+                "https://psi.udir.no/kl06/NOR1260"
+            ]
+        },
+        {
+            "sourcedId": "VG1",
+            "status": "active",
+            "dateLastModified": "2020-11-30T16:53:51.694Z",
+            "title": "VG1",
+            "org": {
+                "sourcedId": "971045600",
+                "type": "org",
+                "href": "http://localhost:8080/ims/oneroster/v1p1/orgs/971045600"
+            },
+            "subjectCodes": [
+                "https://psi.udir.no/kl06/vg1"
+            ]
+        }
+    ]
+}

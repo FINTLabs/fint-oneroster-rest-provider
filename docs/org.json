@@ -1,0 +1,32 @@
+{
+    "orgs": [
+        {
+            "sourcedId": "971045600",
+            "status": "active",
+            "dateLastModified": "2020-11-30T16:53:47.038Z",
+            "name": "Skoleeier",
+            "type": "district",
+            "identifier": "971045600",
+            "children": [
+                {
+                    "sourcedId": "11004",
+                    "type": "org",
+                    "href": "http://localhost:8080/ims/oneroster/v1p1/orgs/11004"
+                }
+            ]
+        },
+        {
+            "sourcedId": "11004",
+            "status": "active",
+            "dateLastModified": "2020-11-30T16:53:47.051Z",
+            "name": "Videregående skole",
+            "type": "school",
+            "identifier": "913385600",
+            "parent": {
+                "sourcedId": "971045600",
+                "type": "org",
+                "href": "http://localhost:8080/ims/oneroster/v1p1/orgs/971045600"
+            }
+        }
+    ]
+}

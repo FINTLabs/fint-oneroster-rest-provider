@@ -1,0 +1,103 @@
+{
+    "classes": [
+        {
+            "sourcedId": "1002683",
+            "status": "active",
+            "dateLastModified": "2020-11-30T16:53:50.087Z",
+            "title": "ATA",
+            "classType": "homeroom",
+            "course": {
+                "sourcedId": "VG1",
+                "type": "course",
+                "href": "hhttp://localhost:8080/ims/oneroster/v1p1/courses/VG1"
+            },
+            "school": {
+                "sourcedId": "11004",
+                "type": "org",
+                "href": "http://localhost:8080/ims/oneroster/v1p1/orgs/11004"
+            },
+            "terms": [
+                {
+                    "sourcedId": "64444dfe-d597-4fcc-be4b-09ebd639ec5e",
+                    "type": "academicSession",
+                    "href": "http://localhost:8080/ims/oneroster/v1p1/academicSessions/64444dfe-d597-4fcc-be4b-09ebd639ec5e"
+                },
+                {
+                    "sourcedId": "559b775e-7f8a-407e-945c-71e7e27dc62a",
+                    "type": "academicSession",
+                    "href": "http://localhost:8080/ims/oneroster/v1p1/academicSessions/559b775e-7f8a-407e-945c-71e7e27dc62a"
+                }
+            ],
+            "subjectCodes": [
+                "https://psi.udir.no/kl06/vg1"
+            ]
+        },
+        {
+            "sourcedId": "1002683_493666",
+            "status": "active",
+            "dateLastModified": "2020-11-30T16:53:50.125Z",
+            "metadata": {
+                "additionalClassType": "mentor"
+            },
+            "title": "ATA",
+            "classType": "homeroom",
+            "course": {
+                "sourcedId": "VG1",
+                "type": "course",
+                "href": "http://localhost:8080/ims/oneroster/v1p1/courses/VG1"
+            },
+            "school": {
+                "sourcedId": "11004",
+                "type": "org",
+                "href": "http://localhost:8080/ims/oneroster/v1p1/orgs/11004"
+            },
+            "terms": [
+                {
+                    "sourcedId": "64444dfe-d597-4fcc-be4b-09ebd639ec5e",
+                    "type": "academicSession",
+                    "href": "http://localhost:8080/ims/oneroster/v1p1/academicSessions/64444dfe-d597-4fcc-be4b-09ebd639ec5e"
+                },
+                {
+                    "sourcedId": "559b775e-7f8a-407e-945c-71e7e27dc62a",
+                    "type": "academicSession",
+                    "href": "http://localhost:8080/ims/oneroster/v1p1/academicSessions/559b775e-7f8a-407e-945c-71e7e27dc62a"
+                }
+            ],
+            "subjectCodes": [
+                "https://psi.udir.no/kl06/vg1"
+            ]
+        },
+        {
+            "sourcedId": "10083032",
+            "status": "active",
+            "dateLastModified": "2020-11-30T16:53:51.604Z",
+            "title": "2YSKB/NOR1260",
+            "classType": "scheduled",
+            "course": {
+                "sourcedId": "NOR1260",
+                "type": "course",
+                "href": "http://localhost:8080/ims/oneroster/v1p1/courses/NOR1260"
+            },
+            "school": {
+                "sourcedId": "11004",
+                "type": "org",
+                "href": "http://localhost:8080/ims/oneroster/v1p1/orgs/11004"
+            },
+            "terms": [
+                {
+                    "sourcedId": "64444dfe-d597-4fcc-be4b-09ebd639ec5e",
+                    "type": "academicSession",
+                    "href": "http://localhost:8080/ims/oneroster/v1p1/academicSessions/64444dfe-d597-4fcc-be4b-09ebd639ec5e"
+                },
+                {
+                    "sourcedId": "559b775e-7f8a-407e-945c-71e7e27dc62a",
+                    "type": "academicSession",
+                    "href": "http://localhost:8080/ims/oneroster/v1p1/academicSessions/559b775e-7f8a-407e-945c-71e7e27dc62a"
+                }
+            ],
+            "subjectCodes": [
+                "https://psi.udir.no/kl06/NOR1260"
+            ]
+        }
+    ]
+}

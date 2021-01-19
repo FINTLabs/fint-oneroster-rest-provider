@@ -1,0 +1,1947 @@
+{
+	"info": {
+		"_postman_id": "f9ef9879-104d-49e7-93eb-d16e1aaa1678",
+		"name": "FINT - IMS OneRoster PWF",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "academicSessions",
+			"item": [
+				{
+					"name": "getAcademicSessions()",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/academicSessions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"academicSessions"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAcademicSession()",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/academicSessions/:sourcedId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"academicSessions",
+								":sourcedId"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "sourcedId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "classes",
+			"item": [
+				{
+					"name": "getClasses()",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/classes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"classes"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getClass()",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/classes/:sourcedId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"classes",
+								":sourcedId"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "sourcedId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getTeachersForClass()",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/classes/:classSourcedId/teachers",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"classes",
+								":classSourcedId",
+								"teachers"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "classSourcedId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getStudentsForClass()",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/classes/:classSourcedId/students",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"classes",
+								":classSourcedId",
+								"students"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "classSourcedId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "courses",
+			"item": [
+				{
+					"name": "getCourses()",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/courses",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"courses"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCourse()",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/courses/:sourcedId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"courses",
+								":sourcedId"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "sourcedId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getClassesForCourse() (not implemented)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/courses/:courseSourcedId/classes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"courses",
+								":courseSourcedId",
+								"classes"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "courseSourcedId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "enrollments",
+			"item": [
+				{
+					"name": "getEnrollments()",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/enrollments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"enrollments"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getEnrollment()",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/enrollments/:sourcedId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"enrollments",
+								":sourcedId"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "sourcedId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "gradingPeriods",
+			"item": [
+				{
+					"name": "getGradingPeriods()",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{{base_url}}/gradingPeriods",
+							"host": [
+								"{{{base_url}}"
+							],
+							"path": [
+								"gradingPeriods"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getGradingPeriod()",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/gradingPeriods/:sourcedId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"gradingPeriods",
+								":sourcedId"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "sourcedId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "orgs",
+			"item": [
+				{
+					"name": "getOrgs()",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/orgs",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orgs"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getOrg()",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/orgs/:sourcedId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orgs",
+								":sourcedId"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "sourcedId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "schools",
+			"item": [
+				{
+					"name": "getSchools()",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/schools",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"schools"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getSchool()",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/schools/:sourcedId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"schools",
+								":sourcedId"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "sourcedId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCoursesForSchool() (not implemented)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/schools/:schoolSourcedId/courses",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"schools",
+								":schoolSourcedId",
+								"courses"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "schoolSourcedId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getEnrollmentsForSchool()",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/schools/:schoolSourcedId/enrollments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"schools",
+								":schoolSourcedId",
+								"enrollments"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": null,
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "schoolSourcedId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getStudentsForSchool()",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/schools/:schoolSourcedId/students",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"schools",
+								":schoolSourcedId",
+								"students"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "schoolSourcedId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getTeachersForSchool()",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/schools/:schoolSourcedId/teachers",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"schools",
+								":schoolSourcedId",
+								"teachers"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "schoolSourcedId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getTermsForSchool()",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/schools/:schoolSourcedId/terms",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"schools",
+								":schoolSourcedId",
+								"terms"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "schoolSourcedId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getClassesForSchool()",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/schools/:schoolSourcedId/classes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"schools",
+								":schoolSourcedId",
+								"classes"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "schoolSourcedId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getEnrollmentsForClassInSchool()",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/schools/:schoolSourcedId/classes/:classSourcedId/enrollments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"schools",
+								":schoolSourcedId",
+								"classes",
+								":classSourcedId",
+								"enrollments"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "schoolSourcedId",
+									"value": ""
+								},
+								{
+									"key": "classSourcedId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getStudentsForClassInSchool() (not implemented)",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/schools/:schoolSourcedId/classes/:classSourcedId/students",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"schools",
+								":schoolSourcedId",
+								"classes",
+								":classSourcedId",
+								"students"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "schoolSourcedId",
+									"value": ""
+								},
+								{
+									"key": "classSourcedId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getTeachersForClassInSchool() (not implemented)",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/schools/:schoolSourcedId/classes/:classSourcedId/teachers",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"schools",
+								":schoolSourcedId",
+								"classes",
+								":classSourcedId",
+								"teachers"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "schoolSourcedId",
+									"value": ""
+								},
+								{
+									"key": "classSourcedId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "students",
+			"item": [
+				{
+					"name": "getStudents()",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/students",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"students"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getStudent()",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/students/:sourcedId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"students",
+								":sourcedId"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "sourcedId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getClassesForStudent()",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/students/:studentSourcedId/classes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"students",
+								":studentSourcedId",
+								"classes"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "studentSourcedId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "teachers",
+			"item": [
+				{
+					"name": "getTeachers()",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/teachers",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"teachers"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getTeacher()",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/teachers/:sourcedId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"teachers",
+								":sourcedId"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "sourcedId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getClassesForTeacher()",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/teachers/:teacherSourcedId/classes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"teachers",
+								":teacherSourcedId",
+								"classes"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "teacherSourcedId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "terms",
+			"item": [
+				{
+					"name": "getTerms()",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/terms",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"terms"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getTerm()",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/terms/:sourcedId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"terms",
+								":sourcedId"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "sourcedId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getClassesForTerm() (not implemented)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/terms/:termSourcedId/classes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"terms",
+								":termSourcedId",
+								"classes"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "termSourcedId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getGradingPeriodsForTerm() (not implemented)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/terms/:termSourcedId/gradingPeriods",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"terms",
+								":termSourcedId",
+								"gradingPeriods"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "termSourcedId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "getUsers()",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUser()",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/:sourcedId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								":sourcedId"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "sourcedId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getClassesForUser() (not implemented)",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/:userSourcedId/classes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								":userSourcedId",
+								"classes"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "userSourcedId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "https://alpha.felleskomponent.no/pwf/ims/oneroster/v1p1"
+		}
+	]
+}

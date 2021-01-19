@@ -1,0 +1,24 @@
+{
+    "academicSessions": [
+        {
+            "sourcedId": "64444dfe-d597-4fcc-be4b-09ebd639ec5e",
+            "status": "active",
+            "dateLastModified": "2021-01-19T09:56:53.223Z",
+            "title": "1. termin 2020/2021",
+            "startDate": "2020-08-01",
+            "endDate": "2020-12-31",
+            "type": "term",
+            "schoolYear": "2021"
+        },
+        {
+            "sourcedId": "559b775e-7f8a-407e-945c-71e7e27dc62a",
+            "status": "active",
+            "dateLastModified": "2021-01-19T09:56:53.223Z",
+            "title": "2. termin 2020/2021",
+            "startDate": "2021-01-01",
+            "endDate": "2021-07-31",
+            "type": "term",
+            "schoolYear": "2021"
+        }
+    ]
+}

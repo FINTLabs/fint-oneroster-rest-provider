@@ -1,0 +1,46 @@
+{
+    "enrollments": [
+        {
+            "sourcedId": "121336_1002683",
+            "status": "active",
+            "dateLastModified": "2020-11-30T16:53:49.731Z",
+            "user": {
+                "sourcedId": "00004818-f4ba-4104-9282-8c85e40cf497",
+                "type": "user",
+                "href": "http://localhost:8080/ims/oneroster/v1p1/users/00004818-f4ba-4104-9282-8c85e40cf497"
+            },
+            "school": {
+                "sourcedId": "11004",
+                "type": "org",
+                "href": "http://localhost:8080/ims/oneroster/v1p1/orgs/11004"
+            },
+            "role": "student",
+            "class": {
+                "sourcedId": "1002683",
+                "type": "class",
+                "href": "http://localhost:8080/ims/oneroster/v1p1/classes/1002683"
+            }
+        },
+        {
+            "sourcedId": "130542_1002683",
+            "status": "active",
+            "dateLastModified": "2020-11-30T16:53:49.731Z",
+            "user": {
+                "sourcedId": "002bb2de-e8b0-48f6-bd9e-ec7182dacd2a",
+                "type": "user",
+                "href": "http://localhost:8080/ims/oneroster/v1p1/users/002bb2de-e8b0-48f6-bd9e-ec7182dacd2a"
+            },
+            "school": {
+                "sourcedId": "11004",
+                "type": "org",
+                "href": "http://localhost:8080/ims/oneroster/v1p1/orgs/11004"
+            },
+            "role": "teacher",
+            "class": {
+                "sourcedId": "1002683",
+                "type": "class",
+                "href": "http://localhost:8080/ims/oneroster/v1p1/classes/1002683"
+            }
+        }
+    ]
+}
