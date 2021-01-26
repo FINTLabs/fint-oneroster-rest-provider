@@ -35,5 +35,4 @@ out/
 .vscode/
 src/main/java/no/fint/oneroster/.DS_Store
 src/main/resources/.DS_Store
-src/main/resources/nam.json
-src/main/resources/vigo.keys
+src/main/resources/vigo.key

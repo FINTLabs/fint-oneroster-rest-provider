@@ -1,8 +1,6 @@
 package no.fint.oneroster.security;
 
 import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JWEDecrypter;
-import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.crypto.RSADecrypter;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -20,6 +18,7 @@ import javax.annotation.PostConstruct;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.security.KeyPair;
 import java.security.Security;
 import java.text.ParseException;
@@ -28,7 +27,7 @@ import java.text.ParseException;
 public class JWTUtil {
     private final FintProperties fintProperties;
 
-    private JWKSet signingSet;
+    private JWKSet signingKeys;
     private KeyPair encryptionKeys;
 
     public JWTUtil(FintProperties fintProperties) {
@@ -37,12 +36,10 @@ public class JWTUtil {
 
     public JWTClaimsSet getClaimsSet(String token) throws ParseException, JOSEException, IllegalStateException {
         EncryptedJWT encryptedJWT = EncryptedJWT.parse(token);
-        JWEDecrypter jweDecrypter = new RSADecrypter(encryptionKeys.getPrivate());
-        encryptedJWT.decrypt(jweDecrypter);
+        encryptedJWT.decrypt(new RSADecrypter(encryptionKeys.getPrivate()));
 
         SignedJWT signedJWT = encryptedJWT.getPayload().toSignedJWT();
-        JWSVerifier jwsVerifier = new RSASSAVerifier(signingSet.getKeys().get(0).toRSAKey());
-        boolean verified = signedJWT.verify(jwsVerifier);
+        boolean verified = signedJWT.verify(new RSASSAVerifier(signingKeys.getKeys().get(0).toRSAKey()));
 
         if (!verified) {
             throw new JOSEException("Verification of signed JWT failed");
@@ -55,7 +52,7 @@ public class JWTUtil {
     public void init() throws IOException, ParseException {
         Security.addProvider(new BouncyCastleProvider());
 
-        signingSet = JWKSet.load(new FileInputStream(fintProperties.getSigningKeys()));
+        signingKeys = JWKSet.load(new URL(fintProperties.getSigningKeys()));
 
         PEMParser pemParser = new PEMParser(new InputStreamReader(new FileInputStream(fintProperties.getEncryptionKeys())));
         PEMKeyPair pemKeyPair = (PEMKeyPair) pemParser.readObject();
