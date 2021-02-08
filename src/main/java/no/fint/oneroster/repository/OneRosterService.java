@@ -413,13 +413,13 @@ public class OneRosterService {
         return resources -> {
             MapDifference<String, Base> difference = Maps.difference(resources, cache);
 
-            if (difference.areEqual() ) {
+            if (difference.areEqual()) {
                 return;
             }
 
             float percentage = (difference.entriesOnlyOnRight().size() * 100.0f) / cache.size();
 
-            if (!Float.isNaN(percentage) && Float.compare(percentage, 1.0f) > 0) {
+            if (!Float.isNaN(percentage) && Float.compare(percentage, 5.0f) > 0) {
                 log.warn("Too many deletes: {}% of {}", percentage, cache.size());
                 return;
             }
@@ -441,6 +441,7 @@ public class OneRosterService {
                         if (counter.get() > 0) {
                             log.info("delete {} - {}", entry.getValue().getClass().getSimpleName(), entry.getKey());
                         }
+
                         cache.remove(entry.getKey());
                     });
 
