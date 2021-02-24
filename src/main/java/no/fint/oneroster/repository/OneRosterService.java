@@ -417,12 +417,14 @@ public class OneRosterService {
                 return;
             }
 
+            /*
             float percentage = (difference.entriesOnlyOnRight().size() * 100.0f) / cache.size();
 
             if (!Float.isNaN(percentage) && Float.compare(percentage, 5.0f) > 0) {
                 log.warn("Too many deletes: {}% of {}", percentage, cache.size());
                 return;
             }
+             */
 
             difference.entriesOnlyOnLeft().entrySet()
                     .stream()

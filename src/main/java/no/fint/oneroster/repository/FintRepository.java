@@ -43,7 +43,7 @@ public class FintRepository {
     private <S, T extends AbstractCollectionResources<S>> Flux<S> getResources(Class<T> clazz, String componentKey, String endpointKey) {
         FintProperties.Component component = fintProperties.getComponent().get(componentKey);
 
-        return Flux.merge(component.getRegistration().values()
+        return Flux.concat(component.getRegistration().values()
                 .stream()
                 .map(credential -> get(clazz, credential, component.getEndpoint().get(endpointKey))
                         .flatMapIterable(T::getContent))
