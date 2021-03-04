@@ -120,7 +120,6 @@ public class FintService {
 
     public PersonResource getPersonById(String id) {
         return getResourceByTypeAndId(PersonResource.class, id);
-
     }
 
     public List<PersonalressursResource> getPersonnel() {

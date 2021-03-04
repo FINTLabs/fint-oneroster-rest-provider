@@ -33,6 +33,8 @@ class FintObjectFactory {
         resource.addBasisgruppe(Link.with('/basis-group-sourced-id'))
         resource.addUndervisningsgruppe(Link.with('/teaching-group-sourced-id'))
         resource.addKontaktlarergruppe(Link.with('/contact-teacher-group-sourced-id'))
+        resource.addElevforhold(Link.with('/student-relation-sourced-id'))
+        resource.addUndervisningsforhold(Link.with('/teaching-relation-sourced-id'))
         resource.addSelf(Link.with('school-sourced-id'))
         return resource
     }

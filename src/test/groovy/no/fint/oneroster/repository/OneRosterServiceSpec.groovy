@@ -19,33 +19,23 @@ import java.time.Year
 
 class OneRosterServiceSpec extends Specification {
 
-    FintService fintService = Mock {
+    FintService fintService = Stub() {
         getSchools() >> [FintObjectFactory.newSchool()]
         getSchoolById(_ as String) >> FintObjectFactory.newSchool()
-        getPersons() >> [FintObjectFactory.newPerson()]
         getPersonById(_ as String) >> FintObjectFactory.newPerson()
-        getStudents() >> [FintObjectFactory.newStudent()]
         getStudentById(_ as String) >> FintObjectFactory.newStudent()
-        getStudentRelations() >> [FintObjectFactory.newStudentRelation()]
         getStudentRelationById(_ as String) >> FintObjectFactory.newStudentRelation()
-        getTeachers() >> [FintObjectFactory.newTeacher()]
         getTeacherById(_ as String) >> FintObjectFactory.newTeacher()
-        getTeachingRelations() >> [FintObjectFactory.newTeachingRelation()]
         getTeachingRelationById(_ as String) >> FintObjectFactory.newTeachingRelation()
-        getBasisGroups() >> [FintObjectFactory.newBasisGroup()]
         getBasisGroupById(_ as String) >> FintObjectFactory.newBasisGroup()
-        getTeachingGroups() >> [FintObjectFactory.newTeachingGroup()]
         getTeachingGroupById(_ as String) >> FintObjectFactory.newTeachingGroup()
-        getContactTeacherGroups() >> [FintObjectFactory.newContactTeacherGroup()]
         getContactTeacherGroupById(_ as String) >> FintObjectFactory.newContactTeacherGroup()
-        getLevels() >> [FintObjectFactory.newLevel()]
         getLevelById(_ as String) >> FintObjectFactory.newLevel()
-        getSubjects() >> [FintObjectFactory.newSubject()]
         getSubjectById(_ as String) >> FintObjectFactory.newSubject()
         getPersonnelById(_ as String) >> FintObjectFactory.newPersonnel()
     }
 
-    OneRosterProperties oneRosterProperties = Mock {
+    OneRosterProperties oneRosterProperties = Stub() {
         getOrg() >> new OneRosterProperties.Org(
                 sourcedId: 'school-owner-sourced-id',
                 name: 'School owner',
@@ -57,7 +47,7 @@ class OneRosterServiceSpec extends Specification {
         )
     }
 
-    AcademicSessionService academicSessionService = Mock {
+    AcademicSessionService academicSessionService = Stub() {
         getAllTerms() >> getTerms()
     }
 
