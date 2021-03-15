@@ -50,6 +50,8 @@ public interface UserFactory {
                 .map(Personnavn::getMellomnavn)
                 .ifPresent(student::setMiddleName);
 
+        getNin(personResource).ifPresent(student::setIdentifier);
+
         return student;
     }
 
@@ -81,6 +83,12 @@ public interface UserFactory {
                 .map(Personnavn::getMellomnavn)
                 .ifPresent(teacher::setMiddleName);
 
+        getNin(personResource).ifPresent(teacher::setIdentifier);
+
         return teacher;
+    }
+
+    default Optional<String> getNin(PersonResource person) {
+        return Optional.empty();
     }
 }
