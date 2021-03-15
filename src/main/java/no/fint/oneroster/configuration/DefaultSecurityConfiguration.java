@@ -7,7 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 
 @Configuration
-@ConditionalOnProperty(name = "oneroster.access-control", havingValue = "false", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "oneroster", name = "access-control", havingValue = "false", matchIfMissing = true)
 class DefaultSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override

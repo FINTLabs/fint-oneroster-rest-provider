@@ -1,30 +1,26 @@
 package no.fint.oneroster.configuration;
 
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.RSAKey;
-import no.fint.oneroster.properties.FintProperties;
 import no.fint.oneroster.properties.OneRosterProperties;
-import no.fint.oneroster.jwt.JWTFilter;
+import no.fint.oneroster.security.ClientValidator;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import java.io.IOException;
-import java.net.URL;
-import java.text.ParseException;
+import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
+import org.springframework.security.oauth2.core.OAuth2TokenValidator;
+import org.springframework.security.oauth2.jwt.*;
 
 @Configuration
-@ConditionalOnProperty(name = "oneroster.access-control", havingValue = "true")
+@ConditionalOnProperty(prefix = "oneroster", name = "access-control", havingValue = "true")
 public class AccessControlSecurityConfiguration extends WebSecurityConfigurerAdapter {
-    private final FintProperties fintProperties;
     private final OneRosterProperties oneRosterProperties;
 
-    public AccessControlSecurityConfiguration(FintProperties fintProperties, OneRosterProperties oneRosterProperties) {
-        this.fintProperties = fintProperties;
+    @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
+    private String jwkSet;
+
+    public AccessControlSecurityConfiguration(OneRosterProperties oneRosterProperties) {
         this.oneRosterProperties = oneRosterProperties;
     }
 
@@ -39,13 +35,17 @@ public class AccessControlSecurityConfiguration extends WebSecurityConfigurerAda
                 .anyRequest()
                 .authenticated()
                 .and()
-                .addFilterBefore(new JWTFilter(signingKey(), oneRosterProperties.getClientIds()), UsernamePasswordAuthenticationFilter.class);
+                .oauth2ResourceServer(configurer -> configurer.jwt().decoder(jwtDecoder()));
     }
 
-    @Bean
-    public RSAKey signingKey() throws IOException, ParseException {
-        JWKSet jwkSet = JWKSet.load(new URL(fintProperties.getSigningKeys()));
+    private JwtDecoder jwtDecoder() {
+        OAuth2TokenValidator<Jwt> client = new ClientValidator(oneRosterProperties.getClientIds());
+        OAuth2TokenValidator<Jwt> validator = new DelegatingOAuth2TokenValidator<>(client);
 
-        return jwkSet.getKeys().get(0).toRSAKey();
+        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withJwkSetUri(jwkSet).build();
+        jwtDecoder.setJwtValidator(validator);
+
+        return jwtDecoder;
     }
 }
+

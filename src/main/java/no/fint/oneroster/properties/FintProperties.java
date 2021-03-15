@@ -9,8 +9,6 @@ import java.util.Map;
 @ConfigurationProperties("fint")
 public class FintProperties {
     private Map<String, Component> component;
-    private String signingKeys;
-    private String encryptionKeys;
 
     @Data
     public static class Component {
