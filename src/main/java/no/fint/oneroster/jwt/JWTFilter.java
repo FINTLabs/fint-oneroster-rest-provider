@@ -1,10 +1,8 @@
 package no.fint.oneroster.jwt;
 
 import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.crypto.RSADecrypter;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jwt.EncryptedJWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +16,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.security.PrivateKey;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,13 +25,11 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 @Slf4j
 public class JWTFilter extends OncePerRequestFilter {
     private final RSAKey signingKey;
-    private final PrivateKey encryptionKey;
 
     private final String[] clientIds;
 
-    public JWTFilter(RSAKey signingKey, PrivateKey encryptionKey, String[] clientIds) {
+    public JWTFilter(RSAKey signingKey, String[] clientIds) {
         this.signingKey = signingKey;
-        this.encryptionKey = encryptionKey;
         this.clientIds = clientIds;
     }
 
@@ -59,7 +54,7 @@ public class JWTFilter extends OncePerRequestFilter {
             }
 
             if (Arrays.asList(clientIds).contains(clientId)) {
-                SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("oneroster", "client",Collections.emptyList()));
+                SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("oneroster", "client", Collections.emptyList()));
             }
 
         } catch (ParseException | JOSEException | IllegalStateException ex) {
@@ -70,10 +65,7 @@ public class JWTFilter extends OncePerRequestFilter {
     }
 
     private JWTClaimsSet getJWTClaimsSet(String token) throws ParseException, JOSEException, IllegalStateException {
-        EncryptedJWT encryptedJWT = EncryptedJWT.parse(token);
-        encryptedJWT.decrypt(new RSADecrypter(encryptionKey));
-
-        SignedJWT signedJWT = encryptedJWT.getPayload().toSignedJWT();
+        SignedJWT signedJWT = SignedJWT.parse(token);
         boolean verified = signedJWT.verify(new RSASSAVerifier(signingKey));
 
         if (!verified) {
