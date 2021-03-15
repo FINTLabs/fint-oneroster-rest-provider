@@ -4,8 +4,8 @@ import no.fint.oneroster.model.vocab.RoleType
 import no.fint.oneroster.util.FintObjectFactory
 import spock.lang.Specification
 
-class ItslearningUserFactorySpec extends Specification {
-    ItslearningUserFactory rogfkUserFactory = new ItslearningUserFactory()
+class NinUserFactorySpec extends Specification {
+    NinUserFactory rogfkUserFactory = new NinUserFactory()
 
     def "student() returns user object of type student"() {
         when:

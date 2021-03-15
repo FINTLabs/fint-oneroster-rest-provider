@@ -29,7 +29,7 @@ public interface ClazzFactory {
         Clazz basisGroup = new Clazz(
                 normalize(basisgruppeResource.getSystemId().getIdentifikatorverdi()),
                 FactoryUtil.getStatusType(basisgruppeResource, ZonedDateTime.now()),
-                basisGroupNameConverter(basisgruppeResource),
+                basisGroupNameConverter(basisgruppeResource, skoleResource),
                 ClazzType.HOMEROOM,
                 GUIDRef.of(GUIDType.COURSE, normalize(arstrinnResource.getSystemId().getIdentifikatorverdi())),
                 GUIDRef.of(GUIDType.ORG, normalize(skoleResource.getSystemId().getIdentifikatorverdi())),
@@ -50,7 +50,7 @@ public interface ClazzFactory {
         Clazz teachingGroup = new Clazz(
                 normalize(undervisningsgruppeResource.getSystemId().getIdentifikatorverdi()),
                 FactoryUtil.getStatusType(undervisningsgruppeResource, ZonedDateTime.now()),
-                teachingGroupNameConverter(undervisningsgruppeResource),
+                teachingGroupNameConverter(undervisningsgruppeResource, skoleResource, fagResource),
                 ClazzType.SCHEDULED,
                 GUIDRef.of(GUIDType.COURSE, normalize(fagResource.getSystemId().getIdentifikatorverdi())),
                 GUIDRef.of(GUIDType.ORG, normalize(skoleResource.getSystemId().getIdentifikatorverdi())),
@@ -74,7 +74,7 @@ public interface ClazzFactory {
         Clazz contactTeacherGroup = new Clazz(
                 normalize(kontaktlarergruppeResource.getSystemId().getIdentifikatorverdi()),
                 FactoryUtil.getStatusType(kontaktlarergruppeResource, ZonedDateTime.now()),
-                contactTeacherGroupNameConverter(kontaktlarergruppeResource),
+                contactTeacherGroupNameConverter(kontaktlarergruppeResource, skoleResource),
                 ClazzType.HOMEROOM,
                 GUIDRef.of(GUIDType.COURSE, normalize(arstrinnResource.getSystemId().getIdentifikatorverdi())),
                 GUIDRef.of(GUIDType.ORG, normalize(skoleResource.getSystemId().getIdentifikatorverdi())),
@@ -93,15 +93,15 @@ public interface ClazzFactory {
         return contactTeacherGroup;
     }
 
-    default String basisGroupNameConverter(Gruppe basisGroup) {
+    default String basisGroupNameConverter(Gruppe basisGroup, SkoleResource school) {
         return basisGroup.getNavn();
     }
 
-    default String teachingGroupNameConverter(Gruppe teachingGroup) {
+    default String teachingGroupNameConverter(Gruppe teachingGroup, SkoleResource school, FagResource subject) {
         return teachingGroup.getNavn();
     }
 
-    default String contactTeacherGroupNameConverter(Gruppe contactTeacherGroup) {
+    default String contactTeacherGroupNameConverter(Gruppe contactTeacherGroup, SkoleResource school) {
         return contactTeacherGroup.getNavn();
     }
 }
