@@ -13,6 +13,8 @@ public class OneRosterProperties {
     private Org org;
     private AcademicSession academicSession;
     private Profile profile;
+    private boolean accessControl;
+    private String[] clientIds;
 
     @Data
     public static class Org {

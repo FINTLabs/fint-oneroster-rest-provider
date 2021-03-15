@@ -14,8 +14,8 @@ import java.time.LocalDate
 import java.time.Year
 import java.time.ZoneId
 
-class MRFylkeClazzFactorySpec extends Specification {
-    MRFylkeClazzFactory mrFylkeClazzFactory = new MRFylkeClazzFactory()
+class MrfylkeClazzFactorySpec extends Specification {
+    MrfylkeClazzFactory mrFylkeClazzFactory = new MrfylkeClazzFactory()
 
     def "basisGroupNameConverter() returns modified name"() {
         when:

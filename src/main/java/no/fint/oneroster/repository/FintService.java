@@ -120,7 +120,6 @@ public class FintService {
 
     public PersonResource getPersonById(String id) {
         return getResourceByTypeAndId(PersonResource.class, id);
-
     }
 
     public List<PersonalressursResource> getPersonnel() {
@@ -153,7 +152,7 @@ public class FintService {
         selfLinks.clear();
         resources.clear();
 
-        Flux.merge(fintRepository.getEducationResources(SkoleResources.class, FintEndpoint.SCHOOL.getKey()),
+        Flux.concat(fintRepository.getEducationResources(SkoleResources.class, FintEndpoint.SCHOOL.getKey()),
                 fintRepository.getEducationResources(PersonResources.class, FintEndpoint.PERSON.getKey()),
                 fintRepository.getEducationResources(ElevResources.class, FintEndpoint.STUDENT.getKey()),
                 fintRepository.getEducationResources(SkoleressursResources.class, FintEndpoint.TEACHER.getKey()),

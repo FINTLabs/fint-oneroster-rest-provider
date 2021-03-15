@@ -7,6 +7,7 @@ build/
 !**/src/test/**
 application-*.yaml
 k8s-secret-*.yaml
+vigo.key
 
 ### STS ###
 .apt_generated
@@ -30,7 +31,3 @@ out/
 /dist/
 /nbdist/
 /.nb-gradle/
-
-### VS Code ###
-.vscode/
-src/main/java/no/fint/oneroster/.DS_Store

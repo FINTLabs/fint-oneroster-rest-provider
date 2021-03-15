@@ -1,6 +1,6 @@
 plugins {
-    id 'org.springframework.boot' version '2.3.0.RELEASE'
-    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id 'org.springframework.boot' version '2.4.2'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
     id 'groovy'
     id 'antlr'
@@ -8,7 +8,7 @@ plugins {
 
 group = 'no.fint'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+sourceCompatibility = '11'
 
 configurations {
     compileOnly {
@@ -49,6 +49,8 @@ dependencies {
     implementation 'com.google.guava:guava:29.0-jre'
     implementation 'org.apache.commons:commons-lang3:3.9'
     implementation 'commons-beanutils:commons-beanutils:1.9.4'
+
+    implementation 'com.nimbusds:nimbus-jose-jwt:9.4.1'
 
     antlr 'org.antlr:antlr4:4.8'
     implementation 'org.antlr:antlr4-runtime:4.8'

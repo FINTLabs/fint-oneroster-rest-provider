@@ -11,17 +11,18 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
 import org.springframework.web.reactive.function.client.WebClient
+import reactor.test.StepVerifier
 import spock.lang.Specification
 
 class FintRepositorySpec extends Specification {
     MockWebServer mockWebServer = new MockWebServer()
     WebClient webClient = WebClient.builder().build()
 
-    OAuth2AuthorizedClientManager authorizedClientManager = Mock {
+    OAuth2AuthorizedClientManager authorizedClientManager = Stub() {
         authorize(_ as OAuth2AuthorizeRequest) >> Mock(OAuth2AuthorizedClient)
     }
 
-    FintProperties fintProperties = Mock {
+    FintProperties fintProperties = Stub() {
         getComponent() >> [('education'): new FintProperties.Component(
                 registration: [('1'): new FintProperties.Registration(id: _ as String, username: _ as String, password: _ as String)],
                 endpoint: [('school'): mockWebServer.url("/").toString()]
@@ -40,10 +41,10 @@ class FintRepositorySpec extends Specification {
                 .setResponseCode(200))
 
         when:
-        def resources = fintRepository.getResources(SkoleResources.class, 'education', 'school')
+        def resources = fintRepository.getEducationResources(SkoleResources.class, 'school')
 
         then:
-        resources.blockLast().navn == 'School'
+        StepVerifier.create(resources).expectNextCount(1).verifyComplete()
     }
 }
 

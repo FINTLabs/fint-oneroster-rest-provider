@@ -5,8 +5,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.reactive.ClientHttpConnector;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.*;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
@@ -23,19 +21,11 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Configuration
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-                .authorizeRequests()
-                .anyRequest()
-                .permitAll();
-    }
+public class OAuthConfiguration {
 
     @Bean
     public Authentication dummyAuthentication() {
-        return new UsernamePasswordAuthenticationToken("ims", "oneroster", Collections.emptyList());
+        return new UsernamePasswordAuthenticationToken("fint", "client", Collections.emptyList());
     }
 
     @Bean
