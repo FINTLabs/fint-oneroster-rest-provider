@@ -19,7 +19,7 @@ public class SchedulingService {
         this.oneRosterService = oneRosterService;
     }
 
-    @Scheduled(cron = "0 0 * * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     public void reset() {
         log.info("Reset");
 
