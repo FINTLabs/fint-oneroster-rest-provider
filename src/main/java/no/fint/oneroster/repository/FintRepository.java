@@ -1,5 +1,6 @@
 package no.fint.oneroster.repository;
 
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.model.resource.AbstractCollectionResources;
 import no.fint.oneroster.properties.FintProperties;
@@ -24,6 +25,9 @@ public class FintRepository {
     private final Authentication principal;
     private final OAuth2AuthorizedClientManager authorizedClientManager;
     private final FintProperties fintProperties;
+
+    @Setter
+    private long sinceTimestamp = 0L;
 
     public FintRepository(WebClient webClient, Authentication principal, OAuth2AuthorizedClientManager authorizedClientManager, FintProperties fintProperties) {
         this.webClient = webClient;
@@ -61,9 +65,13 @@ public class FintRepository {
         OAuth2AuthorizedClient authorizedClient = authorizedClientManager.authorize(authorizeRequest);
 
         return webClient.get()
-                .uri(endpoint)
+                .uri(endpoint, uriBuilder -> uriBuilder.queryParam("sinceTimeStamp", sinceTimestamp).build())
                 .attributes(oauth2AuthorizedClient(authorizedClient))
                 .retrieve()
                 .bodyToMono(clazz);
+    }
+
+    public void clear() {
+        setSinceTimestamp(0L);
     }
 }

@@ -19,6 +19,13 @@ public class SchedulingService {
         this.oneRosterService = oneRosterService;
     }
 
+    @Scheduled(cron = "0 0 * * * *")
+    public void reset() {
+        log.info("Reset");
+
+        fintService.reset();
+    }
+
     @Scheduled(initialDelayString = "${scheduling.initial-delay}", fixedDelayString = "${scheduling.fixed-delay}")
     public void update() {
         try {

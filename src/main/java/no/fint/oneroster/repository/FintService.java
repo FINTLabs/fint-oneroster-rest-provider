@@ -19,6 +19,7 @@ import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResources;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -149,10 +150,7 @@ public class FintService {
     }
 
     public void update() {
-        selfLinks.clear();
-        resources.clear();
-
-        Flux.concat(fintRepository.getEducationResources(SkoleResources.class, FintEndpoint.SCHOOL.getKey()),
+        Flux.merge(fintRepository.getEducationResources(SkoleResources.class, FintEndpoint.SCHOOL.getKey()),
                 fintRepository.getEducationResources(PersonResources.class, FintEndpoint.PERSON.getKey()),
                 fintRepository.getEducationResources(ElevResources.class, FintEndpoint.STUDENT.getKey()),
                 fintRepository.getEducationResources(SkoleressursResources.class, FintEndpoint.TEACHER.getKey()),
@@ -165,6 +163,7 @@ public class FintService {
                 fintRepository.getEducationResources(FagResources.class, FintEndpoint.SUBJECT.getKey()),
                 fintRepository.getAdministrationResources(PersonalressursResources.class, FintEndpoint.PERSONNEL.getKey()),
                 fintRepository.getAdministrationResources(PersonResources.class, FintEndpoint.PERSON.getKey()))
+                .doOnComplete(() -> fintRepository.setSinceTimestamp(Instant.now().toEpochMilli()))
                 .toStream()
                 .forEach(resource -> {
                     List<String> links = getSelfLinks(resource);
@@ -182,5 +181,12 @@ public class FintService {
                 .map(Link::getHref)
                 .map(String::toLowerCase)
                 .collect(Collectors.toList());
+    }
+
+    public void reset() {
+        selfLinks.clear();
+        resources.clear();
+
+        fintRepository.clear();
     }
 }
