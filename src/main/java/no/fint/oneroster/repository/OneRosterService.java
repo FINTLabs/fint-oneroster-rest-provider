@@ -126,11 +126,8 @@ public class OneRosterService {
                     .map(String::toLowerCase)
                     .map(fintService::getStudentRelationById)
                     .filter(Objects::nonNull)
-                    .map(this::getStudent)
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
                     .map(this::updateStudent)
-                    .filter(Objects::nonNull)
+                    .flatMap(Optional::stream)
                     .forEach(student -> resources.put(student.getSourcedId(), student));
 
             schoolResource.getUndervisningsforhold()
@@ -139,19 +136,19 @@ public class OneRosterService {
                     .map(String::toLowerCase)
                     .map(fintService::getTeachingRelationById)
                     .filter(Objects::nonNull)
-                    .map(this::getTeacher)
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
+                    .filter(isTeacher)
                     .map(this::updateTeacher)
-                    .filter(Objects::nonNull)
+                    .flatMap(Optional::stream)
                     .forEach(teacher -> resources.put(teacher.getSourcedId(), teacher));
         };
     }
 
-    private User updateStudent(ElevResource student) {
-        User user = null;
+    private Optional<User> updateStudent(ElevforholdResource studentRelation) {
+        Optional<ElevResource> student = getStudent(studentRelation);
 
-        Optional<PersonResource> person = student.getPerson()
+        Optional<PersonResource> person = student
+                .map(ElevResource::getPerson)
+                .orElseGet(Collections::emptyList)
                 .stream()
                 .map(Link::getHref)
                 .map(String::toLowerCase)
@@ -159,31 +156,28 @@ public class OneRosterService {
                 .filter(Objects::nonNull)
                 .findAny();
 
-        List<SkoleResource> schoolResources = student.getElevforhold()
+        List<SkoleResource> schoolResources = studentRelation
+                .getSkole()
                 .stream()
-                .map(Link::getHref)
-                .map(String::toLowerCase)
-                .map(fintService::getStudentRelationById)
-                .filter(Objects::nonNull)
-                .map(ElevforholdResource::getSkole)
-                .flatMap(List::stream)
                 .map(Link::getHref)
                 .map(String::toLowerCase)
                 .map(fintService::getSchoolById)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-        if (person.isPresent() && !schoolResources.isEmpty()) {
-            user = userFactory.student(student, person.get(), schoolResources);
+        if (student.isPresent() && person.isPresent() && !schoolResources.isEmpty()) {
+            return Optional.of(userFactory.student(student.get(), person.get(), schoolResources));
         }
 
-        return user;
+        return Optional.empty();
     }
 
-    private User updateTeacher(SkoleressursResource teacher) {
-        User user = null;
+    private Optional<User> updateTeacher(UndervisningsforholdResource teachingRelation) {
+        Optional<SkoleressursResource> teacher = getTeacher(teachingRelation);
 
-        Optional<PersonalressursResource> personnelResource = teacher.getPersonalressurs()
+        Optional<PersonalressursResource> personnelResource = teacher
+                .map(SkoleressursResource::getPersonalressurs)
+                .orElseGet(Collections::emptyList)
                 .stream()
                 .map(Link::getHref)
                 .map(String::toLowerCase)
@@ -201,26 +195,20 @@ public class OneRosterService {
                 .filter(Objects::nonNull)
                 .findAny();
 
-        List<SkoleResource> schoolResources = teacher.getUndervisningsforhold()
+        List<SkoleResource> schoolResources = teachingRelation
+                .getSkole()
                 .stream()
-                .map(Link::getHref)
-                .map(String::toLowerCase)
-                .map(fintService::getTeachingRelationById)
-                .filter(Objects::nonNull)
-                .filter(isTeacher)
-                .map(UndervisningsforholdResource::getSkole)
-                .flatMap(List::stream)
                 .map(Link::getHref)
                 .map(String::toLowerCase)
                 .map(fintService::getSchoolById)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-        if (personnelResource.isPresent() && personResource.isPresent() && !schoolResources.isEmpty()) {
-            user = userFactory.teacher(teacher, personnelResource.get(), personResource.get(), schoolResources);
+        if (teacher.isPresent() && personnelResource.isPresent() && personResource.isPresent() && !schoolResources.isEmpty()) {
+            return Optional.of(userFactory.teacher(teacher.get(), personnelResource.get(), personResource.get(), schoolResources));
         }
 
-        return user;
+        return Optional.empty();
     }
 
     private BiConsumer<SkoleResource, Map<String, Base>> updateBasisGroups() {
@@ -433,15 +421,6 @@ public class OneRosterService {
         if (difference.areEqual()) {
             return;
         }
-
-            /*
-            float percentage = (difference.entriesOnlyOnRight().size() * 100.0f) / cache.size();
-
-            if (!Float.isNaN(percentage) && Float.compare(percentage, 5.0f) > 0) {
-                log.warn("Too many deletes: {}% of {}", percentage, cache.size());
-                return;
-            }
-             */
 
         difference.entriesOnlyOnLeft().entrySet()
                 .stream()
