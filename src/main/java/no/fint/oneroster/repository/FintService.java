@@ -150,7 +150,7 @@ public class FintService {
     }
 
     public void update() {
-        Flux.merge(fintRepository.getEducationResources(SkoleResources.class, FintEndpoint.SCHOOL.getKey()),
+        List<? extends FintLinks> fintLinks = Flux.merge(fintRepository.getEducationResources(SkoleResources.class, FintEndpoint.SCHOOL.getKey()),
                 fintRepository.getEducationResources(PersonResources.class, FintEndpoint.PERSON.getKey()),
                 fintRepository.getEducationResources(ElevResources.class, FintEndpoint.STUDENT.getKey()),
                 fintRepository.getEducationResources(SkoleressursResources.class, FintEndpoint.TEACHER.getKey()),
@@ -163,15 +163,24 @@ public class FintService {
                 fintRepository.getEducationResources(FagResources.class, FintEndpoint.SUBJECT.getKey()),
                 fintRepository.getAdministrationResources(PersonalressursResources.class, FintEndpoint.PERSONNEL.getKey()),
                 fintRepository.getAdministrationResources(PersonResources.class, FintEndpoint.PERSON.getKey()))
-                .doOnComplete(() -> fintRepository.setSinceTimestamp(Instant.now().toEpochMilli()))
+                .doOnComplete(() -> {
+                    log.info("Timestamp: {}", fintRepository.getSinceTimestamp());
+
+                    fintRepository.setSinceTimestamp(Instant.now().toEpochMilli());
+                })
                 .toStream()
-                .forEach(resource -> {
-                    List<String> links = getSelfLinks(resource);
-                    if (links.isEmpty())
-                        return;
-                    links.forEach(link -> selfLinks.put(link, links.toString()));
-                    resources.put(links.toString(), resource);
-                });
+                .collect(Collectors.toList());
+
+        log.info("Size: {}", fintLinks.size());
+
+        fintLinks.forEach(resource -> {
+            List<String> links = getSelfLinks(resource);
+            if (links.isEmpty()) {
+                return;
+            }
+            links.forEach(link -> selfLinks.put(link, links.toString()));
+            resources.put(links.toString(), resource);
+        });
     }
 
     private <T extends FintLinks> List<String> getSelfLinks(T resource) {

@@ -47,7 +47,7 @@ public class SchedulingService {
         }
     }
 
-    private Boolean emptyCaches() {
+    private boolean emptyCaches() {
         return fintService.getSchools().isEmpty() ||
                 fintService.getStudents().isEmpty() ||
                 fintService.getTeachers().isEmpty() ||

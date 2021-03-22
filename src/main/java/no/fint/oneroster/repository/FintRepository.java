@@ -1,5 +1,6 @@
 package no.fint.oneroster.repository;
 
+import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.model.resource.AbstractCollectionResources;
@@ -26,7 +27,7 @@ public class FintRepository {
     private final OAuth2AuthorizedClientManager authorizedClientManager;
     private final FintProperties fintProperties;
 
-    @Setter
+    @Setter @Getter
     private long sinceTimestamp = 0L;
 
     public FintRepository(WebClient webClient, Authentication principal, OAuth2AuthorizedClientManager authorizedClientManager, FintProperties fintProperties) {
