@@ -2,6 +2,7 @@ package no.fint.oneroster.repository
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResources
+import no.fint.oneroster.client.FintClient
 import no.fint.oneroster.properties.FintProperties
 import no.fint.oneroster.util.FintObjectFactory
 import okhttp3.mockwebserver.MockResponse
@@ -14,7 +15,7 @@ import org.springframework.web.reactive.function.client.WebClient
 import reactor.test.StepVerifier
 import spock.lang.Specification
 
-class FintRepositorySpec extends Specification {
+class FintClientSpec extends Specification {
     MockWebServer mockWebServer = new MockWebServer()
     WebClient webClient = WebClient.builder().build()
 
@@ -29,7 +30,7 @@ class FintRepositorySpec extends Specification {
         )]
     }
 
-    FintRepository fintRepository = new FintRepository(webClient, Mock(Authentication), authorizedClientManager, fintProperties)
+    FintClient fintRepository = new FintClient(webClient, Mock(Authentication), authorizedClientManager, fintProperties)
 
     def "get() for given type returns resources of given type"() {
         given:

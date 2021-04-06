@@ -1,78 +1,197 @@
 package no.fint.oneroster.repository;
 
-import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import no.fint.model.resource.AbstractCollectionResources;
-import no.fint.oneroster.properties.FintProperties;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
-import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
+import no.fint.model.resource.FintLinks;
+import no.fint.model.resource.Link;
+import no.fint.model.resource.administrasjon.personal.PersonalressursResource;
+import no.fint.model.resource.administrasjon.personal.PersonalressursResources;
+import no.fint.model.resource.felles.PersonResource;
+import no.fint.model.resource.felles.PersonResources;
+import no.fint.model.resource.utdanning.elev.*;
+import no.fint.model.resource.utdanning.timeplan.FagResource;
+import no.fint.model.resource.utdanning.timeplan.FagResources;
+import no.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource;
+import no.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResources;
+import no.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResource;
+import no.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResources;
+import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
+import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResources;
+import no.fint.oneroster.client.FintEndpoint;
+import no.fint.oneroster.client.FintClient;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
+import java.time.Instant;
+import java.util.*;
 import java.util.stream.Collectors;
-
-import static org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction.oauth2AuthorizedClient;
 
 @Slf4j
 @Repository
 public class FintRepository {
-    private final WebClient webClient;
-    private final Authentication principal;
-    private final OAuth2AuthorizedClientManager authorizedClientManager;
-    private final FintProperties fintProperties;
+    private final FintClient fintClient;
 
-    @Setter @Getter
-    private long sinceTimestamp = 0L;
+    private final Map<String, String> selfLinks = new HashMap<>();
+    private final Map<String, FintLinks> resources = new HashMap<>();
 
-    public FintRepository(WebClient webClient, Authentication principal, OAuth2AuthorizedClientManager authorizedClientManager, FintProperties fintProperties) {
-        this.webClient = webClient;
-        this.principal = principal;
-        this.authorizedClientManager = authorizedClientManager;
-        this.fintProperties = fintProperties;
+    public FintRepository(FintClient fintClient) {
+        this.fintClient = fintClient;
     }
 
-    public <S, T extends AbstractCollectionResources<S>> Flux<S> getEducationResources(Class<T> clazz, String endpoint) {
-        return getResources(clazz, FintComponent.EDUCATION.getKey(), endpoint);
+    public List<SkoleResource> getSchools() {
+        return getResourcesByType(SkoleResource.class);
     }
 
-    public <S, T extends AbstractCollectionResources<S>> Flux<S> getAdministrationResources(Class<T> clazz, String endpoint) {
-        return getResources(clazz, FintComponent.ADMINISTRATION.getKey(), endpoint);
+    public SkoleResource getSchoolById(String id) {
+        return getResourceByTypeAndId(SkoleResource.class, id);
     }
 
-    private <S, T extends AbstractCollectionResources<S>> Flux<S> getResources(Class<T> clazz, String componentKey, String endpointKey) {
-        FintProperties.Component component = fintProperties.getComponent().get(componentKey);
+    public List<ElevResource> getStudents() {
+        return getResourcesByType(ElevResource.class);
+    }
 
-        return Flux.concat(component.getRegistration().values()
+    public ElevResource getStudentById(String id) {
+        return getResourceByTypeAndId(ElevResource.class, id);
+    }
+
+    public List<SkoleressursResource> getTeachers() {
+        return getResourcesByType(SkoleressursResource.class);
+    }
+
+    public SkoleressursResource getTeacherById(String id) {
+        return getResourceByTypeAndId(SkoleressursResource.class, id);
+    }
+
+    public List<ElevforholdResource> getStudentRelations() {
+        return getResourcesByType(ElevforholdResource.class);
+    }
+
+    public ElevforholdResource getStudentRelationById(String id) {
+        return getResourceByTypeAndId(ElevforholdResource.class, id);
+    }
+
+    public List<UndervisningsforholdResource> getTeachingRelations() {
+        return getResourcesByType(UndervisningsforholdResource.class);
+    }
+
+    public UndervisningsforholdResource getTeachingRelationById(String id) {
+        return getResourceByTypeAndId(UndervisningsforholdResource.class, id);
+    }
+
+    public List<BasisgruppeResource> getBasisGroups() {
+        return getResourcesByType(BasisgruppeResource.class);
+    }
+
+    public BasisgruppeResource getBasisGroupById(String id) {
+        return getResourceByTypeAndId(BasisgruppeResource.class, id);
+    }
+
+    public List<KontaktlarergruppeResource> getContactTeacherGroups() {
+        return getResourcesByType(KontaktlarergruppeResource.class);
+    }
+
+    public KontaktlarergruppeResource getContactTeacherGroupById(String id) {
+        return getResourceByTypeAndId(KontaktlarergruppeResource.class, id);
+    }
+
+    public List<UndervisningsgruppeResource> getTeachingGroups() {
+        return getResourcesByType(UndervisningsgruppeResource.class);
+    }
+
+    public UndervisningsgruppeResource getTeachingGroupById(String id) {
+        return getResourceByTypeAndId(UndervisningsgruppeResource.class, id);
+    }
+
+    public List<ArstrinnResource> getLevels() {
+        return getResourcesByType(ArstrinnResource.class);
+    }
+
+    public ArstrinnResource getLevelById(String id) {
+        return getResourceByTypeAndId(ArstrinnResource.class, id);
+    }
+
+    public List<FagResource> getSubjects() {
+        return getResourcesByType(FagResource.class);
+    }
+
+    public FagResource getSubjectById(String id) {
+        return getResourceByTypeAndId(FagResource.class, id);
+    }
+
+    public List<PersonResource> getPersons() {
+        return getResourcesByType(PersonResource.class);
+    }
+
+    public PersonResource getPersonById(String id) {
+        return getResourceByTypeAndId(PersonResource.class, id);
+    }
+
+    public List<PersonalressursResource> getPersonnel() {
+        return getResourcesByType(PersonalressursResource.class);
+    }
+
+    public PersonalressursResource getPersonnelById(String id) {
+        return getResourceByTypeAndId(PersonalressursResource.class, id);
+    }
+
+    public <T extends FintLinks> List<T> getResourcesByType(Class<T> clazz) {
+        return resources.values()
                 .stream()
-                .map(credential -> get(clazz, credential, component.getEndpoint().get(endpointKey))
-                        .flatMapIterable(T::getContent))
-                .collect(Collectors.toList()));
+                .filter(clazz::isInstance)
+                .map(clazz::cast)
+                .collect(Collectors.toList());
     }
 
-    private <T> Mono<T> get(Class<T> clazz, FintProperties.Registration credential, String endpoint) {
-        OAuth2AuthorizeRequest authorizeRequest = OAuth2AuthorizeRequest.withClientRegistrationId(credential.getId())
-                .principal(principal)
-                .attributes(attrs -> {
-                    attrs.put(OAuth2ParameterNames.USERNAME, credential.getUsername());
-                    attrs.put(OAuth2ParameterNames.PASSWORD, credential.getPassword());
-                }).build();
+    private <T extends FintLinks> T getResourceByTypeAndId(Class<T> clazz, String id) {
+        try {
+            String selfLinks = this.selfLinks.get(id);
 
-        OAuth2AuthorizedClient authorizedClient = authorizedClientManager.authorize(authorizeRequest);
+            return clazz.cast(resources.get(selfLinks));
+        } catch (ClassCastException ex) {
+            log.warn(id, ex);
 
-        return webClient.get()
-                .uri(endpoint, uriBuilder -> uriBuilder.queryParam("sinceTimeStamp", sinceTimestamp).build())
-                .attributes(oauth2AuthorizedClient(authorizedClient))
-                .retrieve()
-                .bodyToMono(clazz);
+            return null;
+        }
     }
 
-    public void clear() {
-        setSinceTimestamp(0L);
+    public void update() {
+        Flux.merge(fintClient.getEducationResources(SkoleResources.class, FintEndpoint.SCHOOL.getKey()),
+                fintClient.getEducationResources(PersonResources.class, FintEndpoint.PERSON.getKey()),
+                fintClient.getEducationResources(ElevResources.class, FintEndpoint.STUDENT.getKey()),
+                fintClient.getEducationResources(SkoleressursResources.class, FintEndpoint.TEACHER.getKey()),
+                fintClient.getEducationResources(ElevforholdResources.class, FintEndpoint.STUDENT_RELATION.getKey()),
+                fintClient.getEducationResources(UndervisningsforholdResources.class, FintEndpoint.TEACHING_RELATION.getKey()),
+                fintClient.getEducationResources(BasisgruppeResources.class, FintEndpoint.BASIS_GROUP.getKey()),
+                fintClient.getEducationResources(UndervisningsgruppeResources.class, FintEndpoint.TEACHING_GROUP.getKey()),
+                fintClient.getEducationResources(KontaktlarergruppeResources.class, FintEndpoint.CONTACT_TEACHER_GROUP.getKey()),
+                fintClient.getEducationResources(ArstrinnResources.class, FintEndpoint.LEVEL.getKey()),
+                fintClient.getEducationResources(FagResources.class, FintEndpoint.SUBJECT.getKey()),
+                fintClient.getAdministrationResources(PersonalressursResources.class, FintEndpoint.PERSONNEL.getKey()),
+                fintClient.getAdministrationResources(PersonResources.class, FintEndpoint.PERSON.getKey()))
+                .doOnComplete(() -> fintClient.setSinceTimestamp(Instant.now().toEpochMilli()))
+                .toStream()
+                .forEach(resource -> {
+                    List<String> links = getSelfLinks(resource);
+                    if (links.isEmpty()) {
+                        return;
+                    }
+                    links.forEach(link -> selfLinks.put(link, links.toString()));
+                    resources.put(links.toString(), resource);
+                });
+    }
+
+    private <T extends FintLinks> List<String> getSelfLinks(T resource) {
+        return Optional.ofNullable(resource.getSelfLinks())
+                .orElseGet(Collections::emptyList)
+                .stream()
+                .map(Link::getHref)
+                .map(String::toLowerCase)
+                .collect(Collectors.toList());
+    }
+
+    public void reset() {
+        selfLinks.clear();
+        resources.clear();
+
+        fintClient.setSinceTimestamp(0L);
     }
 }

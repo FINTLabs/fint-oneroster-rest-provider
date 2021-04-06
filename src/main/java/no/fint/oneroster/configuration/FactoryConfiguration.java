@@ -15,32 +15,32 @@ import org.springframework.context.annotation.Configuration;
 public class FactoryConfiguration {
 
     @Bean
-    @ConditionalOnProperty(prefix = "oneroster", name = "profile.clazz-factory", havingValue = "default", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "oneroster", name = "class-factory", havingValue = "default", matchIfMissing = true)
     public ClazzFactory clazzFactory() {
         return new DefaultClazzFactory();
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "oneroster", name = "profile.clazz-factory", havingValue = "mrfylke-ist")
+    @ConditionalOnProperty(prefix = "oneroster", name = "class-factory", havingValue = "mrfylke-ist")
     public ClazzFactory mrfylkeISTClazzFactory() {
         return new MrfylkeISTClazzFactory();
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "oneroster", name = "profile.clazz-factory", havingValue = "mrfylke-vis")
+    @ConditionalOnProperty(prefix = "oneroster", name = "class-factory", havingValue = "mrfylke-vis")
     public ClazzFactory mrfylkeVISClazzFactory() {
         return new MrfylkeVISClazzFactory();
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "oneroster", name = "profile.user-factory", havingValue = "default", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "oneroster", name = "user-factory", havingValue = "default", matchIfMissing = true)
     public UserFactory userFactory() {
         return new DefaultUserFactory();
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "oneroster", name = "profile.user-factory", havingValue = "nin")
-    public UserFactory itslearningUserFactory() {
+    @ConditionalOnProperty(prefix = "oneroster", name = "user-factory", havingValue = "nin")
+    public UserFactory ninUserFactory() {
         return new NinUserFactory();
     }
 }

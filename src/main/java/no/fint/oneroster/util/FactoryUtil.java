@@ -1,7 +1,7 @@
 package no.fint.oneroster.util;
 
 import no.fint.model.felles.kompleksedatatyper.Periode;
-import no.fint.model.utdanning.basisklasser.Gruppe;
+import no.fint.model.resource.utdanning.basisklasser.GruppeResource;
 import no.fint.oneroster.model.vocab.StatusType;
 
 import java.time.ZonedDateTime;
@@ -10,10 +10,12 @@ import java.util.List;
 
 public class FactoryUtil {
 
-    public static StatusType getStatusType(Gruppe group, ZonedDateTime zonedDateTime) {
+    public static StatusType getStatusType(GruppeResource group, ZonedDateTime zonedDateTime) {
         List<Periode> period = group.getPeriode();
 
-        if (period.isEmpty()) return StatusType.ACTIVE;
+        if (period == null || period.isEmpty()) {
+            return StatusType.ACTIVE;
+        }
 
         boolean active = period.stream()
                 .findFirst()

@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.fint.oneroster.exception.NotFoundException;
 import no.fint.oneroster.model.*;
 import no.fint.oneroster.model.vocab.RoleType;
-import no.fint.oneroster.repository.OneRosterService;
+import no.fint.oneroster.repository.OneRosterRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -13,18 +13,18 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class UserService {
-    private final OneRosterService oneRosterService;
+    private final OneRosterRepository oneRosterRepository;
 
-    public UserService(OneRosterService oneRosterService) {
-        this.oneRosterService = oneRosterService;
+    public UserService(OneRosterRepository oneRosterRepository) {
+        this.oneRosterRepository = oneRosterRepository;
     }
 
     public List<User> getAllUsers() {
-        return oneRosterService.getUsers();
+        return oneRosterRepository.getUsers();
     }
 
     public User getUser(String sourcedId) {
-        return Optional.ofNullable(oneRosterService.getUserById(sourcedId))
+        return Optional.ofNullable(oneRosterRepository.getUserById(sourcedId))
                 .orElseThrow(NotFoundException::new);
     }
 
@@ -36,7 +36,7 @@ public class UserService {
     }
 
     public User getStudent(String sourcedId) {
-        return Optional.ofNullable(oneRosterService.getUserById(sourcedId))
+        return Optional.ofNullable(oneRosterRepository.getUserById(sourcedId))
                 .filter(user -> user.getRole().equals(RoleType.STUDENT))
                 .orElseThrow(NotFoundException::new);
     }
@@ -49,7 +49,7 @@ public class UserService {
     }
 
     public User getTeacher(String sourcedId) {
-        return Optional.ofNullable(oneRosterService.getUserById(sourcedId))
+        return Optional.ofNullable(oneRosterRepository.getUserById(sourcedId))
                 .filter(user -> user.getRole().equals(RoleType.TEACHER))
                 .orElseThrow(NotFoundException::new);
     }
@@ -57,12 +57,12 @@ public class UserService {
     public List<Clazz> getClazzesForStudent(String sourcedId) {
         User student = getStudent(sourcedId);
 
-        return oneRosterService.getEnrollments()
+        return oneRosterRepository.getEnrollments()
                 .stream()
                 .filter(enrollment -> enrollment.getUser().getSourcedId().equals(student.getSourcedId()))
                 .map(Enrollment::getClazz)
                 .map(GUIDRef::getSourcedId)
-                .map(oneRosterService::getClazzById)
+                .map(oneRosterRepository::getClazzById)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
@@ -70,12 +70,12 @@ public class UserService {
     public List<Clazz> getClazzesForTeacher(String sourcedId) {
         User teacher = getTeacher(sourcedId);
 
-        return oneRosterService.getEnrollments()
+        return oneRosterRepository.getEnrollments()
                 .stream()
                 .filter(enrollment -> enrollment.getUser().getSourcedId().equals(teacher.getSourcedId()))
                 .map(Enrollment::getClazz)
                 .map(GUIDRef::getSourcedId)
-                .map(oneRosterService::getClazzById)
+                .map(oneRosterRepository::getClazzById)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }

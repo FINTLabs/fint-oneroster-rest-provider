@@ -1,4 +1,4 @@
-package no.fint.oneroster.repository;
+package no.fint.oneroster.client;
 
 public enum FintComponent {
     EDUCATION("education"),

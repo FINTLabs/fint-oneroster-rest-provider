@@ -19,7 +19,7 @@ import no.fint.oneroster.model.*;
 import no.fint.oneroster.model.vocab.GUIDType;
 import no.fint.oneroster.properties.OneRosterProperties;
 import no.fint.oneroster.service.AcademicSessionService;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentMap;
@@ -30,24 +30,24 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Service
-public class OneRosterService {
+@Repository
+public class OneRosterRepository {
     private final OneRosterProperties oneRosterProperties;
     private final AcademicSessionService academicSessionService;
     private final ClazzFactory clazzFactory;
     private final UserFactory userFactory;
-    private final FintService fintService;
+    private final FintRepository fintRepository;
 
     private final ConcurrentMap<String, Base> cache = new ConcurrentSkipListMap<>();
 
     private final AtomicInteger counter = new AtomicInteger();
 
-    public OneRosterService(OneRosterProperties oneRosterProperties, AcademicSessionService academicSessionService, ClazzFactory clazzFactory, UserFactory userFactory, FintService fintService) {
+    public OneRosterRepository(OneRosterProperties oneRosterProperties, AcademicSessionService academicSessionService, ClazzFactory clazzFactory, UserFactory userFactory, FintRepository fintRepository) {
         this.oneRosterProperties = oneRosterProperties;
         this.academicSessionService = academicSessionService;
         this.clazzFactory = clazzFactory;
         this.userFactory = userFactory;
-        this.fintService = fintService;
+        this.fintRepository = fintRepository;
     }
 
     public List<Org> getOrgs() {
@@ -103,6 +103,7 @@ public class OneRosterService {
             return clazz.cast(cache.get(sourcedId));
         } catch (ClassCastException ex) {
             log.warn(sourcedId, ex);
+
             return null;
         }
     }
@@ -124,7 +125,7 @@ public class OneRosterService {
                     .stream()
                     .map(Link::getHref)
                     .map(String::toLowerCase)
-                    .map(fintService::getStudentRelationById)
+                    .map(fintRepository::getStudentRelationById)
                     .filter(Objects::nonNull)
                     .map(this::updateStudent)
                     .flatMap(Optional::stream)
@@ -134,7 +135,7 @@ public class OneRosterService {
                     .stream()
                     .map(Link::getHref)
                     .map(String::toLowerCase)
-                    .map(fintService::getTeachingRelationById)
+                    .map(fintRepository::getTeachingRelationById)
                     .filter(Objects::nonNull)
                     .filter(isTeacher)
                     .map(this::updateTeacher)
@@ -152,7 +153,7 @@ public class OneRosterService {
                 .stream()
                 .map(Link::getHref)
                 .map(String::toLowerCase)
-                .map(fintService::getPersonById)
+                .map(fintRepository::getPersonById)
                 .filter(Objects::nonNull)
                 .findAny();
 
@@ -161,7 +162,7 @@ public class OneRosterService {
                 .stream()
                 .map(Link::getHref)
                 .map(String::toLowerCase)
-                .map(fintService::getSchoolById)
+                .map(fintRepository::getSchoolById)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
@@ -181,7 +182,7 @@ public class OneRosterService {
                 .stream()
                 .map(Link::getHref)
                 .map(String::toLowerCase)
-                .map(fintService::getPersonnelById)
+                .map(fintRepository::getPersonnelById)
                 .filter(Objects::nonNull)
                 .findAny();
 
@@ -191,7 +192,7 @@ public class OneRosterService {
                 .stream()
                 .map(Link::getHref)
                 .map(String::toLowerCase)
-                .map(fintService::getPersonById)
+                .map(fintRepository::getPersonById)
                 .filter(Objects::nonNull)
                 .findAny();
 
@@ -200,7 +201,7 @@ public class OneRosterService {
                 .stream()
                 .map(Link::getHref)
                 .map(String::toLowerCase)
-                .map(fintService::getSchoolById)
+                .map(fintRepository::getSchoolById)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
@@ -222,14 +223,14 @@ public class OneRosterService {
                     .stream()
                     .map(Link::getHref)
                     .map(String::toLowerCase)
-                    .map(fintService::getBasisGroupById)
+                    .map(fintRepository::getBasisGroupById)
                     .filter(Objects::nonNull)
                     .forEach(basisGroup -> {
                         Optional<ArstrinnResource> level = basisGroup.getTrinn()
                                 .stream()
                                 .map(Link::getHref)
                                 .map(String::toLowerCase)
-                                .map(fintService::getLevelById)
+                                .map(fintRepository::getLevelById)
                                 .filter(Objects::nonNull)
                                 .findAny();
 
@@ -244,7 +245,7 @@ public class OneRosterService {
                                     .stream()
                                     .map(Link::getHref)
                                     .map(String::toLowerCase)
-                                    .map(fintService::getStudentRelationById)
+                                    .map(fintRepository::getStudentRelationById)
                                     .filter(Objects::nonNull)
                                     .forEach(studentRelation -> getStudent(studentRelation).ifPresent(student -> {
                                         Enrollment enrollment = EnrollmentFactory.student(studentRelation, student, basisGroup, schoolResource);
@@ -255,7 +256,7 @@ public class OneRosterService {
                                     .stream()
                                     .map(Link::getHref)
                                     .map(String::toLowerCase)
-                                    .map(fintService::getTeachingRelationById)
+                                    .map(fintRepository::getTeachingRelationById)
                                     .filter(Objects::nonNull)
                                     .forEach(teachingRelation -> getTeacher(teachingRelation).ifPresent(teacher -> {
                                         Enrollment enrollment = EnrollmentFactory.teacher(teachingRelation, teacher, basisGroup, schoolResource);
@@ -276,14 +277,14 @@ public class OneRosterService {
                     .stream()
                     .map(Link::getHref)
                     .map(String::toLowerCase)
-                    .map(fintService::getTeachingGroupById)
+                    .map(fintRepository::getTeachingGroupById)
                     .filter(Objects::nonNull)
                     .forEach(teachingGroup -> {
                         Optional<FagResource> subject = teachingGroup.getFag()
                                 .stream()
                                 .map(Link::getHref)
                                 .map(String::toLowerCase)
-                                .map(fintService::getSubjectById)
+                                .map(fintRepository::getSubjectById)
                                 .filter(Objects::nonNull)
                                 .findFirst();
 
@@ -298,7 +299,7 @@ public class OneRosterService {
                                     .stream()
                                     .map(Link::getHref)
                                     .map(String::toLowerCase)
-                                    .map(fintService::getStudentRelationById)
+                                    .map(fintRepository::getStudentRelationById)
                                     .filter(Objects::nonNull)
                                     .forEach(studentRelation -> getStudent(studentRelation).ifPresent(student -> {
                                         Enrollment enrollment = EnrollmentFactory.student(studentRelation, student, teachingGroup, schoolResource);
@@ -309,7 +310,7 @@ public class OneRosterService {
                                     .stream()
                                     .map(Link::getHref)
                                     .map(String::toLowerCase)
-                                    .map(fintService::getTeachingRelationById)
+                                    .map(fintRepository::getTeachingRelationById)
                                     .filter(Objects::nonNull)
                                     .forEach(teachingRelation -> getTeacher(teachingRelation).ifPresent(teacher -> {
                                         Enrollment enrollment = EnrollmentFactory.teacher(teachingRelation, teacher, teachingGroup, schoolResource);
@@ -327,7 +328,7 @@ public class OneRosterService {
                 .stream()
                 .map(Link::getHref)
                 .map(String::toLowerCase)
-                .map(fintService::getContactTeacherGroupById)
+                .map(fintRepository::getContactTeacherGroupById)
                 .filter(Objects::nonNull)
                 .forEach(contactTeacherGroup -> {
                     Optional<ArstrinnResource> level = contactTeacherGroup.getBasisgruppe()
@@ -335,13 +336,13 @@ public class OneRosterService {
                             .findFirst()
                             .map(Link::getHref)
                             .map(String::toLowerCase)
-                            .map(fintService::getBasisGroupById)
+                            .map(fintRepository::getBasisGroupById)
                             .map(BasisgruppeResource::getTrinn)
                             .orElseGet(Collections::emptyList)
                             .stream()
                             .map(Link::getHref)
                             .map(String::toLowerCase)
-                            .map(fintService::getLevelById)
+                            .map(fintRepository::getLevelById)
                             .filter(Objects::nonNull)
                             .findAny();
 
@@ -353,7 +354,7 @@ public class OneRosterService {
                                 .stream()
                                 .map(Link::getHref)
                                 .map(String::toLowerCase)
-                                .map(fintService::getStudentRelationById)
+                                .map(fintRepository::getStudentRelationById)
                                 .filter(Objects::nonNull)
                                 .forEach(studentRelation -> getStudent(studentRelation).ifPresent(student -> {
                                     Enrollment enrollment = EnrollmentFactory.student(studentRelation, student, contactTeacherGroup, schoolResource);
@@ -364,7 +365,7 @@ public class OneRosterService {
                                 .stream()
                                 .map(Link::getHref)
                                 .map(String::toLowerCase)
-                                .map(fintService::getTeachingRelationById)
+                                .map(fintRepository::getTeachingRelationById)
                                 .filter(Objects::nonNull)
                                 .forEach(teachingRelation -> getTeacher(teachingRelation).ifPresent(teacher -> {
                                     Enrollment enrollment = EnrollmentFactory.teacher(teachingRelation, teacher, contactTeacherGroup, schoolResource);
@@ -379,7 +380,7 @@ public class OneRosterService {
                 .stream()
                 .map(Link::getHref)
                 .map(String::toLowerCase)
-                .map(fintService::getTeacherById)
+                .map(fintRepository::getTeacherById)
                 .filter(Objects::nonNull)
                 .findAny();
     }
@@ -389,7 +390,7 @@ public class OneRosterService {
                 .stream()
                 .map(Link::getHref)
                 .map(String::toLowerCase)
-                .map(fintService::getStudentById)
+                .map(fintRepository::getStudentById)
                 .filter(Objects::nonNull)
                 .findAny();
     }
@@ -399,13 +400,13 @@ public class OneRosterService {
 
         Org schoolOwner = OrgFactory.schoolOwner(oneRosterProperties.getOrg());
 
-        fintService.getSchools().forEach(schoolResource -> {
+        fintRepository.getSchools().forEach(schoolResource -> {
             updateSchools(schoolOwner)
                     .andThen(updateBasisGroups())
                     .andThen(updateTeachingGroups())
                     .accept(schoolResource, resources);
 
-            if (oneRosterProperties.getProfile().isContactTeacherGroups()) {
+            if (oneRosterProperties.isContactTeacherGroups()) {
                 updateContactTeacherGroups(schoolResource, resources);
             }
         });

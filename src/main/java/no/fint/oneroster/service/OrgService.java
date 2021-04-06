@@ -4,7 +4,7 @@ import no.fint.oneroster.exception.NotFoundException;
 import no.fint.oneroster.model.*;
 import no.fint.oneroster.model.vocab.OrgType;
 import no.fint.oneroster.model.vocab.RoleType;
-import no.fint.oneroster.repository.OneRosterService;
+import no.fint.oneroster.repository.OneRosterRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -12,20 +12,20 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrgService {
-    private final OneRosterService oneRosterService;
+    private final OneRosterRepository oneRosterRepository;
     private final AcademicSessionService academicSessionService;
 
-    public OrgService(OneRosterService oneRosterService, AcademicSessionService academicSessionService) {
-        this.oneRosterService = oneRosterService;
+    public OrgService(OneRosterRepository oneRosterRepository, AcademicSessionService academicSessionService) {
+        this.oneRosterRepository = oneRosterRepository;
         this.academicSessionService = academicSessionService;
     }
 
     public List<Org> getAllOrgs() {
-        return oneRosterService.getOrgs();
+        return oneRosterRepository.getOrgs();
     }
 
     public Org getOrg(String sourcedId) {
-        return Optional.ofNullable(oneRosterService.getOrgById(sourcedId))
+        return Optional.ofNullable(oneRosterRepository.getOrgById(sourcedId))
                 .orElseThrow(NotFoundException::new);
     }
 
@@ -37,7 +37,7 @@ public class OrgService {
     }
 
     public Org getSchool(String sourcedId) {
-        return Optional.ofNullable(oneRosterService.getOrgById(sourcedId))
+        return Optional.ofNullable(oneRosterRepository.getOrgById(sourcedId))
                 .filter(org -> org.getType().equals(OrgType.SCHOOL))
                 .orElseThrow(NotFoundException::new);
     }
@@ -45,7 +45,7 @@ public class OrgService {
     public List<Clazz> getClazzesForSchool(String sourcedId) {
         Org school = getSchool(sourcedId);
 
-        return oneRosterService.getClazzes()
+        return oneRosterRepository.getClazzes()
                 .stream()
                 .filter(clazz -> clazz.getSchool().getSourcedId().equals(school.getSourcedId()))
                 .collect(Collectors.toList());
@@ -54,7 +54,7 @@ public class OrgService {
     public List<Enrollment> getEnrollmentsForSchool(String sourcedId) {
         Org school = getSchool(sourcedId);
 
-        return oneRosterService.getEnrollments()
+        return oneRosterRepository.getEnrollments()
                 .stream()
                 .filter(enrollment -> enrollment.getSchool().getSourcedId().equals(school.getSourcedId()))
                 .collect(Collectors.toList());
@@ -63,7 +63,7 @@ public class OrgService {
     public List<User> getStudentsForSchool(String sourcedId) {
         Org school = getSchool(sourcedId);
 
-        return oneRosterService.getUsers()
+        return oneRosterRepository.getUsers()
                 .stream()
                 .filter(user -> user.getRole().equals(RoleType.STUDENT) &&
                         user.getOrgs().stream().map(GUIDRef::getSourcedId).anyMatch(school.getSourcedId()::equals))
@@ -73,7 +73,7 @@ public class OrgService {
     public List<User> getTeachersForSchool(String sourcedId) {
         Org school = getSchool(sourcedId);
 
-        return oneRosterService.getUsers()
+        return oneRosterRepository.getUsers()
                 .stream()
                 .filter(user -> user.getRole().equals(RoleType.TEACHER) &&
                         user.getOrgs().stream().map(GUIDRef::getSourcedId).anyMatch(school.getSourcedId()::equals))
@@ -83,10 +83,10 @@ public class OrgService {
     public List<Enrollment> getEnrollmentsForClazzInSchool(String schoolSourcedId, String clazzSourcedId) {
         Org school = getSchool(schoolSourcedId);
 
-        Clazz clazz = Optional.ofNullable(oneRosterService.getClazzById(clazzSourcedId))
+        Clazz clazz = Optional.ofNullable(oneRosterRepository.getClazzById(clazzSourcedId))
                 .orElseThrow(NotFoundException::new);
 
-        return oneRosterService.getEnrollments()
+        return oneRosterRepository.getEnrollments()
                 .stream()
                 .filter(enrollment -> enrollment.getSchool().getSourcedId().equals(school.getSourcedId()) &&
                         enrollment.getClazz().getSourcedId().equals(clazz.getSourcedId()))

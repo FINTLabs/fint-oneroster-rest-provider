@@ -8,12 +8,12 @@ import no.fint.oneroster.model.vocab.ClazzType
 import no.fint.oneroster.model.vocab.GUIDType
 import no.fint.oneroster.model.vocab.RoleType
 import no.fint.oneroster.model.vocab.StatusType
-import no.fint.oneroster.repository.OneRosterService
+import no.fint.oneroster.repository.OneRosterRepository
 import spock.lang.Specification
 
 class UserServiceSpec extends Specification {
 
-    OneRosterService oneRosterService = Mock()
+    OneRosterRepository oneRosterService = Mock()
 
     UserService userService = new UserService(oneRosterService)
 

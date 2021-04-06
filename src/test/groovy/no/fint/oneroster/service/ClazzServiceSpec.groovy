@@ -10,7 +10,7 @@ import no.fint.oneroster.model.vocab.GUIDType
 import no.fint.oneroster.model.vocab.RoleType
 import no.fint.oneroster.model.vocab.SessionType
 import no.fint.oneroster.model.vocab.StatusType
-import no.fint.oneroster.repository.OneRosterService
+import no.fint.oneroster.repository.OneRosterRepository
 import spock.lang.Specification
 
 import java.time.LocalDate
@@ -18,7 +18,7 @@ import java.time.Year
 
 class ClazzServiceSpec extends Specification {
 
-    OneRosterService oneRosterService = Mock()
+    OneRosterRepository oneRosterService = Mock()
 
     ClazzService clazzService = new ClazzService(oneRosterService)
 

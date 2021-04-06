@@ -3,7 +3,7 @@ package no.fint.oneroster.service;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.oneroster.exception.NotFoundException;
 import no.fint.oneroster.model.Enrollment;
-import no.fint.oneroster.repository.OneRosterService;
+import no.fint.oneroster.repository.OneRosterRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -11,18 +11,18 @@ import java.util.*;
 @Slf4j
 @Service
 public class EnrollmentService {
-    private final OneRosterService oneRosterService;
+    private final OneRosterRepository oneRosterRepository;
 
-    public EnrollmentService(OneRosterService oneRosterService) {
-        this.oneRosterService = oneRosterService;
+    public EnrollmentService(OneRosterRepository oneRosterRepository) {
+        this.oneRosterRepository = oneRosterRepository;
     }
 
     public List<Enrollment> getAllEnrollments() {
-        return oneRosterService.getEnrollments();
+        return oneRosterRepository.getEnrollments();
     }
 
     public Enrollment getEnrollment(String sourcedId) {
-        return Optional.ofNullable(oneRosterService.getEnrollmentById(sourcedId))
+        return Optional.ofNullable(oneRosterRepository.getEnrollmentById(sourcedId))
                 .orElseThrow(NotFoundException::new);
     }
 }

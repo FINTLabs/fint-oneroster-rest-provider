@@ -7,7 +7,6 @@ import no.fint.model.resource.utdanning.timeplan.FagResource;
 import no.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
-import no.fint.model.utdanning.basisklasser.Gruppe;
 import no.fint.oneroster.model.AcademicSession;
 import no.fint.oneroster.model.Clazz;
 import no.fint.oneroster.model.GUIDRef;
@@ -93,15 +92,15 @@ public interface ClazzFactory {
         return contactTeacherGroup;
     }
 
-    default String basisGroupNameConverter(Gruppe basisGroup, SkoleResource school) {
+    default String basisGroupNameConverter(BasisgruppeResource basisGroup, SkoleResource school) {
         return basisGroup.getNavn();
     }
 
-    default String teachingGroupNameConverter(Gruppe teachingGroup, SkoleResource school, FagResource subject) {
+    default String teachingGroupNameConverter(UndervisningsgruppeResource teachingGroup, SkoleResource school, FagResource subject) {
         return teachingGroup.getNavn();
     }
 
-    default String contactTeacherGroupNameConverter(Gruppe contactTeacherGroup, SkoleResource school) {
+    default String contactTeacherGroupNameConverter(KontaktlarergruppeResource contactTeacherGroup, SkoleResource school) {
         return contactTeacherGroup.getNavn();
     }
 }

@@ -1,26 +1,22 @@
 package no.fint.oneroster.factory.clazz;
 
+import no.fint.model.resource.utdanning.elev.BasisgruppeResource;
 import no.fint.model.resource.utdanning.timeplan.FagResource;
+import no.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
-import no.fint.model.utdanning.basisklasser.Gruppe;
 
 import java.util.Map;
 
 public class MrfylkeVISClazzFactory implements ClazzFactory {
 
     @Override
-    public String basisGroupNameConverter(Gruppe basisGroup, SkoleResource school) {
+    public String basisGroupNameConverter(BasisgruppeResource basisGroup, SkoleResource school) {
         return basisGroup.getNavn() + " " + schoolAbbreviations.get(school.getSkolenummer().getIdentifikatorverdi());
     }
 
     @Override
-    public String teachingGroupNameConverter(Gruppe teachingGroup, SkoleResource school, FagResource subject) {
+    public String teachingGroupNameConverter(UndervisningsgruppeResource teachingGroup, SkoleResource school, FagResource subject) {
         return subject.getNavn() + " " + teachingGroup.getNavn() + " " + schoolAbbreviations.get(school.getSkolenummer().getIdentifikatorverdi());
-    }
-
-    @Override
-    public String contactTeacherGroupNameConverter(Gruppe contactTeacherGroup, SkoleResource school) {
-        return contactTeacherGroup.getNavn() + " " + schoolAbbreviations.get(school.getSkolenummer().getIdentifikatorverdi());
     }
 
     private final Map<String, String> schoolAbbreviations = Map.ofEntries(

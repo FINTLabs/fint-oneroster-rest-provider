@@ -2,7 +2,7 @@ package no.fint.oneroster.service;
 
 import no.fint.oneroster.exception.NotFoundException;
 import no.fint.oneroster.model.Course;
-import no.fint.oneroster.repository.OneRosterService;
+import no.fint.oneroster.repository.OneRosterRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,18 +10,18 @@ import java.util.Optional;
 
 @Service
 public class CourseService {
-    private final OneRosterService oneRosterService;
+    private final OneRosterRepository oneRosterRepository;
 
-    public CourseService(OneRosterService oneRosterService) {
-        this.oneRosterService = oneRosterService;
+    public CourseService(OneRosterRepository oneRosterRepository) {
+        this.oneRosterRepository = oneRosterRepository;
     }
 
     public List<Course> getAllCourses() {
-        return oneRosterService.getCourses();
+        return oneRosterRepository.getCourses();
     }
 
     public Course getCourse(String sourcedId) {
-        return Optional.ofNullable(oneRosterService.getCourseById(sourcedId))
+        return Optional.ofNullable(oneRosterRepository.getCourseById(sourcedId))
                 .orElseThrow(NotFoundException::new);
     }
 }

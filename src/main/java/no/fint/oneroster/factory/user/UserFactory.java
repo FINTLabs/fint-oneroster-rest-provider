@@ -46,7 +46,7 @@ public interface UserFactory {
                 .map(identifier -> new UserId("Feide", identifier))
                 .ifPresent(userId -> student.setUserIds(Collections.singletonList(userId)));
 
-        Optional.ofNullable(personResource.getNavn())
+        Optional.of(personResource.getNavn())
                 .map(Personnavn::getMellomnavn)
                 .ifPresent(student::setMiddleName);
 
@@ -79,7 +79,7 @@ public interface UserFactory {
                 .map(identifier -> new UserId("Feide", identifier))
                 .ifPresent(userId -> teacher.setUserIds(Collections.singletonList(userId)));
 
-        Optional.ofNullable(personResource.getNavn())
+        Optional.of(personResource.getNavn())
                 .map(Personnavn::getMellomnavn)
                 .ifPresent(teacher::setMiddleName);
 

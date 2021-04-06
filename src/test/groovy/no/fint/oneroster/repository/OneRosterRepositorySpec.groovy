@@ -17,9 +17,9 @@ import spock.lang.Specification
 import java.time.LocalDate
 import java.time.Year
 
-class OneRosterServiceSpec extends Specification {
+class OneRosterRepositorySpec extends Specification {
 
-    FintService fintService = Stub() {
+    FintRepository fintService = Stub() {
         getSchools() >> [FintObjectFactory.newSchool()]
         getSchoolById(_ as String) >> FintObjectFactory.newSchool()
         getPersonById(_ as String) >> FintObjectFactory.newPerson()
@@ -42,9 +42,7 @@ class OneRosterServiceSpec extends Specification {
                 identifier: 'identifier'
         )
 
-        getProfile() >> new OneRosterProperties.Profile(
-                contactTeacherGroups: true
-        )
+        isContactTeacherGroups() >> true
     }
 
     AcademicSessionService academicSessionService = Stub() {
@@ -54,7 +52,7 @@ class OneRosterServiceSpec extends Specification {
     ClazzFactory clazzFactory = new DefaultClazzFactory()
     UserFactory userFactory = new DefaultUserFactory()
 
-    OneRosterService oneRosterService = new OneRosterService(oneRosterProperties, academicSessionService, clazzFactory, userFactory, fintService)
+    OneRosterRepository oneRosterService = new OneRosterRepository(oneRosterProperties, academicSessionService, clazzFactory, userFactory, fintService)
 
     def setup()  {
         oneRosterService.update()
