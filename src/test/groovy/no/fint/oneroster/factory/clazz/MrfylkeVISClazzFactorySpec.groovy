@@ -7,13 +7,11 @@ import no.fint.model.resource.utdanning.timeplan.FagResource
 import no.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource
 import no.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResource
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource
-import no.fint.oneroster.model.AcademicSession
 import no.fint.oneroster.model.vocab.ClazzType
-import no.fint.oneroster.model.vocab.SessionType
+import no.fint.oneroster.util.FintObjectFactory
 import spock.lang.Specification
 
 import java.time.LocalDate
-import java.time.Year
 import java.time.ZoneId
 
 class MrfylkeVISClazzFactorySpec extends Specification {
@@ -29,7 +27,7 @@ class MrfylkeVISClazzFactorySpec extends Specification {
 
     def "basisGroup() returns class object of type homeroom and with modified identifier as title"() {
         when:
-        def clazz = mrFylkeClazzFactory.basisGroup(getBasisGroup(), getLevel(), getSchool(), [getTerm()])
+        def clazz = mrFylkeClazzFactory.basisGroup(getBasisGroup(), getLevel(), getSchool(), [FintObjectFactory.newTerm()])
 
         then:
         clazz.sourcedId == '1010722'
@@ -37,7 +35,7 @@ class MrfylkeVISClazzFactorySpec extends Specification {
         clazz.classType == ClazzType.HOMEROOM
         clazz.course.sourcedId == 'level-sourced-id'
         clazz.school.sourcedId == 'school-sourced-id'
-        clazz.terms.first().sourcedId == 'T1SY20192020'
+        clazz.terms.first().sourcedId == 'term-sourced-id'
     }
 
     def "teachingGroupNameConverter() returns modified name"() {
@@ -50,7 +48,7 @@ class MrfylkeVISClazzFactorySpec extends Specification {
 
     def "teachingGroup() returns class object of type schduled and with modified identifier as title"() {
         when:
-        def clazz = mrFylkeClazzFactory.teachingGroup(getTeachingGroup(), getSubject(), getSchool(), [getTerm()])
+        def clazz = mrFylkeClazzFactory.teachingGroup(getTeachingGroup(), getSubject(), getSchool(), [FintObjectFactory.newTerm()])
 
         then:
         clazz.sourcedId == '6434852'
@@ -58,18 +56,7 @@ class MrfylkeVISClazzFactorySpec extends Specification {
         clazz.classType == ClazzType.SCHEDULED
         clazz.course.sourcedId == 'subject-sourced-id'
         clazz.school.sourcedId == 'school-sourced-id'
-        clazz.terms.first().sourcedId == 'T1SY20192020'
-    }
-
-    def getTerm() {
-        return new AcademicSession(
-                'T1SY20192020',
-                '1 termin 2019/2020',
-                LocalDate.of(2019, 8, 1),
-                LocalDate.of(2010, 12, 31),
-                SessionType.TERM,
-                Year.of(2020)
-        )
+        clazz.terms.first().sourcedId == 'term-sourced-id'
     }
 
     def getBasisGroup() {

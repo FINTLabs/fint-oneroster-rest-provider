@@ -8,6 +8,10 @@ import no.fint.model.resource.administrasjon.personal.PersonalressursResources;
 import no.fint.model.resource.felles.PersonResource;
 import no.fint.model.resource.felles.PersonResources;
 import no.fint.model.resource.utdanning.elev.*;
+import no.fint.model.resource.utdanning.kodeverk.SkolearResource;
+import no.fint.model.resource.utdanning.kodeverk.SkolearResources;
+import no.fint.model.resource.utdanning.kodeverk.TerminResource;
+import no.fint.model.resource.utdanning.kodeverk.TerminResources;
 import no.fint.model.resource.utdanning.timeplan.FagResource;
 import no.fint.model.resource.utdanning.timeplan.FagResources;
 import no.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource;
@@ -30,8 +34,8 @@ import java.util.stream.Collectors;
 public class FintRepository {
     private final FintClient fintClient;
 
-    private final Map<String, String> selfLinks = new HashMap<>();
-    private final Map<String, FintLinks> resources = new HashMap<>();
+    private Map<String, String> selfLinks = new HashMap<>();
+    private Map<String, FintLinks> resources = new HashMap<>();
 
     public FintRepository(FintClient fintClient) {
         this.fintClient = fintClient;
@@ -133,6 +137,22 @@ public class FintRepository {
         return getResourceByTypeAndId(PersonalressursResource.class, id);
     }
 
+    public List<TerminResource> getTerms() {
+        return getResourcesByType(TerminResource.class);
+    }
+
+    public TerminResource getTermById(String id) {
+        return getResourceByTypeAndId(TerminResource.class, id);
+    }
+
+    public List<SkolearResource> getSchoolYears() {
+        return getResourcesByType(SkolearResource.class);
+    }
+
+    public SkolearResource getSchoolYearById(String id) {
+        return getResourceByTypeAndId(SkolearResource.class, id);
+    }
+
     public <T extends FintLinks> List<T> getResourcesByType(Class<T> clazz) {
         return resources.values()
                 .stream()
@@ -165,6 +185,8 @@ public class FintRepository {
                 fintClient.getEducationResources(KontaktlarergruppeResources.class, FintEndpoint.CONTACT_TEACHER_GROUP.getKey()),
                 fintClient.getEducationResources(ArstrinnResources.class, FintEndpoint.LEVEL.getKey()),
                 fintClient.getEducationResources(FagResources.class, FintEndpoint.SUBJECT.getKey()),
+                fintClient.getEducationResources(TerminResources.class, FintEndpoint.TERM.getKey()),
+                fintClient.getEducationResources(SkolearResources.class, FintEndpoint.SCHOOL_YEAR.getKey()),
                 fintClient.getAdministrationResources(PersonalressursResources.class, FintEndpoint.PERSONNEL.getKey()),
                 fintClient.getAdministrationResources(PersonResources.class, FintEndpoint.PERSON.getKey()))
                 .doOnComplete(() -> fintClient.setSinceTimestamp(Instant.now().toEpochMilli()))
@@ -189,8 +211,8 @@ public class FintRepository {
     }
 
     public void reset() {
-        selfLinks.clear();
-        resources.clear();
+        selfLinks = new HashMap<>();
+        resources = new HashMap<>();
 
         fintClient.setSinceTimestamp(0L);
     }

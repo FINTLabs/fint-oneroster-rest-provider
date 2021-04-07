@@ -13,6 +13,8 @@ import no.fint.model.resource.utdanning.elev.ElevforholdResource
 import no.fint.model.resource.utdanning.elev.KontaktlarergruppeResource
 import no.fint.model.resource.utdanning.elev.SkoleressursResource
 import no.fint.model.resource.utdanning.elev.UndervisningsforholdResource
+import no.fint.model.resource.utdanning.kodeverk.SkolearResource
+import no.fint.model.resource.utdanning.kodeverk.TerminResource
 import no.fint.model.resource.utdanning.timeplan.FagResource
 import no.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource
 import no.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResource
@@ -20,7 +22,6 @@ import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource
 
 import java.time.LocalDate
 import java.time.ZoneId
-import java.time.ZonedDateTime
 
 class FintObjectFactory {
 
@@ -126,6 +127,8 @@ class FintObjectFactory {
         resource.addTrinn(Link.with('/level-sourced-id'))
         resource.addElevforhold(Link.with('/student-relation-sourced-id'))
         resource.addUndervisningsforhold(Link.with('/teaching-relation-sourced-id'))
+        resource.addTermin(Link.with('/term-sourced-id'))
+        resource.addSkolear(Link.with('/school-year-sourced-id'))
         resource.addSelf(Link.with('/basis-group-sourced-id'))
         return resource
     }
@@ -141,6 +144,8 @@ class FintObjectFactory {
         resource.addFag(Link.with('/subject-sourced-id'))
         resource.addElevforhold(Link.with('/student-relation-sourced-id'))
         resource.addUndervisningsforhold(Link.with('/teaching-relation-sourced-id'))
+        resource.addTermin(Link.with('/term-sourced-id'))
+        resource.addSkolear(Link.with('/school-year-sourced-id'))
         resource.addSelf(Link.with('/teaching-group-sourced-id'))
         return resource
     }
@@ -156,6 +161,8 @@ class FintObjectFactory {
         resource.addBasisgruppe(Link.with('/basis-group-sourced-id'))
         resource.addElevforhold(Link.with('/student-relation-sourced-id'))
         resource.addUndervisningsforhold(Link.with('/teaching-relation-sourced-id'))
+        resource.addTermin(Link.with('/term-sourced-id'))
+        resource.addSkolear(Link.with('/school-year-sourced-id'))
         resource.addSelf(Link.with('/contact-teacher-group-sourced-id'))
         return resource
     }
@@ -179,6 +186,30 @@ class FintObjectFactory {
         resource.setBeskrivelse('A subject')
         resource.addGrepreferanse(Link.with('/grep-subject'))
         resource.addSelf(Link.with('/subject-sourced-id'))
+        return resource
+    }
+
+    static TerminResource newTerm() {
+        TerminResource resource = new TerminResource()
+        resource.setSystemId(new Identifikator(identifikatorverdi: 'term-sourced-id'))
+        resource.setNavn('Term')
+        resource.setKode('Term')
+        resource.setPassiv(false)
+        resource.setGyldighetsperiode(new Periode(start: Date.from(LocalDate.of(2020, 8, 1).atStartOfDay(ZoneId.of('Z')).toInstant()),
+                slutt: Date.from(LocalDate.of(2020, 12, 31).atStartOfDay(ZoneId.of('Z')).toInstant())))
+        resource.addSelf(Link.with('/term-sourced-id'))
+        return resource
+    }
+
+    static SkolearResource newSchoolYear() {
+        SkolearResource resource = new SkolearResource()
+        resource.setSystemId(new Identifikator(identifikatorverdi: 'school-year-sourced-id'))
+        resource.setNavn('SchoolYear')
+        resource.setKode('SchoolYear')
+        resource.setPassiv(false)
+        resource.setGyldighetsperiode(new Periode(start: Date.from(LocalDate.of(2020, 8, 1).atStartOfDay(ZoneId.of('Z')).toInstant()),
+                slutt: Date.from(LocalDate.of(2021, 7, 31).atStartOfDay(ZoneId.of('Z')).toInstant())))
+        resource.addSelf(Link.with('/school-year-sourced-id'))
         return resource
     }
 }

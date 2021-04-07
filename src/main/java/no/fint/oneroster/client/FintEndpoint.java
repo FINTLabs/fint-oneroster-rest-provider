@@ -12,7 +12,9 @@ public enum FintEndpoint {
     CONTACT_TEACHER_GROUP("contact-teacher-group"),
     LEVEL("level"),
     SUBJECT("subject"),
-    PERSONNEL("personnel");
+    PERSONNEL("personnel"),
+    TERM("term"),
+    SCHOOL_YEAR("school-year");
 
     private final String key;
 

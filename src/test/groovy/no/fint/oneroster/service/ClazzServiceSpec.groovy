@@ -1,6 +1,5 @@
 package no.fint.oneroster.service
 
-import no.fint.oneroster.model.AcademicSession
 import no.fint.oneroster.model.Clazz
 import no.fint.oneroster.model.Enrollment
 import no.fint.oneroster.model.GUIDRef
@@ -8,13 +7,9 @@ import no.fint.oneroster.model.User
 import no.fint.oneroster.model.vocab.ClazzType
 import no.fint.oneroster.model.vocab.GUIDType
 import no.fint.oneroster.model.vocab.RoleType
-import no.fint.oneroster.model.vocab.SessionType
 import no.fint.oneroster.model.vocab.StatusType
 import no.fint.oneroster.repository.OneRosterRepository
 import spock.lang.Specification
-
-import java.time.LocalDate
-import java.time.Year
 
 class ClazzServiceSpec extends Specification {
 
@@ -150,17 +145,6 @@ class ClazzServiceSpec extends Specification {
                 'family-name',
                 RoleType.TEACHER,
                 [GUIDRef.of(GUIDType.ORG, 'school-sourced-id')]
-        )
-    }
-
-    AcademicSession getTerm() {
-        return new AcademicSession(
-                'T1SY20192020',
-                '1 termin 2019/2020',
-                LocalDate.of(2019, 8, 1),
-                LocalDate.of(2010, 12, 31),
-                SessionType.TERM,
-                Year.of(2020)
         )
     }
 }

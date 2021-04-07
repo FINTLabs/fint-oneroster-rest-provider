@@ -4,18 +4,12 @@ import no.fint.oneroster.factory.clazz.ClazzFactory
 import no.fint.oneroster.factory.clazz.DefaultClazzFactory
 import no.fint.oneroster.factory.user.DefaultUserFactory
 import no.fint.oneroster.factory.user.UserFactory
-import no.fint.oneroster.model.AcademicSession
 import no.fint.oneroster.model.vocab.ClazzType
 import no.fint.oneroster.model.vocab.OrgType
 import no.fint.oneroster.model.vocab.RoleType
-import no.fint.oneroster.model.vocab.SessionType
 import no.fint.oneroster.properties.OneRosterProperties
-import no.fint.oneroster.service.AcademicSessionService
 import no.fint.oneroster.util.FintObjectFactory
 import spock.lang.Specification
-
-import java.time.LocalDate
-import java.time.Year
 
 class OneRosterRepositorySpec extends Specification {
 
@@ -33,6 +27,8 @@ class OneRosterRepositorySpec extends Specification {
         getLevelById(_ as String) >> FintObjectFactory.newLevel()
         getSubjectById(_ as String) >> FintObjectFactory.newSubject()
         getPersonnelById(_ as String) >> FintObjectFactory.newPersonnel()
+        getTermById(_ as String) >> FintObjectFactory.newTerm()
+        getSchoolYearById(_ as String) >> FintObjectFactory.newSchoolYear()
     }
 
     OneRosterProperties oneRosterProperties = Stub() {
@@ -45,22 +41,18 @@ class OneRosterRepositorySpec extends Specification {
         isContactTeacherGroups() >> true
     }
 
-    AcademicSessionService academicSessionService = Stub() {
-        getAllTerms() >> getTerms()
-    }
-
     ClazzFactory clazzFactory = new DefaultClazzFactory()
     UserFactory userFactory = new DefaultUserFactory()
 
-    OneRosterRepository oneRosterService = new OneRosterRepository(oneRosterProperties, academicSessionService, clazzFactory, userFactory, fintService)
+    OneRosterRepository oneRosterRepository = new OneRosterRepository(oneRosterProperties, clazzFactory, userFactory, fintService)
 
     def setup()  {
-        oneRosterService.update()
+        oneRosterRepository.update()
     }
 
     def "getAllOrgs returns a list of orgs"() {
         when:
-        def orgs = oneRosterService.getOrgs()
+        def orgs = oneRosterRepository.getOrgs()
 
         then:
         orgs.size() == 2
@@ -73,7 +65,7 @@ class OneRosterRepositorySpec extends Specification {
 
     def "getAllClazzes returns a list of clazzes"() {
         when:
-        def clazzes = oneRosterService.getClazzes()
+        def clazzes = oneRosterRepository.getClazzes()
 
         then:
         clazzes.size() == 3
@@ -82,13 +74,13 @@ class OneRosterRepositorySpec extends Specification {
         clazzes.first().classType == ClazzType.HOMEROOM
         clazzes.first().course.sourcedId == 'level-sourced-id'
         clazzes.first().school.sourcedId == 'school-sourced-id'
-        clazzes.first().terms.size() == 2
-        clazzes.first().terms.first().sourcedId == 'T1SY20192020'
+        clazzes.first().terms.size() == 1
+        clazzes.first().terms.first().sourcedId == 'term-sourced-id'
     }
 
     def "getAllCourses returns a list of courses"() {
         when:
-        def courses = oneRosterService.getCourses()
+        def courses = oneRosterRepository.getCourses()
 
         then:
         courses.size() == 2
@@ -99,7 +91,7 @@ class OneRosterRepositorySpec extends Specification {
 
     def "getAllEnrollments returns a list of enrollments"() {
         when:
-        def enrollments = oneRosterService.getEnrollments()
+        def enrollments = oneRosterRepository.getEnrollments()
 
         then:
         enrollments.size() == 6
@@ -112,7 +104,7 @@ class OneRosterRepositorySpec extends Specification {
 
     def "getAllUsers returns a list of users"() {
         when:
-        def users = oneRosterService.getUsers()
+        def users = oneRosterRepository.getUsers()
 
         then:
         users.size() == 2
@@ -127,27 +119,5 @@ class OneRosterRepositorySpec extends Specification {
         users.first().role == RoleType.STUDENT
         users.first().email == 'email'
         users.first().orgs.first().sourcedId == 'school-sourced-id'
-    }
-
-    List<AcademicSession> getTerms() {
-        AcademicSession firstTerm = new AcademicSession(
-                'T1SY20192020',
-                '1 termin 2019/2020',
-                LocalDate.of(2019, 8, 1),
-                LocalDate.of(2010, 12, 31),
-                SessionType.TERM,
-                Year.of(2020)
-        )
-
-        AcademicSession secondTerm = new AcademicSession(
-                'T2SY20192020',
-                '2 termin 2019/2020',
-                LocalDate.of(2020, 1, 1),
-                LocalDate.of(2020, 7, 31),
-                SessionType.TERM,
-                Year.of(2020)
-        )
-
-        return [firstTerm, secondTerm]
     }
 }
