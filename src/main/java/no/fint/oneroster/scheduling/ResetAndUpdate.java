@@ -19,7 +19,7 @@ public class ResetAndUpdate {
         this.oneRosterRepository = oneRosterRepository;
     }
 
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "${scheduling.cron}")
     public void reset() {
         fintRepository.reset();
     }
