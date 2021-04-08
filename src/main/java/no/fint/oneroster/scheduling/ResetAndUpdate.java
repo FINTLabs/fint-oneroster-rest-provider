@@ -21,6 +21,8 @@ public class ResetAndUpdate {
 
     @Scheduled(cron = "${scheduling.cron}")
     public void reset() {
+        log.info("Reset");
+
         fintRepository.reset();
     }
 
