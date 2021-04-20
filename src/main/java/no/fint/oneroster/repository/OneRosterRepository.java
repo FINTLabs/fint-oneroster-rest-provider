@@ -10,6 +10,7 @@ import no.fint.model.resource.utdanning.basisklasser.GruppeResource;
 import no.fint.model.resource.utdanning.elev.*;
 import no.fint.model.resource.utdanning.kodeverk.SkolearResource;
 import no.fint.model.resource.utdanning.kodeverk.TerminResource;
+import no.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
 import no.fint.oneroster.factory.AcademicSessionFactory;
 import no.fint.oneroster.factory.CourseFactory;
@@ -142,21 +143,27 @@ public class OneRosterRepository {
                 .map(linkToString)
                 .map(fintRepository::getStudentRelationById)
                 .filter(Objects::nonNull)
-                .forEach(studentRelation -> {
-                    Optional<ElevResource> student = getStudent(studentRelation);
+                .map(updateStudent())
+                .filter(Objects::nonNull)
+                .forEach(user -> resources.put(user.getSourcedId(), user));
+    }
 
-                    Optional<PersonResource> person = student
-                            .map(ElevResource::getPerson)
-                            .flatMap(this::getPerson);
+    private Function<ElevforholdResource, User> updateStudent() {
+        return studentRelation -> {
+            Optional<ElevResource> student = getStudent(studentRelation);
 
-                    List<SkoleResource> schoolResources = getSchools(studentRelation.getSkole());
+            Optional<PersonResource> person = student
+                    .map(ElevResource::getPerson)
+                    .flatMap(this::getPerson);
 
-                    if (student.isPresent() && person.isPresent() && !schoolResources.isEmpty()) {
-                        User user = userFactory.student(student.get(), person.get(), schoolResources);
+            List<SkoleResource> schoolResources = getSchools(studentRelation.getSkole());
 
-                        resources.put(user.getSourcedId(), user);
-                    }
-                });
+            if (student.isPresent() && person.isPresent() && !schoolResources.isEmpty()) {
+                return userFactory.student(student.get(), person.get(), schoolResources);
+            }
+
+            return null;
+        };
     }
 
     private Consumer<Map<String, Base>> updateTeachers(List<Link> teachingRelations) {
@@ -165,30 +172,36 @@ public class OneRosterRepository {
                 .map(fintRepository::getTeachingRelationById)
                 .filter(Objects::nonNull)
                 .filter(isTeacher)
-                .forEach(teachingRelation -> {
-                    Optional<SkoleressursResource> teacher = getTeacher(teachingRelation);
+                .map(updateTeacher())
+                .filter(Objects::nonNull)
+                .forEach(user -> resources.put(user.getSourcedId(), user));
+    }
 
-                    Optional<PersonalressursResource> personnelResource = teacher
-                            .map(SkoleressursResource::getPersonalressurs)
-                            .orElseGet(Collections::emptyList)
-                            .stream()
-                            .map(linkToString)
-                            .map(fintRepository::getPersonnelById)
-                            .filter(Objects::nonNull)
-                            .findAny();
+    private Function<UndervisningsforholdResource, User> updateTeacher() {
+        return teachingRelation -> {
+            Optional<SkoleressursResource> teacher = getTeacher(teachingRelation);
 
-                    Optional<PersonResource> personResource = personnelResource
-                            .map(PersonalressursResource::getPerson)
-                            .flatMap(this::getPerson);
+            Optional<PersonalressursResource> personnelResource = teacher
+                    .map(SkoleressursResource::getPersonalressurs)
+                    .orElseGet(Collections::emptyList)
+                    .stream()
+                    .map(linkToString)
+                    .map(fintRepository::getPersonnelById)
+                    .filter(Objects::nonNull)
+                    .findAny();
 
-                    List<SkoleResource> schoolResources = getSchools(teachingRelation.getSkole());
+            Optional<PersonResource> personResource = personnelResource
+                    .map(PersonalressursResource::getPerson)
+                    .flatMap(this::getPerson);
 
-                    if (teacher.isPresent() && personnelResource.isPresent() && personResource.isPresent() && !schoolResources.isEmpty()) {
-                        User user = userFactory.teacher(teacher.get(), personnelResource.get(), personResource.get(), schoolResources);
+            List<SkoleResource> schoolResources = getSchools(teachingRelation.getSkole());
 
-                        resources.put(user.getSourcedId(), user);
-                    }
-                });
+            if (teacher.isPresent() && personnelResource.isPresent() && personResource.isPresent() && !schoolResources.isEmpty()) {
+                return userFactory.teacher(teacher.get(), personnelResource.get(), personResource.get(), schoolResources);
+            }
+
+            return null;
+        };
     }
 
     private BiConsumer<SkoleResource, Map<String, Base>> updateBasisGroups() {
@@ -197,30 +210,33 @@ public class OneRosterRepository {
                 .map(linkToString)
                 .map(fintRepository::getBasisGroupById)
                 .filter(Objects::nonNull)
-                .forEach(basisGroup -> basisGroup.getTrinn()
-                        .stream()
-                        .map(linkToString)
-                        .map(fintRepository::getLevelById)
-                        .filter(Objects::nonNull)
-                        .findAny()
-                        .ifPresent(level -> {
-                            List<TerminResource> terms = getTerms(basisGroup.getTermin());
+                .forEach(basisGroup -> updateBasisGroup(basisGroup).accept(schoolResource, resources));
+    }
 
-                            Clazz clazz = clazzFactory.basisGroup(basisGroup, level, schoolResource, terms);
+    private BiConsumer<SkoleResource, Map<String, Base>> updateBasisGroup(BasisgruppeResource basisGroup) {
+        return (schoolResource, resources) -> basisGroup.getTrinn()
+                .stream()
+                .map(linkToString)
+                .map(fintRepository::getLevelById)
+                .filter(Objects::nonNull)
+                .findAny()
+                .ifPresent(level -> {
+                    List<TerminResource> terms = getTerms(basisGroup.getTermin());
 
-                            resources.put(clazz.getSourcedId(), clazz);
+                    Clazz clazz = clazzFactory.basisGroup(basisGroup, level, schoolResource, terms);
 
-                            resources.computeIfAbsent(level.getSystemId().getIdentifikatorverdi(), it ->
-                                    CourseFactory.level(level, oneRosterProperties.getOrg()));
+                    resources.put(clazz.getSourcedId(), clazz);
 
-                            terms.forEach(term -> resources.computeIfAbsent(term.getSystemId().getIdentifikatorverdi(), it ->
-                                    AcademicSessionFactory.term(term, getSchoolYear(basisGroup.getSkolear()))));
+                    resources.computeIfAbsent(level.getSystemId().getIdentifikatorverdi(), it ->
+                            CourseFactory.level(level, oneRosterProperties.getOrg()));
 
-                            addStudentEnrollment(basisGroup.getElevforhold(), schoolResource)
-                                    .andThen(addTeachingEnrollment(basisGroup.getUndervisningsforhold(), schoolResource))
-                                    .accept(basisGroup, resources);
-                        })
-                );
+                    terms.forEach(term -> resources.computeIfAbsent(term.getSystemId().getIdentifikatorverdi(), it ->
+                            AcademicSessionFactory.term(term, getSchoolYear(basisGroup.getSkolear()))));
+
+                    addStudentEnrollment(basisGroup.getElevforhold(), schoolResource)
+                            .andThen(addTeachingEnrollment(basisGroup.getUndervisningsforhold(), schoolResource))
+                            .accept(basisGroup, resources);
+                });
     }
 
     private BiConsumer<SkoleResource, Map<String, Base>> updateTeachingGroups() {
@@ -229,30 +245,33 @@ public class OneRosterRepository {
                 .map(linkToString)
                 .map(fintRepository::getTeachingGroupById)
                 .filter(Objects::nonNull)
-                .forEach(teachingGroup -> teachingGroup.getFag()
-                        .stream()
-                        .map(linkToString)
-                        .map(fintRepository::getSubjectById)
-                        .filter(Objects::nonNull)
-                        .findAny()
-                        .ifPresent(subject -> {
-                            List<TerminResource> terms = getTerms(teachingGroup.getTermin());
+                .forEach(teachingGroup -> updateTeachingGroup(teachingGroup).accept(schoolResource, resources));
+    }
 
-                            Clazz clazz = clazzFactory.teachingGroup(teachingGroup, subject, schoolResource, terms);
+    private BiConsumer<SkoleResource, Map<String, Base>> updateTeachingGroup(UndervisningsgruppeResource teachingGroup) {
+        return (schoolResource, resources) -> teachingGroup.getFag()
+                .stream()
+                .map(linkToString)
+                .map(fintRepository::getSubjectById)
+                .filter(Objects::nonNull)
+                .findAny()
+                .ifPresent(subject -> {
+                    List<TerminResource> terms = getTerms(teachingGroup.getTermin());
 
-                            resources.put(clazz.getSourcedId(), clazz);
+                    Clazz clazz = clazzFactory.teachingGroup(teachingGroup, subject, schoolResource, terms);
 
-                            resources.computeIfAbsent(subject.getSystemId().getIdentifikatorverdi(), it ->
-                                    CourseFactory.subject(subject, oneRosterProperties.getOrg()));
+                    resources.put(clazz.getSourcedId(), clazz);
 
-                            terms.forEach(term -> resources.computeIfAbsent(term.getSystemId().getIdentifikatorverdi(), it ->
-                                    AcademicSessionFactory.term(term, getSchoolYear(teachingGroup.getSkolear()))));
+                    resources.computeIfAbsent(subject.getSystemId().getIdentifikatorverdi(), it ->
+                            CourseFactory.subject(subject, oneRosterProperties.getOrg()));
 
-                            addStudentEnrollment(teachingGroup.getElevforhold(), schoolResource)
-                                    .andThen(addTeachingEnrollment(teachingGroup.getUndervisningsforhold(), schoolResource))
-                                    .accept(teachingGroup, resources);
-                        })
-                );
+                    terms.forEach(term -> resources.computeIfAbsent(term.getSystemId().getIdentifikatorverdi(), it ->
+                            AcademicSessionFactory.term(term, getSchoolYear(teachingGroup.getSkolear()))));
+
+                    addStudentEnrollment(teachingGroup.getElevforhold(), schoolResource)
+                            .andThen(addTeachingEnrollment(teachingGroup.getUndervisningsforhold(), schoolResource))
+                            .accept(teachingGroup, resources);
+                });
     }
 
     private BiConsumer<SkoleResource, Map<String, Base>> updateContactTeacherGroups() {
@@ -266,35 +285,39 @@ public class OneRosterRepository {
                     .map(linkToString)
                     .map(fintRepository::getContactTeacherGroupById)
                     .filter(Objects::nonNull)
-                    .forEach(contactTeacherGroup -> contactTeacherGroup.getBasisgruppe()
-                            .stream()
-                            .findFirst()
-                            .map(linkToString)
-                            .map(fintRepository::getBasisGroupById)
-                            .map(BasisgruppeResource::getTrinn)
-                            .orElseGet(Collections::emptyList)
-                            .stream()
-                            .map(linkToString)
-                            .map(fintRepository::getLevelById)
-                            .filter(Objects::nonNull)
-                            .findAny()
-                            .ifPresent(level -> {
-                                List<TerminResource> terms = getTerms(contactTeacherGroup.getTermin());
-
-                                Clazz clazz = clazzFactory.contactTeacherGroup(contactTeacherGroup, level, schoolResource, terms);
-
-                                resources.put(clazz.getSourcedId(), clazz);
-
-                                terms.forEach(term -> resources.computeIfAbsent(term.getSystemId().getIdentifikatorverdi(), it ->
-                                        AcademicSessionFactory.term(term, getSchoolYear(contactTeacherGroup.getSkolear()))));
-
-                                addStudentEnrollment(contactTeacherGroup.getElevforhold(), schoolResource)
-                                        .andThen(addTeachingEnrollment(contactTeacherGroup.getUndervisningsforhold(), schoolResource))
-                                        .accept(contactTeacherGroup, resources);
-                            })
-                    );
+                    .forEach(contactTeacherGroup -> updateContactTeacherGroup(contactTeacherGroup).accept(schoolResource, resources));
         };
     }
+
+    private BiConsumer<SkoleResource, Map<String, Base>> updateContactTeacherGroup(KontaktlarergruppeResource contactTeacherGroup) {
+        return (schoolResource, resources) -> contactTeacherGroup.getBasisgruppe()
+                .stream()
+                .findFirst()
+                .map(linkToString)
+                .map(fintRepository::getBasisGroupById)
+                .map(BasisgruppeResource::getTrinn)
+                .orElseGet(Collections::emptyList)
+                .stream()
+                .map(linkToString)
+                .map(fintRepository::getLevelById)
+                .filter(Objects::nonNull)
+                .findAny()
+                .ifPresent(level -> {
+                    List<TerminResource> terms = getTerms(contactTeacherGroup.getTermin());
+
+                    Clazz clazz = clazzFactory.contactTeacherGroup(contactTeacherGroup, level, schoolResource, terms);
+
+                    resources.put(clazz.getSourcedId(), clazz);
+
+                    terms.forEach(term -> resources.computeIfAbsent(term.getSystemId().getIdentifikatorverdi(), it ->
+                            AcademicSessionFactory.term(term, getSchoolYear(contactTeacherGroup.getSkolear()))));
+
+                    addStudentEnrollment(contactTeacherGroup.getElevforhold(), schoolResource)
+                            .andThen(addTeachingEnrollment(contactTeacherGroup.getUndervisningsforhold(), schoolResource))
+                            .accept(contactTeacherGroup, resources);
+                });
+    }
+
 
     private BiConsumer<GruppeResource, Map<String, Base>> addStudentEnrollment(List<Link> studentRelations, SkoleResource school) {
         return (group, resources) -> studentRelations.stream()
