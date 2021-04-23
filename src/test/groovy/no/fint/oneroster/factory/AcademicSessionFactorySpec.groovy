@@ -1,7 +1,7 @@
 package no.fint.oneroster.factory
 
 import no.fint.oneroster.model.vocab.SessionType
-import no.fint.oneroster.util.FintObjectFactory
+import no.fint.oneroster.FintObjectFactory
 import spock.lang.Specification
 
 import java.time.LocalDate

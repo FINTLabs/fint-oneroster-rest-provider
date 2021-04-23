@@ -2,8 +2,9 @@ package no.fint.oneroster.controller;
 
 import no.fint.oneroster.model.Clazz;
 import no.fint.oneroster.model.User;
+import no.fint.oneroster.response.OneRosterCollectionResponse;
+import no.fint.oneroster.response.OneRosterItemResponse;
 import no.fint.oneroster.service.UserService;
-import no.fint.oneroster.util.OneRosterResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,15 +26,13 @@ public class UserController {
 
         List<User> users = userService.getAllUsers();
 
-        OneRosterResponse<User> oneRosterResponse = new OneRosterResponse<>(User.class, "users")
-                .collection(users)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(users, User.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
-                .fieldSelection(fields);
+                .fieldSelection(fields)
+                .build();
 
-        return ResponseEntity.ok()
-                .headers(oneRosterResponse.getHeaders())
-                .body(oneRosterResponse.getBody());
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getBody());
     }
 
     @GetMapping("/users/{sourcedId}")
@@ -42,11 +41,11 @@ public class UserController {
 
         User user = userService.getUser(sourcedId);
 
-        OneRosterResponse<User> oneRosterResponse = new OneRosterResponse<>(User.class, "user")
-                .item(user)
-                .fieldSelection(fields);
+        OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(user)
+                .fieldSelection(fields)
+                .build();
 
-        return ResponseEntity.ok(oneRosterResponse.getBody());
+        return ResponseEntity.ok(response.getBody());
     }
 
     @GetMapping("/students")
@@ -56,15 +55,13 @@ public class UserController {
 
         List<User> students = userService.getAllStudents();
 
-        OneRosterResponse<User> oneRosterResponse = new OneRosterResponse<>(User.class, "users")
-                .collection(students)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(students, User.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
-                .fieldSelection(fields);
+                .fieldSelection(fields)
+                .build();
 
-        return ResponseEntity.ok()
-                .headers(oneRosterResponse.getHeaders())
-                .body(oneRosterResponse.getBody());
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getBody());
     }
 
     @GetMapping("/students/{sourcedId}")
@@ -73,11 +70,11 @@ public class UserController {
 
         User student = userService.getStudent(sourcedId);
 
-        OneRosterResponse<User> oneRosterResponse = new OneRosterResponse<>(User.class, "user")
-                .item(student)
-                .fieldSelection(fields);
+        OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(student)
+                .fieldSelection(fields)
+                .build();
 
-        return ResponseEntity.ok(oneRosterResponse.getBody());
+        return ResponseEntity.ok(response.getBody());
     }
 
     @GetMapping("/teachers")
@@ -87,15 +84,13 @@ public class UserController {
 
         List<User> teachers = userService.getAllTeachers();
 
-        OneRosterResponse<User> oneRosterResponse = new OneRosterResponse<>(User.class, "users")
-                .collection(teachers)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(teachers, User.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
-                .fieldSelection(fields);
+                .fieldSelection(fields)
+                .build();
 
-        return ResponseEntity.ok()
-                .headers(oneRosterResponse.getHeaders())
-                .body(oneRosterResponse.getBody());
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getBody());
     }
 
     @GetMapping("/teachers/{sourcedId}")
@@ -104,11 +99,11 @@ public class UserController {
 
         User teacher = userService.getTeacher(sourcedId);
 
-        OneRosterResponse<User> oneRosterResponse = new OneRosterResponse<>(User.class, "user")
-                .item(teacher)
-                .fieldSelection(fields);
+        OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(teacher)
+                .fieldSelection(fields)
+                .build();
 
-        return ResponseEntity.ok(oneRosterResponse.getBody());
+        return ResponseEntity.ok(response.getBody());
     }
 
     @GetMapping("/students/{sourcedId}/classes")
@@ -118,15 +113,13 @@ public class UserController {
 
         List<Clazz> clazzes = userService.getClazzesForStudent(sourcedId);
 
-        OneRosterResponse<Clazz> oneRosterResponse = new OneRosterResponse<>(Clazz.class, "classes")
-                .collection(clazzes)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(clazzes, Clazz.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
-                .fieldSelection(fields);
+                .fieldSelection(fields)
+                .build();
 
-        return ResponseEntity.ok()
-                .headers(oneRosterResponse.getHeaders())
-                .body(oneRosterResponse.getBody());
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getBody());
     }
 
     @GetMapping("/teachers/{sourcedId}/classes")
@@ -136,14 +129,12 @@ public class UserController {
 
         List<Clazz> clazzes = userService.getClazzesForTeacher(sourcedId);
 
-        OneRosterResponse<Clazz> oneRosterResponse = new OneRosterResponse<>(Clazz.class, "classes")
-                .collection(clazzes)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(clazzes, Clazz.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
-                .fieldSelection(fields);
+                .fieldSelection(fields)
+                .build();
 
-        return ResponseEntity.ok()
-                .headers(oneRosterResponse.getHeaders())
-                .body(oneRosterResponse.getBody());
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getBody());
     }
 }

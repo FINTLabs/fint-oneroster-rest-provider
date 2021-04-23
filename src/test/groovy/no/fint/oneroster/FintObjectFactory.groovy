@@ -1,4 +1,4 @@
-package no.fint.oneroster.util
+package no.fint.oneroster
 
 import no.fint.model.felles.kompleksedatatyper.Identifikator
 import no.fint.model.felles.kompleksedatatyper.Kontaktinformasjon

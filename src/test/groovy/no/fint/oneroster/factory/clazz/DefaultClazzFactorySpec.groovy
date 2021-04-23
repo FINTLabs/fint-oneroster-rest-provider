@@ -1,7 +1,7 @@
 package no.fint.oneroster.factory.clazz
 
 import no.fint.oneroster.model.vocab.ClazzType
-import no.fint.oneroster.util.FintObjectFactory
+import no.fint.oneroster.FintObjectFactory
 import spock.lang.Specification
 
 class DefaultClazzFactorySpec extends Specification {

@@ -1,8 +1,9 @@
 package no.fint.oneroster.controller;
 
 import no.fint.oneroster.model.AcademicSession;
+import no.fint.oneroster.response.OneRosterCollectionResponse;
+import no.fint.oneroster.response.OneRosterItemResponse;
 import no.fint.oneroster.service.AcademicSessionService;
-import no.fint.oneroster.util.OneRosterResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,15 +25,13 @@ public class AcademicSessionController {
 
         List<AcademicSession> academicSessions = academicSessionService.getAllAcademicSessions();
 
-        OneRosterResponse<AcademicSession> oneRosterResponse = new OneRosterResponse<>(AcademicSession.class, "academicSessions")
-                .collection(academicSessions)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(academicSessions, AcademicSession.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
-                .fieldSelection(fields);
+                .fieldSelection(fields)
+                .build();
 
-        return ResponseEntity.ok()
-                .headers(oneRosterResponse.getHeaders())
-                .body(oneRosterResponse.getBody());
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getBody());
     }
 
     @GetMapping("/academicSessions/{sourcedId}")
@@ -41,11 +40,11 @@ public class AcademicSessionController {
 
         AcademicSession academicSession = academicSessionService.getAcademicSession(sourcedId);
 
-        OneRosterResponse<AcademicSession> oneRosterResponse = new OneRosterResponse<>(AcademicSession.class, "academicSession")
-                .item(academicSession)
-                .fieldSelection(fields);
+        OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(academicSession)
+                .fieldSelection(fields)
+                .build();
 
-        return ResponseEntity.ok(oneRosterResponse.getBody());
+        return ResponseEntity.ok(response.getBody());
     }
 
     @GetMapping("/terms")
@@ -55,15 +54,13 @@ public class AcademicSessionController {
 
         List<AcademicSession> terms = academicSessionService.getAllTerms();
 
-        OneRosterResponse<AcademicSession> oneRosterResponse = new OneRosterResponse<>(AcademicSession.class, "academicSessions")
-                .collection(terms)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(terms, AcademicSession.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
-                .fieldSelection(fields);
+                .fieldSelection(fields)
+                .build();
 
-        return ResponseEntity.ok()
-                .headers(oneRosterResponse.getHeaders())
-                .body(oneRosterResponse.getBody());
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getBody());
     }
 
     @GetMapping("/terms/{sourcedId}")
@@ -72,11 +69,11 @@ public class AcademicSessionController {
 
         AcademicSession term = academicSessionService.getTerm(sourcedId);
 
-        OneRosterResponse<AcademicSession> oneRosterResponse = new OneRosterResponse<>(AcademicSession.class, "academicSession")
-                .item(term)
-                .fieldSelection(fields);
+        OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(term)
+                .fieldSelection(fields)
+                .build();
 
-        return ResponseEntity.ok(oneRosterResponse.getBody());
+        return ResponseEntity.ok(response.getBody());
     }
 
     @GetMapping("/gradingPeriods")
@@ -86,15 +83,13 @@ public class AcademicSessionController {
 
         List<AcademicSession> gradingPeriods = academicSessionService.getAllGradingPeriods();
 
-        OneRosterResponse<AcademicSession> oneRosterResponse = new OneRosterResponse<>(AcademicSession.class, "academicSessions")
-                .collection(gradingPeriods)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(gradingPeriods, AcademicSession.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
-                .fieldSelection(fields);
+                .fieldSelection(fields)
+                .build();
 
-        return ResponseEntity.ok()
-                .headers(oneRosterResponse.getHeaders())
-                .body(oneRosterResponse.getBody());
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getBody());
     }
 
     @GetMapping("/gradingPeriods/{sourcedId}")
@@ -103,10 +98,10 @@ public class AcademicSessionController {
 
         AcademicSession gradingPeriod = academicSessionService.getGradingPeriod(sourcedId);
 
-        OneRosterResponse<AcademicSession> oneRosterResponse = new OneRosterResponse<>(AcademicSession.class, "academicSession")
-                .item(gradingPeriod)
-                .fieldSelection(fields);
+        OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(gradingPeriod)
+                .fieldSelection(fields)
+                .build();
 
-        return ResponseEntity.ok(oneRosterResponse.getBody());
+        return ResponseEntity.ok(response.getBody());
     }
 }

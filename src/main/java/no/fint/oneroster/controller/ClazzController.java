@@ -2,8 +2,9 @@ package no.fint.oneroster.controller;
 
 import no.fint.oneroster.model.Clazz;
 import no.fint.oneroster.model.User;
+import no.fint.oneroster.response.OneRosterCollectionResponse;
+import no.fint.oneroster.response.OneRosterItemResponse;
 import no.fint.oneroster.service.ClazzService;
-import no.fint.oneroster.util.OneRosterResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,15 +27,13 @@ public class ClazzController {
 
         List<Clazz> clazzes = clazzService.getAllClazzes();
 
-        OneRosterResponse<Clazz> oneRosterResponse = new OneRosterResponse<>(Clazz.class, "classes")
-                .collection(clazzes)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(clazzes, Clazz.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
-                .fieldSelection(fields);
+                .fieldSelection(fields)
+                .build();
 
-        return ResponseEntity.ok()
-                .headers(oneRosterResponse.getHeaders())
-                .body(oneRosterResponse.getBody());
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getBody());
     }
 
     @GetMapping("/{sourcedId}")
@@ -43,11 +42,11 @@ public class ClazzController {
 
         Clazz clazz = clazzService.getClazz(sourcedId);
 
-        OneRosterResponse<Clazz> oneRosterResponse = new OneRosterResponse<>(Clazz.class, "class")
-                .item(clazz)
-                .fieldSelection(fields);
+        OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(clazz)
+                .fieldSelection(fields)
+                .build();
 
-        return ResponseEntity.ok(oneRosterResponse.getBody());
+        return ResponseEntity.ok(response.getBody());
     }
 
     @GetMapping("/{sourcedId}/students")
@@ -57,15 +56,13 @@ public class ClazzController {
 
         List<User> students = clazzService.getStudentsForClazz(sourcedId);
 
-        OneRosterResponse<User> oneRosterResponse = new OneRosterResponse<>(User.class, "users")
-                .collection(students)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(students, User.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
-                .fieldSelection(fields);
+                .fieldSelection(fields)
+                .build();
 
-        return ResponseEntity.ok()
-                .headers(oneRosterResponse.getHeaders())
-                .body(oneRosterResponse.getBody());
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getBody());
     }
 
     @GetMapping("/{sourcedId}/teachers")
@@ -75,14 +72,12 @@ public class ClazzController {
 
         List<User> teachers = clazzService.getTeachersForClazz(sourcedId);
 
-        OneRosterResponse<User> oneRosterResponse = new OneRosterResponse<>(User.class, "users")
-                .collection(teachers)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(teachers, User.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
-                .fieldSelection(fields);
+                .fieldSelection(fields)
+                .build();
 
-        return ResponseEntity.ok()
-                .headers(oneRosterResponse.getHeaders())
-                .body(oneRosterResponse.getBody());
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getBody());
     }
 }

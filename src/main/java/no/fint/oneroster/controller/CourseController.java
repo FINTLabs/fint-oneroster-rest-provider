@@ -1,8 +1,9 @@
 package no.fint.oneroster.controller;
 
 import no.fint.oneroster.model.Course;
+import no.fint.oneroster.response.OneRosterCollectionResponse;
+import no.fint.oneroster.response.OneRosterItemResponse;
 import no.fint.oneroster.service.CourseService;
-import no.fint.oneroster.util.OneRosterResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,15 +26,13 @@ public class CourseController {
 
         List<Course> courses = courseService.getAllCourses();
 
-        OneRosterResponse<Course> oneRosterResponse = new OneRosterResponse<>(Course.class, "courses")
-                .collection(courses)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(courses, Course.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
-                .fieldSelection(fields);
+                .fieldSelection(fields)
+                .build();
 
-        return ResponseEntity.ok()
-                .headers(oneRosterResponse.getHeaders())
-                .body(oneRosterResponse.getBody());
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getBody());
     }
 
     @GetMapping("/{sourcedId}")
@@ -42,10 +41,10 @@ public class CourseController {
 
         Course course = courseService.getCourse(sourcedId);
 
-        OneRosterResponse<Course> oneRosterResponse = new OneRosterResponse<>(Course.class, "course")
-                .item(course)
-                .fieldSelection(fields);
+        OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(course)
+                .fieldSelection(fields)
+                .build();
 
-        return ResponseEntity.ok(oneRosterResponse.getBody());
+        return ResponseEntity.ok(response.getBody());
     }
 }

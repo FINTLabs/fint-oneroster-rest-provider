@@ -8,7 +8,7 @@ import no.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource
 import no.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResource
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource
 import no.fint.oneroster.model.vocab.ClazzType
-import no.fint.oneroster.util.FintObjectFactory
+import no.fint.oneroster.FintObjectFactory
 import spock.lang.Specification
 
 import java.time.LocalDate

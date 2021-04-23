@@ -1,8 +1,9 @@
 package no.fint.oneroster.controller;
 
 import no.fint.oneroster.model.Enrollment;
+import no.fint.oneroster.response.OneRosterCollectionResponse;
+import no.fint.oneroster.response.OneRosterItemResponse;
 import no.fint.oneroster.service.EnrollmentService;
-import no.fint.oneroster.util.OneRosterResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,16 +25,14 @@ public class EnrollmentController {
                                                Pageable pageable) {
 
         List<Enrollment> enrollments = enrollmentService.getAllEnrollments();
-        
-        OneRosterResponse<Enrollment> oneRosterResponse = new OneRosterResponse<>(Enrollment.class, "enrollments")
-                .collection(enrollments)
+
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(enrollments, Enrollment.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
-                .fieldSelection(fields);
+                .fieldSelection(fields)
+                .build();
 
-        return ResponseEntity.ok()
-                .headers(oneRosterResponse.getHeaders())
-                .body(oneRosterResponse.getBody());
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getBody());
     }
 
     @GetMapping("/{sourcedId}")
@@ -42,10 +41,10 @@ public class EnrollmentController {
 
         Enrollment enrollment = enrollmentService.getEnrollment(sourcedId);
 
-        OneRosterResponse<Enrollment> oneRosterResponse = new OneRosterResponse<>(Enrollment.class, "enrollment")
-                .item(enrollment)
-                .fieldSelection(fields);
+        OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(enrollment)
+                .fieldSelection(fields)
+                .build();
 
-        return ResponseEntity.ok(oneRosterResponse.getBody());
+        return ResponseEntity.ok(response.getBody());
     }
 }
