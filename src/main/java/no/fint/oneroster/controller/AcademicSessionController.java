@@ -8,8 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 public class AcademicSessionController {
     private final AcademicSessionService academicSessionService;
@@ -23,9 +21,7 @@ public class AcademicSessionController {
                                          @RequestParam(value = "fields", required = false) String fields,
                                          Pageable pageable) {
 
-        List<AcademicSession> academicSessions = academicSessionService.getAllAcademicSessions();
-
-        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(academicSessions, AcademicSession.class)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(academicSessionService.getAllAcademicSessions(), AcademicSession.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
                 .fieldSelection(fields)
@@ -38,9 +34,7 @@ public class AcademicSessionController {
     public ResponseEntity<?> getAcademicSession(@PathVariable String sourcedId,
                                                 @RequestParam(value = "fields", required = false) String fields) {
 
-        AcademicSession academicSession = academicSessionService.getAcademicSession(sourcedId);
-
-        OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(academicSession)
+        OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(academicSessionService.getAcademicSession(sourcedId))
                 .fieldSelection(fields)
                 .build();
 
@@ -52,9 +46,7 @@ public class AcademicSessionController {
                                          @RequestParam(value = "fields", required = false) String fields,
                                          Pageable pageable) {
 
-        List<AcademicSession> terms = academicSessionService.getAllTerms();
-
-        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(terms, AcademicSession.class)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(academicSessionService.getAllTerms(), AcademicSession.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
                 .fieldSelection(fields)
@@ -67,9 +59,7 @@ public class AcademicSessionController {
     public ResponseEntity<?> getTerm(@PathVariable String sourcedId,
                                      @RequestParam(value = "fields", required = false) String fields) {
 
-        AcademicSession term = academicSessionService.getTerm(sourcedId);
-
-        OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(term)
+        OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(academicSessionService.getTerm(sourcedId))
                 .fieldSelection(fields)
                 .build();
 
@@ -81,9 +71,7 @@ public class AcademicSessionController {
                                                   @RequestParam(value = "fields", required = false) String fields,
                                                   Pageable pageable) {
 
-        List<AcademicSession> gradingPeriods = academicSessionService.getAllGradingPeriods();
-
-        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(gradingPeriods, AcademicSession.class)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(academicSessionService.getAllGradingPeriods(), AcademicSession.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
                 .fieldSelection(fields)
@@ -96,9 +84,7 @@ public class AcademicSessionController {
     public ResponseEntity<?> getGradingPeriod(@PathVariable String sourcedId,
                                               @RequestParam(value = "fields", required = false) String fields) {
 
-        AcademicSession gradingPeriod = academicSessionService.getGradingPeriod(sourcedId);
-
-        OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(gradingPeriod)
+        OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(academicSessionService.getGradingPeriod(sourcedId))
                 .fieldSelection(fields)
                 .build();
 

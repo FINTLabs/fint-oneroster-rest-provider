@@ -9,8 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 public class UserController {
     private final UserService userService;
@@ -24,9 +22,7 @@ public class UserController {
                                          @RequestParam(value = "fields", required = false) String fields,
                                          Pageable pageable) {
 
-        List<User> users = userService.getAllUsers();
-
-        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(users, User.class)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(userService.getAllUsers(), User.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
                 .fieldSelection(fields)
@@ -39,9 +35,7 @@ public class UserController {
     public ResponseEntity<?> getUser(@PathVariable String sourcedId,
                                      @RequestParam(value = "fields", required = false) String fields) {
 
-        User user = userService.getUser(sourcedId);
-
-        OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(user)
+        OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(userService.getUser(sourcedId))
                 .fieldSelection(fields)
                 .build();
 
@@ -53,9 +47,7 @@ public class UserController {
                                             @RequestParam(value = "fields", required = false) String fields,
                                             Pageable pageable) {
 
-        List<User> students = userService.getAllStudents();
-
-        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(students, User.class)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(userService.getAllStudents(), User.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
                 .fieldSelection(fields)
@@ -68,9 +60,7 @@ public class UserController {
     public ResponseEntity<?> getStudent(@PathVariable String sourcedId,
                                         @RequestParam(value = "fields", required = false) String fields) {
 
-        User student = userService.getStudent(sourcedId);
-
-        OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(student)
+        OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(userService.getStudent(sourcedId))
                 .fieldSelection(fields)
                 .build();
 
@@ -82,9 +72,7 @@ public class UserController {
                                             @RequestParam(value = "fields", required = false) String fields,
                                             Pageable pageable) {
 
-        List<User> teachers = userService.getAllTeachers();
-
-        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(teachers, User.class)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(userService.getAllTeachers(), User.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
                 .fieldSelection(fields)
@@ -97,9 +85,7 @@ public class UserController {
     public ResponseEntity<?> getTeacher(@PathVariable String sourcedId,
                                         @RequestParam(value = "fields", required = false) String fields) {
 
-        User teacher = userService.getTeacher(sourcedId);
-
-        OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(teacher)
+        OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(userService.getTeacher(sourcedId))
                 .fieldSelection(fields)
                 .build();
 
@@ -111,9 +97,7 @@ public class UserController {
                                                   @RequestParam(value = "filter", required = false) String filter,
                                                   @RequestParam(value = "fields", required = false) String fields) {
 
-        List<Clazz> clazzes = userService.getClazzesForStudent(sourcedId);
-
-        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(clazzes, Clazz.class)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(userService.getClazzesForStudent(sourcedId), Clazz.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
                 .fieldSelection(fields)
@@ -127,9 +111,7 @@ public class UserController {
                                                   @RequestParam(value = "filter", required = false) String filter,
                                                   @RequestParam(value = "fields", required = false) String fields) {
 
-        List<Clazz> clazzes = userService.getClazzesForTeacher(sourcedId);
-
-        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(clazzes, Clazz.class)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(userService.getClazzesForTeacher(sourcedId), Clazz.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
                 .fieldSelection(fields)

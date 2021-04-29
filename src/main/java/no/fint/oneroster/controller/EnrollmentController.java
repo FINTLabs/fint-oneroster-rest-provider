@@ -8,8 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/enrollments")
 public class EnrollmentController {
@@ -24,9 +22,7 @@ public class EnrollmentController {
                                                @RequestParam(value = "fields", required = false) String fields,
                                                Pageable pageable) {
 
-        List<Enrollment> enrollments = enrollmentService.getAllEnrollments();
-
-        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(enrollments, Enrollment.class)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(enrollmentService.getAllEnrollments(), Enrollment.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
                 .fieldSelection(fields)
@@ -39,9 +35,7 @@ public class EnrollmentController {
     public ResponseEntity<?> getEnrollment(@PathVariable String sourcedId,
                                            @RequestParam(value = "fields", required = false) String fields) {
 
-        Enrollment enrollment = enrollmentService.getEnrollment(sourcedId);
-
-        OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(enrollment)
+        OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(enrollmentService.getEnrollment(sourcedId))
                 .fieldSelection(fields)
                 .build();
 

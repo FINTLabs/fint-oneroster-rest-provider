@@ -9,8 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/classes")
 public class ClazzController {
@@ -25,9 +23,7 @@ public class ClazzController {
                                            @RequestParam(value = "fields", required = false) String fields,
                                            Pageable pageable) {
 
-        List<Clazz> clazzes = clazzService.getAllClazzes();
-
-        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(clazzes, Clazz.class)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(clazzService.getAllClazzes(), Clazz.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
                 .fieldSelection(fields)
@@ -40,9 +36,7 @@ public class ClazzController {
     public ResponseEntity<?> getClazz(@PathVariable String sourcedId,
                                       @RequestParam(value = "fields", required = false) String fields) {
 
-        Clazz clazz = clazzService.getClazz(sourcedId);
-
-        OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(clazz)
+        OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(clazzService.getClazz(sourcedId))
                 .fieldSelection(fields)
                 .build();
 
@@ -54,9 +48,7 @@ public class ClazzController {
                                                  @RequestParam(value = "filter", required = false) String filter,
                                                  @RequestParam(value = "fields", required = false) String fields) {
 
-        List<User> students = clazzService.getStudentsForClazz(sourcedId);
-
-        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(students, User.class)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(clazzService.getStudentsForClazz(sourcedId), User.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
                 .fieldSelection(fields)
@@ -70,9 +62,7 @@ public class ClazzController {
                                                  @RequestParam(value = "filter", required = false) String filter,
                                                  @RequestParam(value = "fields", required = false) String fields) {
 
-        List<User> teachers = clazzService.getTeachersForClazz(sourcedId);
-
-        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(teachers, User.class)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(clazzService.getTeachersForClazz(sourcedId), User.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
                 .fieldSelection(fields)

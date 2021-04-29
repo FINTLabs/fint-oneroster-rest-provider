@@ -8,8 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
-
 @RestController
 public class OrgController {
     private final OrgService orgService;
@@ -23,9 +21,7 @@ public class OrgController {
                                         @RequestParam(value = "fields", required = false) String fields,
                                         Pageable pageable) {
 
-        List<Org> orgs = orgService.getAllOrgs();
-
-        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(orgs, Org.class)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(orgService.getAllOrgs(), Org.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
                 .fieldSelection(fields)
@@ -40,9 +36,7 @@ public class OrgController {
     public ResponseEntity<?> getOrg(@PathVariable String sourcedId,
                                     @RequestParam(value = "fields", required = false) String fields) {
 
-        Org org = orgService.getOrg(sourcedId);
-
-        OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(org)
+        OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(orgService.getOrg(sourcedId))
                 .fieldSelection(fields)
                 .build();
 
@@ -54,9 +48,7 @@ public class OrgController {
                                            @RequestParam(value = "fields", required = false) String fields,
                                            Pageable pageable) {
 
-        List<Org> schools = orgService.getAllSchools();
-
-        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(schools, Org.class)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(orgService.getAllSchools(), Org.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
                 .fieldSelection(fields)
@@ -71,9 +63,7 @@ public class OrgController {
     public ResponseEntity<?> getSchool(@PathVariable String sourcedId,
                                        @RequestParam(value = "fields", required = false) String fields) {
 
-        Org school = orgService.getSchool(sourcedId);
-
-        OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(school)
+        OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(orgService.getSchool(sourcedId))
                 .fieldSelection(fields)
                 .build();
 
@@ -85,9 +75,7 @@ public class OrgController {
                                                  @RequestParam(value = "filter", required = false) String filter,
                                                  @RequestParam(value = "fields", required = false) String fields) {
 
-        List<Clazz> clazzes = orgService.getClazzesForSchool(sourcedId);
-
-        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(clazzes, Clazz.class)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(orgService.getClazzesForSchool(sourcedId), Clazz.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
                 .fieldSelection(fields)
@@ -103,9 +91,7 @@ public class OrgController {
                                                      @RequestParam(value = "filter", required = false) String filter,
                                                      @RequestParam(value = "fields", required = false) String fields) {
 
-        List<Enrollment> enrollments = orgService.getEnrollmentsForSchool(sourcedId);
-
-        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(enrollments, Enrollment.class)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(orgService.getEnrollmentsForSchool(sourcedId), Enrollment.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
                 .fieldSelection(fields)
@@ -121,9 +107,7 @@ public class OrgController {
                                                      @RequestParam(value = "filter", required = false) String filter,
                                                      @RequestParam(value = "fields", required = false) String fields) {
 
-        List<Enrollment> enrollments = orgService.getEnrollmentsForClazzInSchool(schoolSourcedId, clazzSourcedId);
-
-        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(enrollments, Enrollment.class)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(orgService.getEnrollmentsForClazzInSchool(schoolSourcedId, clazzSourcedId), Enrollment.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
                 .fieldSelection(fields)
@@ -139,9 +123,7 @@ public class OrgController {
                                                   @RequestParam(value = "filter", required = false) String filter,
                                                   @RequestParam(value = "fields", required = false) String fields) {
 
-        List<User> students = orgService.getStudentsForSchool(sourcedId);
-
-        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(students, User.class)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(orgService.getStudentsForSchool(sourcedId), User.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
                 .fieldSelection(fields)
@@ -157,9 +139,7 @@ public class OrgController {
                                                   @RequestParam(value = "filter", required = false) String filter,
                                                   @RequestParam(value = "fields", required = false) String fields) {
 
-        List<User> teachers = orgService.getTeachersForSchool(sourcedId);
-
-        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(teachers, User.class)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(orgService.getTeachersForSchool(sourcedId), User.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
                 .fieldSelection(fields)
@@ -175,9 +155,7 @@ public class OrgController {
                                                   @RequestParam(value = "filter", required = false) String filter,
                                                   @RequestParam(value = "fields", required = false) String fields) {
 
-        List<AcademicSession> terms = orgService.getTermsForSchool(sourcedId);
-
-        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(terms, AcademicSession.class)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(orgService.getTermsForSchool(sourcedId), AcademicSession.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
                 .fieldSelection(fields)
