@@ -47,7 +47,7 @@ public class OneRosterCollectionResponse {
             }
 
             try {
-                collection = collection.stream()
+                collection = collection.parallelStream()
                         .filter(item -> FilterEngine.execute(filter, item))
                         .collect(Collectors.toList());
             } catch (InvalidSyntaxException e) {
