@@ -2,19 +2,11 @@ package no.fint.oneroster.response;
 
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import lombok.Getter;
-import no.fint.oneroster.antlr.FilterLexer;
-import no.fint.oneroster.antlr.FilterParser;
 import no.fint.oneroster.exception.BadRequestException;
 import no.fint.oneroster.exception.InvalidSyntaxException;
 import no.fint.oneroster.exception.NoSuchFieldException;
-import no.fint.oneroster.filter.FilterErrorListener;
-import no.fint.oneroster.filter.FilterEvaluator;
+import no.fint.oneroster.filter.FilterEngine;
 import no.fint.oneroster.model.*;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.ConsoleErrorListener;
-import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.beanutils.BeanComparator;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -54,31 +46,15 @@ public class OneRosterCollectionResponse {
                 return this;
             }
 
-            CharStream stream = CharStreams.fromString(filter.trim());
-            FilterLexer lexer = new FilterLexer(stream);
-            CommonTokenStream tokens = new CommonTokenStream(lexer);
-
-            FilterParser parser = new FilterParser(tokens);
-            parser.removeErrorListener(ConsoleErrorListener.INSTANCE);
-            parser.addErrorListener(FilterErrorListener.INSTANCE);
-
-            ParseTree parseTree;
-
             try {
-                parseTree = parser.logical();
+                collection = collection.stream()
+                        .filter(item -> FilterEngine.execute(filter, item))
+                        .collect(Collectors.toList());
             } catch (InvalidSyntaxException e) {
                 return this;
+            } catch (NoSuchFieldException e) {
+                throw new BadRequestException();
             }
-
-            collection = collection.stream()
-                    .filter(entity -> {
-                        try {
-                            return new FilterEvaluator(entity).visit(parseTree);
-                        } catch (NoSuchFieldException e) {
-                            throw new BadRequestException();
-                        }
-                    })
-                    .collect(Collectors.toList());
 
             return this;
         }
