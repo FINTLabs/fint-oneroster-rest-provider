@@ -3,26 +3,50 @@ package no.fint.oneroster.service;
 import no.fint.oneroster.exception.NotFoundException;
 import no.fint.oneroster.model.AcademicSession;
 import no.fint.oneroster.model.vocab.SessionType;
-import no.fint.oneroster.repository.OneRosterRepository;
+import no.fint.oneroster.properties.OneRosterProperties;
 import org.springframework.stereotype.Service;
 
+import java.time.Year;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class AcademicSessionService {
-    private final OneRosterRepository oneRosterRepository;
+    private final OneRosterProperties oneRosterProperties;
 
-    public AcademicSessionService(OneRosterRepository oneRosterRepository) {
-        this.oneRosterRepository = oneRosterRepository;
+    public AcademicSessionService(OneRosterProperties oneRosterProperties) {
+        this.oneRosterProperties = oneRosterProperties;
     }
 
     public List<AcademicSession> getAllAcademicSessions() {
-        return oneRosterRepository.getAcademicSessions();
+        OneRosterProperties.AcademicSession academicSession = oneRosterProperties.getAcademicSession();
+
+        Year endYear = Year.of(academicSession.getSecondTerm().getEndDate().getYear());
+
+        AcademicSession firstTerm = new AcademicSession(
+                academicSession.getFirstTerm().getSourcedId(),
+                academicSession.getFirstTerm().getName(),
+                academicSession.getFirstTerm().getBeginDate(),
+                academicSession.getFirstTerm().getEndDate(),
+                SessionType.TERM,
+                endYear);
+
+        AcademicSession secondTerm = new AcademicSession(
+                academicSession.getSecondTerm().getSourcedId(),
+                academicSession.getSecondTerm().getName(),
+                academicSession.getSecondTerm().getBeginDate(),
+                academicSession.getSecondTerm().getEndDate(),
+                SessionType.TERM,
+                endYear);
+
+        return Arrays.asList(firstTerm, secondTerm);
     }
 
     public AcademicSession getAcademicSession(String sourcedId) {
-        return Optional.ofNullable(oneRosterRepository.getAcademicSessionById(sourcedId))
+        return getAllAcademicSessions()
+                .stream()
+                .filter(academicSession -> academicSession.getSourcedId().equals(sourcedId))
+                .findAny()
                 .orElseThrow(NotFoundException::new);
     }
 
@@ -34,8 +58,10 @@ public class AcademicSessionService {
     }
 
     public AcademicSession getTerm(String sourcedId) {
-        return Optional.ofNullable(oneRosterRepository.getAcademicSessionById(sourcedId))
-                .filter(academicSession -> academicSession.getType().equals(SessionType.TERM))
+        return getAllTerms()
+                .stream()
+                .filter(term -> term.getSourcedId().equals(sourcedId))
+                .findAny()
                 .orElseThrow(NotFoundException::new);
     }
 
@@ -47,8 +73,10 @@ public class AcademicSessionService {
     }
 
     public AcademicSession getGradingPeriod(String sourcedId) {
-        return Optional.ofNullable(oneRosterRepository.getAcademicSessionById(sourcedId))
-                .filter(academicSession -> academicSession.getType().equals(SessionType.GRADINGPERIOD))
+        return getAllGradingPeriods()
+                .stream()
+                .filter(gradingPeriod -> gradingPeriod.getSourcedId().equals(sourcedId))
+                .findAny()
                 .orElseThrow(NotFoundException::new);
     }
 }

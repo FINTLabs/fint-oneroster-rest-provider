@@ -4,12 +4,18 @@ import no.fint.oneroster.factory.clazz.ClazzFactory
 import no.fint.oneroster.factory.clazz.DefaultClazzFactory
 import no.fint.oneroster.factory.user.DefaultUserFactory
 import no.fint.oneroster.factory.user.UserFactory
+import no.fint.oneroster.model.AcademicSession
 import no.fint.oneroster.model.vocab.ClazzType
 import no.fint.oneroster.model.vocab.OrgType
 import no.fint.oneroster.model.vocab.RoleType
+import no.fint.oneroster.model.vocab.SessionType
 import no.fint.oneroster.properties.OneRosterProperties
 import no.fint.oneroster.FintObjectFactory
+import no.fint.oneroster.service.AcademicSessionService
 import spock.lang.Specification
+
+import java.time.LocalDate
+import java.time.Year
 
 class OneRosterRepositorySpec extends Specification {
 
@@ -27,8 +33,6 @@ class OneRosterRepositorySpec extends Specification {
         getLevelById(_ as String) >> FintObjectFactory.newLevel()
         getSubjectById(_ as String) >> FintObjectFactory.newSubject()
         getPersonnelById(_ as String) >> FintObjectFactory.newPersonnel()
-        getTermById(_ as String) >> FintObjectFactory.newTerm()
-        getSchoolYearById(_ as String) >> FintObjectFactory.newSchoolYear()
     }
 
     OneRosterProperties oneRosterProperties = Stub() {
@@ -44,7 +48,11 @@ class OneRosterRepositorySpec extends Specification {
     ClazzFactory clazzFactory = new DefaultClazzFactory()
     UserFactory userFactory = new DefaultUserFactory()
 
-    OneRosterRepository oneRosterRepository = new OneRosterRepository(oneRosterProperties, clazzFactory, userFactory, fintService)
+    AcademicSessionService academicSessionService = Stub() {
+        getAllTerms() >> [getTerm()]
+    }
+
+    OneRosterRepository oneRosterRepository = new OneRosterRepository(oneRosterProperties, clazzFactory, userFactory, fintService, academicSessionService)
 
     def setup()  {
         oneRosterRepository.update()
@@ -119,5 +127,16 @@ class OneRosterRepositorySpec extends Specification {
         users.first().role == RoleType.STUDENT
         users.first().email == 'email'
         users.first().orgs.first().sourcedId == 'school-sourced-id'
+    }
+
+    def getTerm() {
+        return new AcademicSession(
+                'term-sourced-id',
+                '1 termin 2019/2020',
+                LocalDate.of(2019, 8, 1),
+                LocalDate.of(2010, 12, 31),
+                SessionType.TERM,
+                Year.of(2020)
+        )
     }
 }

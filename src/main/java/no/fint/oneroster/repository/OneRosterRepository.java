@@ -8,11 +8,8 @@ import no.fint.model.resource.administrasjon.personal.PersonalressursResource;
 import no.fint.model.resource.felles.PersonResource;
 import no.fint.model.resource.utdanning.basisklasser.GruppeResource;
 import no.fint.model.resource.utdanning.elev.*;
-import no.fint.model.resource.utdanning.kodeverk.SkolearResource;
-import no.fint.model.resource.utdanning.kodeverk.TerminResource;
 import no.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
-import no.fint.oneroster.factory.AcademicSessionFactory;
 import no.fint.oneroster.factory.CourseFactory;
 import no.fint.oneroster.factory.EnrollmentFactory;
 import no.fint.oneroster.factory.OrgFactory;
@@ -21,6 +18,7 @@ import no.fint.oneroster.factory.user.UserFactory;
 import no.fint.oneroster.model.*;
 import no.fint.oneroster.model.vocab.GUIDType;
 import no.fint.oneroster.properties.OneRosterProperties;
+import no.fint.oneroster.service.AcademicSessionService;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
@@ -40,16 +38,18 @@ public class OneRosterRepository {
     private final ClazzFactory clazzFactory;
     private final UserFactory userFactory;
     private final FintRepository fintRepository;
+    private final AcademicSessionService academicSessionService;
 
     private final ConcurrentMap<String, Base> cache = new ConcurrentSkipListMap<>();
 
     private final AtomicBoolean init = new AtomicBoolean(false);
 
-    public OneRosterRepository(OneRosterProperties oneRosterProperties, ClazzFactory clazzFactory, UserFactory userFactory, FintRepository fintRepository) {
+    public OneRosterRepository(OneRosterProperties oneRosterProperties, ClazzFactory clazzFactory, UserFactory userFactory, FintRepository fintRepository, AcademicSessionService academicSessionService) {
         this.oneRosterProperties = oneRosterProperties;
         this.clazzFactory = clazzFactory;
         this.userFactory = userFactory;
         this.fintRepository = fintRepository;
+        this.academicSessionService = academicSessionService;
     }
 
     public List<Org> getOrgs() {
@@ -90,14 +90,6 @@ public class OneRosterRepository {
 
     public User getUserById(String sourcedId) {
         return getResourceByTypeAndId(User.class, sourcedId);
-    }
-
-    public List<AcademicSession> getAcademicSessions() {
-        return getResourcesByType(AcademicSession.class);
-    }
-
-    public AcademicSession getAcademicSessionById(String sourcedId) {
-        return getResourceByTypeAndId(AcademicSession.class, sourcedId);
     }
 
     public <T extends Base> List<T> getResourcesByType(Class<T> clazz) {
@@ -221,7 +213,7 @@ public class OneRosterRepository {
                 .filter(Objects::nonNull)
                 .findAny()
                 .ifPresent(level -> {
-                    List<TerminResource> terms = getTerms(basisGroup.getTermin());
+                    List<AcademicSession> terms = academicSessionService.getAllTerms();
 
                     Clazz clazz = clazzFactory.basisGroup(basisGroup, level, schoolResource, terms);
 
@@ -229,9 +221,6 @@ public class OneRosterRepository {
 
                     resources.computeIfAbsent(level.getSystemId().getIdentifikatorverdi(), it ->
                             CourseFactory.level(level, oneRosterProperties.getOrg()));
-
-                    terms.forEach(term -> resources.computeIfAbsent(term.getSystemId().getIdentifikatorverdi(), it ->
-                            AcademicSessionFactory.term(term, getSchoolYear(basisGroup.getSkolear()))));
 
                     addStudentEnrollment(basisGroup.getElevforhold(), schoolResource)
                             .andThen(addTeachingEnrollment(basisGroup.getUndervisningsforhold(), schoolResource))
@@ -256,7 +245,7 @@ public class OneRosterRepository {
                 .filter(Objects::nonNull)
                 .findAny()
                 .ifPresent(subject -> {
-                    List<TerminResource> terms = getTerms(teachingGroup.getTermin());
+                    List<AcademicSession> terms = academicSessionService.getAllTerms();
 
                     Clazz clazz = clazzFactory.teachingGroup(teachingGroup, subject, schoolResource, terms);
 
@@ -265,9 +254,6 @@ public class OneRosterRepository {
                     resources.computeIfAbsent(subject.getSystemId().getIdentifikatorverdi(), it ->
                             CourseFactory.subject(subject, oneRosterProperties.getOrg()));
 
-                    terms.forEach(term -> resources.computeIfAbsent(term.getSystemId().getIdentifikatorverdi(), it ->
-                            AcademicSessionFactory.term(term, getSchoolYear(teachingGroup.getSkolear()))));
-
                     addStudentEnrollment(teachingGroup.getElevforhold(), schoolResource)
                             .andThen(addTeachingEnrollment(teachingGroup.getUndervisningsforhold(), schoolResource))
                             .accept(teachingGroup, resources);
@@ -275,18 +261,12 @@ public class OneRosterRepository {
     }
 
     private BiConsumer<SkoleResource, Map<String, Base>> updateContactTeacherGroups() {
-        return (schoolResource, resources) -> {
-            if (!oneRosterProperties.isContactTeacherGroups()) {
-                return;
-            }
-
-            schoolResource.getKontaktlarergruppe()
-                    .stream()
-                    .map(linkToString)
-                    .map(fintRepository::getContactTeacherGroupById)
-                    .filter(Objects::nonNull)
-                    .forEach(contactTeacherGroup -> updateContactTeacherGroup(contactTeacherGroup).accept(schoolResource, resources));
-        };
+        return (schoolResource, resources) -> schoolResource.getKontaktlarergruppe()
+                .stream()
+                .map(linkToString)
+                .map(fintRepository::getContactTeacherGroupById)
+                .filter(Objects::nonNull)
+                .forEach(contactTeacherGroup -> updateContactTeacherGroup(contactTeacherGroup).accept(schoolResource, resources));
     }
 
     private BiConsumer<SkoleResource, Map<String, Base>> updateContactTeacherGroup(KontaktlarergruppeResource contactTeacherGroup) {
@@ -303,14 +283,11 @@ public class OneRosterRepository {
                 .filter(Objects::nonNull)
                 .findAny()
                 .ifPresent(level -> {
-                    List<TerminResource> terms = getTerms(contactTeacherGroup.getTermin());
+                    List<AcademicSession> terms = academicSessionService.getAllTerms();
 
                     Clazz clazz = clazzFactory.contactTeacherGroup(contactTeacherGroup, level, schoolResource, terms);
 
                     resources.put(clazz.getSourcedId(), clazz);
-
-                    terms.forEach(term -> resources.computeIfAbsent(term.getSystemId().getIdentifikatorverdi(), it ->
-                            AcademicSessionFactory.term(term, getSchoolYear(contactTeacherGroup.getSkolear()))));
 
                     addStudentEnrollment(contactTeacherGroup.getElevforhold(), schoolResource)
                             .andThen(addTeachingEnrollment(contactTeacherGroup.getUndervisningsforhold(), schoolResource))
@@ -341,23 +318,6 @@ public class OneRosterRepository {
 
                     resources.put(enrollment.getSourcedId(), enrollment);
                 }));
-    }
-
-    private List<TerminResource> getTerms(List<Link> terms) {
-        return terms.stream()
-                .map(linkToString)
-                .map(fintRepository::getTermById)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-    }
-
-    private SkolearResource getSchoolYear(List<Link> schoolYears) {
-        return schoolYears.stream()
-                .map(linkToString)
-                .map(fintRepository::getSchoolYearById)
-                .filter(Objects::nonNull)
-                .findAny()
-                .orElse(null);
     }
 
     private List<SkoleResource> getSchools(List<Link> schools) {
@@ -399,11 +359,16 @@ public class OneRosterRepository {
 
         Org schoolOwner = OrgFactory.schoolOwner(oneRosterProperties.getOrg());
 
-        fintRepository.getSchools().forEach(schoolResource -> updateSchools(schoolOwner)
-                .andThen(updateBasisGroups())
-                .andThen(updateTeachingGroups())
-                .andThen(updateContactTeacherGroups())
-                .accept(schoolResource, resources));
+        fintRepository.getSchools().forEach(schoolResource -> {
+            updateSchools(schoolOwner)
+                    .andThen(updateBasisGroups())
+                    .andThen(updateTeachingGroups())
+                    .accept(schoolResource, resources);
+
+            if (oneRosterProperties.isContactTeacherGroups()) {
+                updateContactTeacherGroups().accept(schoolResource, resources);
+            }
+        });
 
         resources.put(schoolOwner.getSourcedId(), schoolOwner);
 

@@ -43,13 +43,12 @@ public class ResetAndUpdate {
         } catch (OAuth2AuthorizationException | WebClientException ex) {
             log.error(ex.getMessage(), ex);
         } finally {
-            log.info("{} orgs, {} users, {} classes, {} courses, {} enrollments, {} academicSessions",
+            log.info("{} orgs, {} users, {} classes, {} courses, {} enrollments",
                     oneRosterRepository.getOrgs().size(),
                     oneRosterRepository.getUsers().size(),
                     oneRosterRepository.getClazzes().size(),
                     oneRosterRepository.getCourses().size(),
-                    oneRosterRepository.getEnrollments().size(),
-                    oneRosterRepository.getAcademicSessions().size());
+                    oneRosterRepository.getEnrollments().size());
         }
     }
 
@@ -65,8 +64,6 @@ public class ResetAndUpdate {
                 fintRepository.getSubjects().isEmpty() ||
                 fintRepository.getLevels().isEmpty() ||
                 fintRepository.getPersons().isEmpty() ||
-                fintRepository.getPersonnel().isEmpty() ||
-                fintRepository.getTerms().isEmpty() ||
-                fintRepository.getSchoolYears().isEmpty();
+                fintRepository.getPersonnel().isEmpty();
     }
 }

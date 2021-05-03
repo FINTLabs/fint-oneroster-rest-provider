@@ -22,7 +22,12 @@ class OrgServiceSpec extends Specification {
 
     OneRosterRepository repository = Mock()
 
-    OrgService orgService = new OrgService(repository)
+
+    AcademicSessionService academicSessionService = Stub() {
+        getAllTerms() >> [getTerm()]
+    }
+
+    OrgService orgService = new OrgService(repository, academicSessionService)
 
     def "getAllOrgs returns a list of orgs"() {
         when:
@@ -128,8 +133,6 @@ class OrgServiceSpec extends Specification {
 
         then:
         repository.getOrgById(_ as String) >> getSchool()
-        repository.getClazzes() >> [getBasisGroup()]
-        repository.getAcademicSessionById(_ as String) >> getTerm()
         terms.size() == 1
     }
 

@@ -2,8 +2,7 @@ package no.fint.oneroster.configuration;
 
 import no.fint.oneroster.factory.clazz.ClazzFactory;
 import no.fint.oneroster.factory.clazz.DefaultClazzFactory;
-import no.fint.oneroster.factory.clazz.MrfylkeISTClazzFactory;
-import no.fint.oneroster.factory.clazz.MrfylkeVISClazzFactory;
+import no.fint.oneroster.factory.clazz.MrfylkeClazzFactory;
 import no.fint.oneroster.factory.user.DefaultUserFactory;
 import no.fint.oneroster.factory.user.NinUserFactory;
 import no.fint.oneroster.factory.user.UserFactory;
@@ -21,15 +20,9 @@ public class FactoryConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "oneroster", name = "class-factory", havingValue = "mrfylke-ist")
+    @ConditionalOnProperty(prefix = "oneroster", name = "class-factory", havingValue = "mrfylke")
     public ClazzFactory mrfylkeISTClazzFactory() {
-        return new MrfylkeISTClazzFactory();
-    }
-
-    @Bean
-    @ConditionalOnProperty(prefix = "oneroster", name = "class-factory", havingValue = "mrfylke-vis")
-    public ClazzFactory mrfylkeVISClazzFactory() {
-        return new MrfylkeVISClazzFactory();
+        return new MrfylkeClazzFactory();
     }
 
     @Bean

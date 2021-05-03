@@ -13,9 +13,11 @@ import java.util.stream.Collectors;
 @Service
 public class OrgService {
     private final OneRosterRepository oneRosterRepository;
+    private final AcademicSessionService academicSessionService;
 
-    public OrgService(OneRosterRepository oneRosterRepository) {
+    public OrgService(OneRosterRepository oneRosterRepository, AcademicSessionService academicSessionService) {
         this.oneRosterRepository = oneRosterRepository;
+        this.academicSessionService = academicSessionService;
     }
 
     public List<Org> getAllOrgs() {
@@ -92,15 +94,8 @@ public class OrgService {
     }
 
     public List<AcademicSession> getTermsForSchool(String sourcedId) {
-        Org school = getSchool(sourcedId);
+        getSchool(sourcedId);
 
-        return oneRosterRepository.getClazzes()
-                .stream()
-                .filter(clazz -> clazz.getSchool().getSourcedId().equals(school.getSourcedId()))
-                .flatMap(clazz -> clazz.getTerms().stream())
-                .map(GUIDRef::getSourcedId)
-                .distinct()
-                .map(oneRosterRepository::getAcademicSessionById)
-                .collect(Collectors.toList());
+        return academicSessionService.getAllTerms();
     }
 }

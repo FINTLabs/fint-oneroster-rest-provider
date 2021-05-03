@@ -188,28 +188,4 @@ class FintObjectFactory {
         resource.addSelf(Link.with('/subject-sourced-id'))
         return resource
     }
-
-    static TerminResource newTerm() {
-        TerminResource resource = new TerminResource()
-        resource.setSystemId(new Identifikator(identifikatorverdi: 'term-sourced-id'))
-        resource.setNavn('Term')
-        resource.setKode('Term')
-        resource.setPassiv(false)
-        resource.setGyldighetsperiode(new Periode(start: Date.from(LocalDate.of(2020, 8, 1).atStartOfDay(ZoneId.of('Z')).toInstant()),
-                slutt: Date.from(LocalDate.of(2020, 12, 31).atStartOfDay(ZoneId.of('Z')).toInstant())))
-        resource.addSelf(Link.with('/term-sourced-id'))
-        return resource
-    }
-
-    static SkolearResource newSchoolYear() {
-        SkolearResource resource = new SkolearResource()
-        resource.setSystemId(new Identifikator(identifikatorverdi: 'school-year-sourced-id'))
-        resource.setNavn('SchoolYear')
-        resource.setKode('SchoolYear')
-        resource.setPassiv(false)
-        resource.setGyldighetsperiode(new Periode(start: Date.from(LocalDate.of(2020, 8, 1).atStartOfDay(ZoneId.of('Z')).toInstant()),
-                slutt: Date.from(LocalDate.of(2021, 7, 31).atStartOfDay(ZoneId.of('Z')).toInstant())))
-        resource.addSelf(Link.with('/school-year-sourced-id'))
-        return resource
-    }
 }

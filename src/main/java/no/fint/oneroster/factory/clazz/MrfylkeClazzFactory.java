@@ -6,7 +6,7 @@ import no.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
 import org.apache.commons.lang3.StringUtils;
 
-public class MrfylkeISTClazzFactory implements ClazzFactory {
+public class MrfylkeClazzFactory implements ClazzFactory {
 
     @Override
     public String basisGroupNameConverter(BasisgruppeResource basisGroup, SkoleResource school) {

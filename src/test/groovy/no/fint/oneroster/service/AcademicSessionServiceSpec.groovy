@@ -1,8 +1,7 @@
 package no.fint.oneroster.service
 
-import no.fint.oneroster.model.AcademicSession
 import no.fint.oneroster.model.vocab.SessionType
-import no.fint.oneroster.repository.OneRosterRepository
+import no.fint.oneroster.properties.OneRosterProperties
 import spock.lang.Specification
 
 import java.time.LocalDate
@@ -10,37 +9,43 @@ import java.time.Year
 
 class AcademicSessionServiceSpec extends Specification {
 
-    OneRosterRepository repository = Mock()
+    OneRosterProperties oneRosterProperties = Mock {
+        getAcademicSession() >> new OneRosterProperties.AcademicSession(
+                firstTerm: new OneRosterProperties.Term(sourcedId: 'T1SY20192020', beginDate: '2019-08-01', endDate: '2019-12-31', name: '1. termin 2019/2020'),
+                secondTerm: new OneRosterProperties.Term(sourcedId: 'T2SY20192020', beginDate: '2020-01-01', endDate: '2020-07-31', name: '2. termin 2019/2020')
+        )
+    }
 
-    AcademicSessionService academicSessionService = new AcademicSessionService(repository)
+    AcademicSessionService academicSessionService = new AcademicSessionService(oneRosterProperties)
 
     def "getAllAcademicSessions returns a list of academicSessions"() {
         when:
         def academicSessions = academicSessionService.getAllAcademicSessions()
 
         then:
-        1 * repository.getAcademicSessions() >> [getTerm()]
-        academicSessions.size() == 1
-        academicSessions.first().sourcedId == 'term-sourced-id'
-        academicSessions.first().title == 'Term'
-        academicSessions.first().startDate == LocalDate.of(2020, 8, 1)
-        academicSessions.first().endDate == LocalDate.of(2020, 12, 31)
+        academicSessions.size() == 2
+        academicSessions.first().sourcedId == 'T1SY20192020'
+        academicSessions.first().title == '1. termin 2019/2020'
+        academicSessions.first().startDate == LocalDate.of(2019, 8, 1)
+        academicSessions.first().endDate == LocalDate.of(2019, 12, 31)
         academicSessions.first().type == SessionType.TERM
-        academicSessions.first().schoolYear == Year.of(2021)
+        academicSessions.first().schoolYear == Year.of(2020)
     }
 
     def "getAcademicSession returns an academicSession given valid sourcedId"() {
+        given:
+        def sourcedId = 'T1SY20192020'
+
         when:
-        def academicSession = academicSessionService.getAcademicSession('term-sourced-id')
+        def academicSession = academicSessionService.getAcademicSession(sourcedId)
 
         then:
-        1 * repository.getAcademicSessionById(_ as String) >> getTerm()
-        academicSession.sourcedId == 'term-sourced-id'
-        academicSession.title == 'Term'
-        academicSession.startDate == LocalDate.of(2020, 8, 1)
-        academicSession.endDate == LocalDate.of(2020, 12, 31)
+        academicSession.sourcedId == 'T1SY20192020'
+        academicSession.title == '1. termin 2019/2020'
+        academicSession.startDate == LocalDate.of(2019, 8, 1)
+        academicSession.endDate == LocalDate.of(2019, 12, 31)
         academicSession.type == SessionType.TERM
-        academicSession.schoolYear == Year.of(2021)
+        academicSession.schoolYear == Year.of(2020)
     }
 
     def "getAllTerms returns a list of terms"() {
@@ -48,39 +53,28 @@ class AcademicSessionServiceSpec extends Specification {
         def terms = academicSessionService.getAllTerms()
 
         then:
-        1 * repository.getAcademicSessions() >> [getTerm()]
-        terms.size() == 1
-        terms.first().sourcedId == 'term-sourced-id'
-        terms.first().title == 'Term'
-        terms.first().startDate == LocalDate.of(2020, 8, 1)
-        terms.first().endDate == LocalDate.of(2020, 12, 31)
+        terms.size() == 2
+        terms.first().sourcedId == 'T1SY20192020'
+        terms.first().title == '1. termin 2019/2020'
+        terms.first().startDate == LocalDate.of(2019, 8, 1)
+        terms.first().endDate == LocalDate.of(2019, 12, 31)
         terms.first().type == SessionType.TERM
-        terms.first().schoolYear == Year.of(2021)
+        terms.first().schoolYear == Year.of(2020)
     }
 
     def "getTerm returns a term given valid sourcedId"() {
+        given:
+        def sourcedId = 'T1SY20192020'
+
         when:
-        def term = academicSessionService.getAcademicSession('term-sourced-id')
+        def term = academicSessionService.getAcademicSession(sourcedId)
 
         then:
-        1 * repository.getAcademicSessionById(_ as String) >> getTerm()
-
-        term.sourcedId == 'term-sourced-id'
-        term.title == 'Term'
-        term.startDate == LocalDate.of(2020, 8, 1)
-        term.endDate == LocalDate.of(2020, 12, 31)
+        term.sourcedId == 'T1SY20192020'
+        term.title == '1. termin 2019/2020'
+        term.startDate == LocalDate.of(2019, 8, 1)
+        term.endDate == LocalDate.of(2019, 12, 31)
         term.type == SessionType.TERM
-        term.schoolYear == Year.of(2021)
-    }
-
-    AcademicSession getTerm() {
-        return new AcademicSession(
-                'term-sourced-id',
-                'Term',
-                LocalDate.of(2020, 8, 1),
-                LocalDate.of(2020, 12, 31),
-                SessionType.TERM,
-                Year.of(2021)
-        )
+        term.schoolYear == Year.of(2020)
     }
 }
