@@ -153,7 +153,6 @@ class UserServiceSpec extends Specification {
     Clazz getBasisGroup() {
         return new Clazz(
                 'basis-group-sourced-id',
-                StatusType.ACTIVE,
                 'Basis group',
                 ClazzType.HOMEROOM,
                 GUIDRef.of(GUIDType.COURSE, 'level-sourced-id'),
@@ -165,7 +164,6 @@ class UserServiceSpec extends Specification {
     Clazz getTeachingGroup() {
         return new Clazz(
                 'teaching-group-sourced-id',
-                StatusType.ACTIVE,
                 'Teaching group',
                 ClazzType.SCHEDULED,
                 GUIDRef.of(GUIDType.COURSE, 'subject-sourced-id'),
@@ -178,7 +176,6 @@ class UserServiceSpec extends Specification {
     {
         return new Enrollment(
                 'student-relation-sourced-id_basis-group-sourced-id',
-                StatusType.ACTIVE,
                 GUIDRef.of(GUIDType.USER, 'student-sourced-id'),
                 GUIDRef.of(GUIDType.CLASS, 'basis-group-sourced-id'),
                 GUIDRef.of(GUIDType.ORG, 'school-sourced-id'),
@@ -190,7 +187,6 @@ class UserServiceSpec extends Specification {
     {
         return new Enrollment(
                 'teaching-relation-sourced-id_teaching-group-sourced-id',
-                StatusType.ACTIVE,
                 GUIDRef.of(GUIDType.USER, 'teacher-sourced-id'),
                 GUIDRef.of(GUIDType.CLASS, 'teaching-group-sourced-id'),
                 GUIDRef.of(GUIDType.ORG, 'school-sourced-id'),

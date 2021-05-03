@@ -50,7 +50,6 @@ class EnrollmentServiceSpec extends Specification {
     Enrollment getStudentEnrollment() {
         return new Enrollment(
                 'student-relation-sourced-id_basis-group-sourced-id',
-                StatusType.ACTIVE,
                 GUIDRef.of(GUIDType.USER, 'student-sourced-id'),
                 GUIDRef.of(GUIDType.CLASS, 'basis-group-sourced-id'),
                 GUIDRef.of(GUIDType.ORG, 'school-sourced-id'),
@@ -61,7 +60,6 @@ class EnrollmentServiceSpec extends Specification {
     Enrollment getTeacherEnrollment() {
         return new Enrollment(
                 'teaching-relation-sourced-id_teaching-group-sourced-id',
-                StatusType.ACTIVE,
                 GUIDRef.of(GUIDType.USER, 'teacher-sourced-id'),
                 GUIDRef.of(GUIDType.CLASS, 'teaching-group-sourced-id'),
                 GUIDRef.of(GUIDType.ORG, 'school-sourced-id'),

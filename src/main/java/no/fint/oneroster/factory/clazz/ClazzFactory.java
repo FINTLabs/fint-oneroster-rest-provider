@@ -12,9 +12,7 @@ import no.fint.oneroster.model.Clazz;
 import no.fint.oneroster.model.GUIDRef;
 import no.fint.oneroster.model.vocab.ClazzType;
 import no.fint.oneroster.model.vocab.GUIDType;
-import no.fint.oneroster.util.FactoryUtil;
 
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,7 +25,6 @@ public interface ClazzFactory {
     default Clazz basisGroup(BasisgruppeResource basisgruppeResource, ArstrinnResource arstrinnResource, SkoleResource skoleResource, List<TerminResource> terms) {
         Clazz basisGroup = new Clazz(
                 normalize(basisgruppeResource.getSystemId().getIdentifikatorverdi()),
-                FactoryUtil.getStatusType(basisgruppeResource, ZonedDateTime.now()),
                 basisGroupNameConverter(basisgruppeResource, skoleResource),
                 ClazzType.HOMEROOM,
                 GUIDRef.of(GUIDType.COURSE, normalize(arstrinnResource.getSystemId().getIdentifikatorverdi())),
@@ -48,7 +45,6 @@ public interface ClazzFactory {
     default Clazz teachingGroup(UndervisningsgruppeResource undervisningsgruppeResource, FagResource fagResource, SkoleResource skoleResource, List<TerminResource> terms) {
         Clazz teachingGroup = new Clazz(
                 normalize(undervisningsgruppeResource.getSystemId().getIdentifikatorverdi()),
-                FactoryUtil.getStatusType(undervisningsgruppeResource, ZonedDateTime.now()),
                 teachingGroupNameConverter(undervisningsgruppeResource, skoleResource, fagResource),
                 ClazzType.SCHEDULED,
                 GUIDRef.of(GUIDType.COURSE, normalize(fagResource.getSystemId().getIdentifikatorverdi())),
@@ -72,7 +68,6 @@ public interface ClazzFactory {
     default Clazz contactTeacherGroup(KontaktlarergruppeResource kontaktlarergruppeResource, ArstrinnResource arstrinnResource, SkoleResource skoleResource, List<TerminResource> terms) {
         Clazz contactTeacherGroup = new Clazz(
                 normalize(kontaktlarergruppeResource.getSystemId().getIdentifikatorverdi()),
-                FactoryUtil.getStatusType(kontaktlarergruppeResource, ZonedDateTime.now()),
                 contactTeacherGroupNameConverter(kontaktlarergruppeResource, skoleResource),
                 ClazzType.HOMEROOM,
                 GUIDRef.of(GUIDType.COURSE, normalize(arstrinnResource.getSystemId().getIdentifikatorverdi())),
