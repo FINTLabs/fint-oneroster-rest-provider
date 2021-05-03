@@ -25,7 +25,6 @@ import no.fint.oneroster.client.FintClient;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 
-import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -189,7 +188,6 @@ public class FintRepository {
                 fintClient.getEducationResources(SkolearResources.class, FintEndpoint.SCHOOL_YEAR.getKey()),
                 fintClient.getAdministrationResources(PersonalressursResources.class, FintEndpoint.PERSONNEL.getKey()),
                 fintClient.getAdministrationResources(PersonResources.class, FintEndpoint.PERSON.getKey()))
-                .doOnComplete(() -> fintClient.setSinceTimestamp(Instant.now().toEpochMilli()))
                 .toStream()
                 .forEach(resource -> {
                     List<String> links = getSelfLinks(resource);
@@ -214,6 +212,6 @@ public class FintRepository {
         selfLinks = new HashMap<>();
         resources = new HashMap<>();
 
-        fintClient.setSinceTimestamp(0L);
+        fintClient.reset();
     }
 }

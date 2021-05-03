@@ -82,7 +82,7 @@ public class OneRosterCollectionResponse {
         }
 
         public OneRosterCollectionResponse build() {
-            String rel = rels.get(clazz);
+            String rel = RELS.get(clazz);
 
             MappingJacksonValue body = new MappingJacksonValue(Map.of(rel, collection));
             body.setFilters(simpleFilterProvider);
@@ -94,7 +94,7 @@ public class OneRosterCollectionResponse {
         }
     }
 
-    private static final Map<Class<? extends Base>, String> rels = Map.of(
+    private static final Map<Class<? extends Base>, String> RELS = Map.of(
             AcademicSession.class, "academicSessions",
             Clazz.class, "classes",
             Course.class, "courses",

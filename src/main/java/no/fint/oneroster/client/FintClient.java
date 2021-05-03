@@ -1,9 +1,7 @@
 package no.fint.oneroster.client;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import no.fint.model.resource.AbstractCollectionResources;
-import no.fint.oneroster.client.FintComponent;
 import no.fint.oneroster.properties.FintProperties;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
@@ -15,6 +13,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import static org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction.oauth2AuthorizedClient;
@@ -26,8 +26,7 @@ public class FintClient {
     private final OAuth2AuthorizedClientManager authorizedClientManager;
     private final FintProperties fintProperties;
 
-    @Setter @Getter
-    private long sinceTimestamp = 0L;
+    private final Map<String, Long> sinceTimestamp = new ConcurrentHashMap<>();
 
     public FintClient(WebClient webClient, Authentication principal, OAuth2AuthorizedClientManager authorizedClientManager, FintProperties fintProperties) {
         this.webClient = webClient;
@@ -65,9 +64,24 @@ public class FintClient {
         OAuth2AuthorizedClient authorizedClient = authorizedClientManager.authorize(authorizeRequest);
 
         return webClient.get()
-                .uri(endpoint, uriBuilder -> uriBuilder.queryParam("sinceTimeStamp", sinceTimestamp).build())
+                .uri(endpoint.concat("/last-updated"))
                 .attributes(oauth2AuthorizedClient(authorizedClient))
                 .retrieve()
-                .bodyToMono(clazz);
+                .bodyToMono(LastUpdated.class)
+                .flatMap(lastUpdated -> webClient.get()
+                        .uri(endpoint, uriBuilder -> uriBuilder.queryParam("sinceTimeStamp", sinceTimestamp.getOrDefault(endpoint, 0L)).build())
+                        .attributes(oauth2AuthorizedClient(authorizedClient))
+                        .retrieve()
+                        .bodyToMono(clazz)
+                        .doOnNext(it -> sinceTimestamp.put(endpoint, lastUpdated.getLastUpdated())));
+    }
+
+    @Data
+    private static class LastUpdated {
+        private Long lastUpdated;
+    }
+
+    public void reset() {
+        sinceTimestamp.clear();
     }
 }

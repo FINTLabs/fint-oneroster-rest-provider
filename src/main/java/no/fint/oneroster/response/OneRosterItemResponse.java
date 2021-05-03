@@ -33,7 +33,7 @@ public class OneRosterItemResponse {
         }
 
         public OneRosterItemResponse build() {
-            String rel = rels.get(item.getClass());
+            String rel = RELS.get(item.getClass());
 
             MappingJacksonValue body = new MappingJacksonValue(Map.of(rel, item));
             body.setFilters(simpleFilterProvider);
@@ -42,7 +42,7 @@ public class OneRosterItemResponse {
         }
     }
 
-    private static final Map<Class<? extends Base>, String> rels = Map.of(
+    private static final Map<Class<? extends Base>, String> RELS = Map.of(
             AcademicSession.class, "academicSession",
             Clazz.class, "class",
             Course.class, "course",
