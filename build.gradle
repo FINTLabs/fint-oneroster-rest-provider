@@ -42,11 +42,10 @@ dependencies {
     testImplementation 'com.squareup.okhttp3:mockwebserver:4.3.1'
     testImplementation 'com.squareup.okhttp3:okhttp:4.3.1'
 
-    implementation 'no.fint:fint-administrasjon-resource-model-java:3.8.11-alpha-1'
-    implementation 'no.fint:fint-utdanning-resource-model-java:3.8.11-alpha-1'
-    implementation 'no.fint:fint-felles-resource-model-java:3.8.11-alpha-1'
+    implementation 'no.fint:fint-administrasjon-resource-model-java:3.8.11-rc-1'
+    implementation 'no.fint:fint-utdanning-resource-model-java:3.8.11-rc-1'
+    implementation 'no.fint:fint-felles-resource-model-java:3.8.11-rc-1'
     implementation 'no.fint:fint-model-resource:0.4.1'
-    implementation 'no.fint:fint-model-core:0.2.1'
 
     implementation 'com.google.guava:guava:29.0-jre'
     implementation 'org.apache.commons:commons-lang3:3.9'
