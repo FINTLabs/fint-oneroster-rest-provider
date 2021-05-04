@@ -14,8 +14,8 @@ import spock.lang.Specification
 import java.time.LocalDate
 import java.time.ZoneId
 
-class MrfylkeVISClazzFactorySpec extends Specification {
-    MrfylkeVISClazzFactory mrFylkeClazzFactory = new MrfylkeVISClazzFactory()
+class MrfylkeClazzFactorySpec extends Specification {
+    MrfylkeClazzFactory mrFylkeClazzFactory = new MrfylkeClazzFactory()
 
     def "basisGroupNameConverter() returns modified name"() {
         when:

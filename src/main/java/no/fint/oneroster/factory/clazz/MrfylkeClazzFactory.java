@@ -1,22 +1,33 @@
 package no.fint.oneroster.factory.clazz;
 
+import no.fint.model.felles.kompleksedatatyper.Identifikator;
 import no.fint.model.resource.utdanning.elev.BasisgruppeResource;
 import no.fint.model.resource.utdanning.timeplan.FagResource;
 import no.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
 
 import java.util.Map;
+import java.util.Optional;
 
-public class MrfylkeVISClazzFactory implements ClazzFactory {
+public class MrfylkeClazzFactory implements ClazzFactory {
 
     @Override
     public String basisGroupNameConverter(BasisgruppeResource basisGroup, SkoleResource school) {
-        return basisGroup.getNavn() + " " + schoolAbbreviations.get(school.getSkolenummer().getIdentifikatorverdi());
+        return basisGroup.getNavn() + " " +
+                schoolAbbreviations.getOrDefault(school.getSkolenummer().getIdentifikatorverdi(), getValue(school));
     }
 
     @Override
     public String teachingGroupNameConverter(UndervisningsgruppeResource teachingGroup, SkoleResource school, FagResource subject) {
-        return subject.getNavn() + " " + teachingGroup.getNavn() + " " + schoolAbbreviations.get(school.getSkolenummer().getIdentifikatorverdi());
+        return subject.getNavn() + " " + teachingGroup.getNavn() + " " +
+                schoolAbbreviations.getOrDefault(school.getSkolenummer().getIdentifikatorverdi(), getValue(school));
+    }
+
+    private String getValue(SkoleResource school) {
+        return Optional.ofNullable(school.getOrganisasjonsnummer())
+                .map(Identifikator::getIdentifikatorverdi)
+                .map(schoolAbbreviations::get)
+                .orElse("<Undefined>");
     }
 
     private final Map<String, String> schoolAbbreviations = Map.ofEntries(
@@ -42,5 +53,7 @@ public class MrfylkeVISClazzFactory implements ClazzFactory {
             Map.entry("15030", "VUPA"), //UPA-skole
             Map.entry("15031", "VORS"), //Ørsta
             Map.entry("15033", "VALE"), //Ålesund
-            Map.entry("15035", "VBOR")); //Borgund
+            Map.entry("15035", "VBOR"), //Borgund
+            Map.entry("913587987", "KRIFAG"), //Fagskolen i Kristiansund
+            Map.entry("874576662", "FIALS")); //Fagskolen i Ålesund
 }
