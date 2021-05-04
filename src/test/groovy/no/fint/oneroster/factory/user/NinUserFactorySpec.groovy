@@ -5,11 +5,11 @@ import no.fint.oneroster.FintObjectFactory
 import spock.lang.Specification
 
 class NinUserFactorySpec extends Specification {
-    NinUserFactory rogfkUserFactory = new NinUserFactory()
+    NinUserFactory ninUserFactory = new NinUserFactory()
 
     def "student() returns user object of type student"() {
         when:
-        def student = rogfkUserFactory.student(FintObjectFactory.newStudent(), FintObjectFactory.newPerson(), [FintObjectFactory.newSchool()])
+        def student = ninUserFactory.student(FintObjectFactory.newStudent(), FintObjectFactory.newPerson(), [FintObjectFactory.newSchool()])
 
         then:
         student.sourcedId == 'student-sourced-id'
@@ -18,13 +18,13 @@ class NinUserFactorySpec extends Specification {
         student.givenName == 'given-name'
         student.familyName == 'family-name'
         student.role == RoleType.STUDENT
-        student.identifier == 'identifier'
+        student.identifier == 'person-sourced-id'
         student.orgs.first().sourcedId == 'school-sourced-id'
     }
 
     def "teacher() returns user object of type teacher"() {
         when:
-        def teacher = rogfkUserFactory.teacher(FintObjectFactory.newTeacher(), FintObjectFactory.newPersonnel(), FintObjectFactory.newPerson(), [FintObjectFactory.newSchool()])
+        def teacher = ninUserFactory.teacher(FintObjectFactory.newTeacher(), FintObjectFactory.newPersonnel(), FintObjectFactory.newPerson(), [FintObjectFactory.newSchool()])
 
         then:
         teacher.sourcedId == 'teacher-sourced-id'
@@ -33,7 +33,7 @@ class NinUserFactorySpec extends Specification {
         teacher.givenName == 'given-name'
         teacher.familyName == 'family-name'
         teacher.role == RoleType.TEACHER
-        teacher.identifier == 'identifier'
+        teacher.identifier == 'person-sourced-id'
         teacher.orgs.first().sourcedId == 'school-sourced-id'
     }
 }

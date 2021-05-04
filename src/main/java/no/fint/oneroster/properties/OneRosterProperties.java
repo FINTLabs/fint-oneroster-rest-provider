@@ -9,9 +9,10 @@ import java.util.Map;
 @ConfigurationProperties("oneroster")
 public class OneRosterProperties {
     private Org org;
-    private boolean contactTeacherGroups;
     private String classFactory;
     private String userFactory;
+    private boolean contactTeacherGroups;
+    private boolean parents;
     private boolean accessControl;
     private Map<String, Client> clients;
 

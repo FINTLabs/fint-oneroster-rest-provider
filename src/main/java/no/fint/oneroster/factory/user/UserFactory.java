@@ -13,10 +13,10 @@ import no.fint.oneroster.model.User;
 import no.fint.oneroster.model.UserId;
 import no.fint.oneroster.model.vocab.GUIDType;
 import no.fint.oneroster.model.vocab.RoleType;
+import no.fint.oneroster.properties.OneRosterProperties;
+import no.fint.oneroster.util.PersonUtil;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static no.fint.oneroster.util.StringNormalizer.normalize;
@@ -55,6 +55,20 @@ public interface UserFactory {
         return student;
     }
 
+    default User student(ElevResource elevResource, PersonResource personResource, List<SkoleResource> skoleResources, Set<String> parents) {
+        User student = student(elevResource, personResource, skoleResources);
+
+        parents.forEach(parent -> {
+            if (student.getAgents() == null) {
+                student.setAgents(new ArrayList<>());
+            }
+
+            student.getAgents().add(GUIDRef.of(GUIDType.USER, parent));
+        });
+
+        return student;
+    }
+
     default User teacher(SkoleressursResource skoleressursResource, PersonalressursResource personalressursResource, PersonResource personResource, List<SkoleResource> skoleResources) {
         User teacher = new User(
                 normalize(skoleressursResource.getSystemId().getIdentifikatorverdi()),
@@ -86,6 +100,40 @@ public interface UserFactory {
         getNin(personResource).ifPresent(teacher::setIdentifier);
 
         return teacher;
+    }
+
+    default User parent(PersonResource personResource, Set<String> children, OneRosterProperties.Org org) {
+        User parent = new User(
+                normalize(PersonUtil.maskNin(personResource.getFodselsnummer().getIdentifikatorverdi())),
+                "",
+                true,
+                personResource.getNavn().getFornavn(),
+                personResource.getNavn().getEtternavn(),
+                RoleType.PARENT,
+                Collections.singletonList(GUIDRef.of(GUIDType.ORG, org.getSourcedId()))
+        );
+
+        children.forEach(child -> {
+            if (parent.getAgents() == null) {
+                parent.setAgents(new ArrayList<>());
+            }
+
+            parent.getAgents().add(GUIDRef.of(GUIDType.USER, child));
+        });
+
+        Optional<PersonResource> resource = Optional.of(personResource);
+
+        resource.map(PersonResource::getKontaktinformasjon)
+                .map(Kontaktinformasjon::getEpostadresse)
+                .ifPresent(parent::setEmail);
+
+        Optional.of(personResource.getNavn())
+                .map(Personnavn::getMellomnavn)
+                .ifPresent(parent::setMiddleName);
+
+        getNin(personResource).ifPresent(parent::setIdentifier);
+
+        return parent;
     }
 
     default Optional<String> getNin(PersonResource person) {

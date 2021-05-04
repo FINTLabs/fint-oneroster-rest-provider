@@ -21,7 +21,7 @@ public class FactoryConfiguration {
 
     @Bean
     @ConditionalOnProperty(prefix = "oneroster", name = "class-factory", havingValue = "mrfylke")
-    public ClazzFactory mrfylkeVISClazzFactory() {
+    public ClazzFactory mrfylkeClazzFactory() {
         return new MrfylkeClazzFactory();
     }
 

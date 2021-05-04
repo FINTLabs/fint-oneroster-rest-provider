@@ -29,6 +29,7 @@ class OneRosterRepositorySpec extends Specification {
         getPersonnelById(_ as String) >> FintObjectFactory.newPersonnel()
         getTermById(_ as String) >> FintObjectFactory.newTerm()
         getSchoolYearById(_ as String) >> FintObjectFactory.newSchoolYear()
+        getPersons() >> [FintObjectFactory.newPerson()]
     }
 
     OneRosterProperties oneRosterProperties = Stub() {
@@ -39,6 +40,7 @@ class OneRosterRepositorySpec extends Specification {
         )
 
         isContactTeacherGroups() >> true
+        isParents() >> true
     }
 
     ClazzFactory clazzFactory = new DefaultClazzFactory()
@@ -107,17 +109,28 @@ class OneRosterRepositorySpec extends Specification {
         def users = oneRosterRepository.getUsers()
 
         then:
-        users.size() == 2
-        users.first().sourcedId == 'student-sourced-id'
-        users.first().username == 'username'
-        users.first().userIds.first().type == 'Feide'
-        users.first().userIds.first().identifier == 'feide'
+        users.size() == 3
+        users.first().sourcedId == 'person-sourced-id'
+        users.first().username == ''
         users.first().enabledUser
         users.first().givenName == 'given-name'
         users.first().middleName == 'middle-name'
         users.first().familyName == 'family-name'
-        users.first().role == RoleType.STUDENT
-        users.first().email == 'email'
-        users.first().orgs.first().sourcedId == 'school-sourced-id'
+        users.first().role == RoleType.PARENT
+        users.first().orgs.first().sourcedId == 'school-owner-sourced-id'
+        users.first().agents.first().sourcedId == 'student-sourced-id'
+
+        users[1].sourcedId == 'student-sourced-id'
+        users[1].username == 'username'
+        users[1].userIds.first().type == 'Feide'
+        users[1].userIds.first().identifier == 'feide'
+        users[1].enabledUser
+        users[1].givenName == 'given-name'
+        users[1].middleName == 'middle-name'
+        users[1].familyName == 'family-name'
+        users[1].role == RoleType.STUDENT
+        users[1].email == 'email'
+        users[1].orgs.first().sourcedId == 'school-sourced-id'
+        users[1].agents.first().sourcedId == 'person-sourced-id'
     }
 }

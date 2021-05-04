@@ -1,6 +1,5 @@
 package no.fint.oneroster.antlr
 
-import no.fint.oneroster.exception.BadRequestException
 import no.fint.oneroster.exception.InvalidSyntaxException
 import no.fint.oneroster.exception.NoSuchFieldException
 import no.fint.oneroster.filter.FilterEngine
