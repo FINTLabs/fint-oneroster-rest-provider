@@ -1,5 +1,6 @@
 package no.fint.oneroster.configuration;
 
+import io.netty.channel.ChannelOption;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.reactive.ClientHttpConnector;
@@ -15,6 +16,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.resources.ConnectionProvider;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,7 +58,15 @@ public class OAuthConfiguration {
 
     @Bean
     public ClientHttpConnector clientHttpConnector() {
-        return new ReactorClientHttpConnector(HttpClient.create(ConnectionProvider.newConnection()));
+        return new ReactorClientHttpConnector(HttpClient.create(
+                ConnectionProvider
+                        .builder("laidback")
+                        .maxLifeTime(Duration.ofMinutes(30))
+                        .maxIdleTime(Duration.ofMinutes(5))
+                        .build())
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 300000)
+                .responseTimeout(Duration.ofMinutes(2))
+        );
     }
 
     @Bean
