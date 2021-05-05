@@ -165,6 +165,7 @@ public class OneRosterRepository {
                     Set<String> parents = person.get().getForeldre().stream()
                             .map(linkToString)
                             .map(fintRepository::getPersonById)
+                            .filter(Objects::nonNull)
                             .map(PersonResource::getFodselsnummer)
                             .map(Identifikator::getIdentifikatorverdi)
                             .map(PersonUtil::maskNin)
@@ -421,7 +422,7 @@ public class OneRosterRepository {
         if (oneRosterProperties.isParents()) {
             fintRepository.getPersons().stream()
                     .filter(personResource -> personResource.getForeldreansvar().size() > 0)
-                    .map(personResource -> {
+                    .forEach(personResource -> {
                         Set<String> children = personResource.getForeldreansvar().stream()
                                 .map(linkToString)
                                 .map(fintRepository::getPersonById)
@@ -435,9 +436,12 @@ public class OneRosterRepository {
                                 .map(Identifikator::getIdentifikatorverdi)
                                 .collect(Collectors.toSet());
 
-                        return userFactory.parent(personResource, children, oneRosterProperties.getOrg());
-                    })
-                    .forEach(parent -> resources.put(parent.getSourcedId(), parent));
+                        if (children.size() > 0) {
+                            User parent = userFactory.parent(personResource, children, oneRosterProperties.getOrg());
+
+                            resources.put(parent.getSourcedId(), parent);
+                        }
+                    });
         }
 
         resources.put(schoolOwner.getSourcedId(), schoolOwner);
