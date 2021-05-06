@@ -173,7 +173,7 @@ public class FintRepository {
     }
 
     public void update() {
-        Flux.merge(fintClient.getEducationResources(SkoleResources.class, FintEndpoint.SCHOOL.getKey()),
+        Flux.concat(fintClient.getEducationResources(SkoleResources.class, FintEndpoint.SCHOOL.getKey()),
                 fintClient.getEducationResources(PersonResources.class, FintEndpoint.PERSON.getKey()),
                 fintClient.getEducationResources(ElevResources.class, FintEndpoint.STUDENT.getKey()),
                 fintClient.getEducationResources(SkoleressursResources.class, FintEndpoint.TEACHER.getKey()),

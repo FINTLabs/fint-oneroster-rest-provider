@@ -65,7 +65,7 @@ public class OAuthConfiguration {
                         .maxIdleTime(Duration.ofMinutes(5))
                         .build())
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 300000)
-                .responseTimeout(Duration.ofMinutes(2))
+                .responseTimeout(Duration.ofMinutes(5))
         );
     }
 
