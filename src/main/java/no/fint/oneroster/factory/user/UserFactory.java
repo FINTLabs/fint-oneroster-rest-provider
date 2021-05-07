@@ -55,7 +55,7 @@ public interface UserFactory {
         return student;
     }
 
-    default User student(ElevResource elevResource, PersonResource personResource, List<SkoleResource> skoleResources, Set<String> parents) {
+    default User student(ElevResource elevResource, PersonResource personResource, List<SkoleResource> skoleResources, List<PersonResource> parents) {
         User student = student(elevResource, personResource, skoleResources);
 
         parents.forEach(parent -> {
@@ -63,7 +63,7 @@ public interface UserFactory {
                 student.setAgents(new ArrayList<>());
             }
 
-            student.getAgents().add(GUIDRef.of(GUIDType.USER, parent));
+            student.getAgents().add(GUIDRef.of(GUIDType.USER, normalize(PersonUtil.maskNin(parent.getFodselsnummer().getIdentifikatorverdi()))));
         });
 
         return student;
@@ -102,7 +102,7 @@ public interface UserFactory {
         return teacher;
     }
 
-    default User parent(PersonResource personResource, Set<String> children, OneRosterProperties.Org org) {
+    default User parent(PersonResource personResource, ElevResource child, OneRosterProperties.Org org) {
         User parent = new User(
                 normalize(PersonUtil.maskNin(personResource.getFodselsnummer().getIdentifikatorverdi())),
                 "",
@@ -113,13 +113,7 @@ public interface UserFactory {
                 Collections.singletonList(GUIDRef.of(GUIDType.ORG, org.getSourcedId()))
         );
 
-        children.forEach(child -> {
-            if (parent.getAgents() == null) {
-                parent.setAgents(new ArrayList<>());
-            }
-
-            parent.getAgents().add(GUIDRef.of(GUIDType.USER, child));
-        });
+        parent.setAgents(List.of(GUIDRef.of(GUIDType.USER, normalize(child.getSystemId().getIdentifikatorverdi()))));
 
         Optional<PersonResource> resource = Optional.of(personResource);
 

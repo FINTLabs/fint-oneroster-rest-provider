@@ -3,6 +3,7 @@ package no.fint.oneroster.factory.user
 import no.fint.oneroster.model.vocab.RoleType
 import no.fint.oneroster.FintObjectFactory
 import no.fint.oneroster.properties.OneRosterProperties
+import no.fint.oneroster.util.PersonUtil
 import spock.lang.Specification
 
 class DefaultUserFactorySpec extends Specification {
@@ -24,7 +25,7 @@ class DefaultUserFactorySpec extends Specification {
 
     def "student() returns user object of type student with parents"() {
         when:
-        def student = defaultUserFactory.student(FintObjectFactory.newStudent(), FintObjectFactory.newPerson(), [FintObjectFactory.newSchool()], ['parent-sourced-id'].toSet())
+        def student = defaultUserFactory.student(FintObjectFactory.newStudent(), FintObjectFactory.newPerson(), [FintObjectFactory.newSchool()], [FintObjectFactory.newPerson()])
 
         then:
         student.sourcedId == 'student-sourced-id'
@@ -34,7 +35,7 @@ class DefaultUserFactorySpec extends Specification {
         student.familyName == 'family-name'
         student.role == RoleType.STUDENT
         student.orgs.first().sourcedId == 'school-sourced-id'
-        student.agents.first().sourcedId == 'parent-sourced-id'
+        student.agents.first().sourcedId == PersonUtil.maskNin('person-sourced-id')
     }
 
     def "teacher() returns user object of type teacher"() {
@@ -53,16 +54,16 @@ class DefaultUserFactorySpec extends Specification {
 
     def "parent() returns user object of type parent"() {
         when:
-        def teacher = defaultUserFactory.parent(FintObjectFactory.newPerson(), ['child-sourced-id'].toSet(), new OneRosterProperties.Org(sourcedId: 'org-sourced-id') )
+        def parent = defaultUserFactory.parent(FintObjectFactory.newPerson(), FintObjectFactory.newStudent(), new OneRosterProperties.Org(sourcedId: 'org-sourced-id') )
 
         then:
-        teacher.sourcedId == 'person-sourced-id'
-        teacher.username == ''
-        teacher.enabledUser
-        teacher.givenName == 'given-name'
-        teacher.familyName == 'family-name'
-        teacher.role == RoleType.PARENT
-        teacher.orgs.first().sourcedId == 'org-sourced-id'
-        teacher.agents.first().sourcedId == 'child-sourced-id'
+        parent.sourcedId == 'person-sourced-id'
+        parent.username == ''
+        parent.enabledUser
+        parent.givenName == 'given-name'
+        parent.familyName == 'family-name'
+        parent.role == RoleType.PARENT
+        parent.orgs.first().sourcedId == 'org-sourced-id'
+        parent.agents.first().sourcedId == 'student-sourced-id'
     }
 }

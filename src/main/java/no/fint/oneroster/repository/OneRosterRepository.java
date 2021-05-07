@@ -3,7 +3,6 @@ package no.fint.oneroster.repository;
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
-import no.fint.model.felles.kompleksedatatyper.Identifikator;
 import no.fint.model.resource.Link;
 import no.fint.model.resource.administrasjon.personal.PersonalressursResource;
 import no.fint.model.resource.felles.PersonResource;
@@ -34,6 +33,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import static no.fint.oneroster.util.StringNormalizer.normalize;
 
 @Slf4j
 @Repository
@@ -145,13 +146,11 @@ public class OneRosterRepository {
                 .map(linkToString)
                 .map(fintRepository::getStudentRelationById)
                 .filter(Objects::nonNull)
-                .map(updateStudent())
-                .filter(Objects::nonNull)
-                .forEach(user -> resources.put(user.getSourcedId(), user));
+                .forEach(studentRelation -> updateStudent(studentRelation).accept(resources));
     }
 
-    private Function<ElevforholdResource, User> updateStudent() {
-        return studentRelation -> {
+    private Consumer<Map<String, Base>> updateStudent(ElevforholdResource studentRelation) {
+        return resources -> {
             Optional<ElevResource> student = getStudent(studentRelation);
 
             Optional<PersonResource> person = student
@@ -161,23 +160,40 @@ public class OneRosterRepository {
             List<SkoleResource> schoolResources = getSchools(studentRelation.getSkole());
 
             if (student.isPresent() && person.isPresent() && !schoolResources.isEmpty()) {
+                User user;
+
                 if (oneRosterProperties.isParents()) {
-                    Set<String> parents = person.get().getForeldre().stream()
+                    List<PersonResource> parents = person.get().getForeldre().stream()
                             .map(linkToString)
                             .map(fintRepository::getPersonById)
                             .filter(Objects::nonNull)
-                            .map(PersonResource::getFodselsnummer)
-                            .map(Identifikator::getIdentifikatorverdi)
-                            .map(PersonUtil::maskNin)
-                            .collect(Collectors.toSet());
+                            .collect(Collectors.toList());
 
-                    return userFactory.student(student.get(), person.get(), schoolResources, parents);
+                    user = userFactory.student(student.get(), person.get(), schoolResources, parents);
+
+                    parents.forEach(parent -> updateParent(parent, student.get()).accept(resources));
+                } else {
+                    user = userFactory.student(student.get(), person.get(), schoolResources);
                 }
 
-                return userFactory.student(student.get(), person.get(), schoolResources);
+                resources.put(user.getSourcedId(), user);
             }
+        };
+    }
 
-            return null;
+    private Consumer<Map<String, Base>> updateParent(PersonResource parent, ElevResource child) {
+        return resources -> {
+            String sourcedId = PersonUtil.maskNin(parent.getFodselsnummer().getIdentifikatorverdi());
+
+            resources.computeIfPresent(sourcedId, (key, value) -> {
+                User user = (User) value;
+
+                user.getAgents().add(GUIDRef.of(GUIDType.USER, normalize(child.getSystemId().getIdentifikatorverdi())));
+
+                return user;
+            });
+
+            resources.computeIfAbsent(sourcedId, it -> userFactory.parent(parent, child, oneRosterProperties.getOrg()));
         };
     }
 
@@ -187,13 +203,11 @@ public class OneRosterRepository {
                 .map(fintRepository::getTeachingRelationById)
                 .filter(Objects::nonNull)
                 .filter(isTeacher)
-                .map(updateTeacher())
-                .filter(Objects::nonNull)
-                .forEach(user -> resources.put(user.getSourcedId(), user));
+                .forEach(teachingRelation -> updateTeacher(teachingRelation).accept(resources));
     }
 
-    private Function<UndervisningsforholdResource, User> updateTeacher() {
-        return teachingRelation -> {
+    private Consumer<Map<String, Base>> updateTeacher(UndervisningsforholdResource teachingRelation) {
+        return resources -> {
             Optional<SkoleressursResource> teacher = getTeacher(teachingRelation);
 
             Optional<PersonalressursResource> personnelResource = teacher
@@ -212,10 +226,10 @@ public class OneRosterRepository {
             List<SkoleResource> schoolResources = getSchools(teachingRelation.getSkole());
 
             if (teacher.isPresent() && personnelResource.isPresent() && personResource.isPresent() && !schoolResources.isEmpty()) {
-                return userFactory.teacher(teacher.get(), personnelResource.get(), personResource.get(), schoolResources);
-            }
+                User user = userFactory.teacher(teacher.get(), personnelResource.get(), personResource.get(), schoolResources);
 
-            return null;
+                resources.put(user.getSourcedId(), user);
+            }
         };
     }
 
@@ -418,31 +432,6 @@ public class OneRosterRepository {
                 updateContactTeacherGroups().accept(schoolResource, resources);
             }
         });
-
-        if (oneRosterProperties.isParents()) {
-            fintRepository.getPersons().stream()
-                    .filter(personResource -> personResource.getForeldreansvar().size() > 0)
-                    .forEach(personResource -> {
-                        Set<String> children = personResource.getForeldreansvar().stream()
-                                .map(linkToString)
-                                .map(fintRepository::getPersonById)
-                                .filter(Objects::nonNull)
-                                .map(PersonResource::getElev)
-                                .flatMap(List::stream)
-                                .map(linkToString)
-                                .map(fintRepository::getStudentById)
-                                .filter(Objects::nonNull)
-                                .map(ElevResource::getSystemId)
-                                .map(Identifikator::getIdentifikatorverdi)
-                                .collect(Collectors.toSet());
-
-                        if (children.size() > 0) {
-                            User parent = userFactory.parent(personResource, children, oneRosterProperties.getOrg());
-
-                            resources.put(parent.getSourcedId(), parent);
-                        }
-                    });
-        }
 
         resources.put(schoolOwner.getSourcedId(), schoolOwner);
 
