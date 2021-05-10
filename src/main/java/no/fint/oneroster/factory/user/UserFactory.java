@@ -55,20 +55,6 @@ public interface UserFactory {
         return student;
     }
 
-    default User student(ElevResource elevResource, PersonResource personResource, List<SkoleResource> skoleResources, List<PersonResource> parents) {
-        User student = student(elevResource, personResource, skoleResources);
-
-        parents.forEach(parent -> {
-            if (student.getAgents() == null) {
-                student.setAgents(new ArrayList<>());
-            }
-
-            student.getAgents().add(GUIDRef.of(GUIDType.USER, normalize(PersonUtil.maskNin(parent.getFodselsnummer().getIdentifikatorverdi()))));
-        });
-
-        return student;
-    }
-
     default User teacher(SkoleressursResource skoleressursResource, PersonalressursResource personalressursResource, PersonResource personResource, List<SkoleResource> skoleResources) {
         User teacher = new User(
                 normalize(skoleressursResource.getSystemId().getIdentifikatorverdi()),
@@ -110,10 +96,10 @@ public interface UserFactory {
                 personResource.getNavn().getFornavn(),
                 personResource.getNavn().getEtternavn(),
                 RoleType.PARENT,
-                Collections.singletonList(GUIDRef.of(GUIDType.ORG, org.getSourcedId()))
+                Collections.singletonList(GUIDRef.of(GUIDType.ORG, normalize(org.getSourcedId())))
         );
 
-        parent.setAgents(List.of(GUIDRef.of(GUIDType.USER, normalize(child.getSystemId().getIdentifikatorverdi()))));
+        parent.setAgents(new ArrayList<>(List.of(GUIDRef.of(GUIDType.USER, normalize(child.getSystemId().getIdentifikatorverdi())))));
 
         Optional<PersonResource> resource = Optional.of(personResource);
 

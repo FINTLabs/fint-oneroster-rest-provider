@@ -13,6 +13,8 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.function.Function;
 
+import static no.fint.oneroster.util.StringNormalizer.normalize;
+
 public final class AcademicSessionFactory {
 
     private AcademicSessionFactory() {
@@ -22,7 +24,7 @@ public final class AcademicSessionFactory {
         Optional<Periode> period = Optional.ofNullable(terminResource.getGyldighetsperiode());
 
         return new AcademicSession(
-                terminResource.getSystemId().getIdentifikatorverdi(),
+                normalize(terminResource.getSystemId().getIdentifikatorverdi()),
                 terminResource.getNavn(),
                 period.map(Periode::getStart).map(toLocalDate).orElse(null),
                 period.map(Periode::getSlutt).map(toLocalDate).orElse(null),

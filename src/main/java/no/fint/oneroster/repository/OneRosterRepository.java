@@ -160,7 +160,7 @@ public class OneRosterRepository {
             List<SkoleResource> schoolResources = getSchools(studentRelation.getSkole());
 
             if (student.isPresent() && person.isPresent() && !schoolResources.isEmpty()) {
-                User user;
+                User user = userFactory.student(student.get(), person.get(), schoolResources);
 
                 if (oneRosterProperties.isParents()) {
                     List<PersonResource> parents = person.get().getForeldre().stream()
@@ -169,11 +169,15 @@ public class OneRosterRepository {
                             .filter(Objects::nonNull)
                             .collect(Collectors.toList());
 
-                    user = userFactory.student(student.get(), person.get(), schoolResources, parents);
+                    parents.forEach(parent -> {
+                        if (user.getAgents() == null) {
+                            user.setAgents(new ArrayList<>());
+                        }
 
-                    parents.forEach(parent -> updateParent(parent, student.get()).accept(resources));
-                } else {
-                    user = userFactory.student(student.get(), person.get(), schoolResources);
+                        user.getAgents().add(GUIDRef.of(GUIDType.USER, normalize(PersonUtil.maskNin(parent.getFodselsnummer().getIdentifikatorverdi()))));
+
+                        updateParent(parent, student.get()).accept(resources);
+                    });
                 }
 
                 resources.put(user.getSourcedId(), user);
@@ -183,7 +187,7 @@ public class OneRosterRepository {
 
     private Consumer<Map<String, Base>> updateParent(PersonResource parent, ElevResource child) {
         return resources -> {
-            String sourcedId = PersonUtil.maskNin(parent.getFodselsnummer().getIdentifikatorverdi());
+            String sourcedId = normalize(PersonUtil.maskNin(parent.getFodselsnummer().getIdentifikatorverdi()));
 
             resources.computeIfPresent(sourcedId, (key, value) -> {
                 User user = (User) value;

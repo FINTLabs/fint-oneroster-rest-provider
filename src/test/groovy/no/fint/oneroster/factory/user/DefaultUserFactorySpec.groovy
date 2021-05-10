@@ -23,21 +23,6 @@ class DefaultUserFactorySpec extends Specification {
         student.orgs.first().sourcedId == 'school-sourced-id'
     }
 
-    def "student() returns user object of type student with parents"() {
-        when:
-        def student = defaultUserFactory.student(FintObjectFactory.newStudent(), FintObjectFactory.newPerson(), [FintObjectFactory.newSchool()], [FintObjectFactory.newPerson()])
-
-        then:
-        student.sourcedId == 'student-sourced-id'
-        student.username == 'username'
-        student.enabledUser
-        student.givenName == 'given-name'
-        student.familyName == 'family-name'
-        student.role == RoleType.STUDENT
-        student.orgs.first().sourcedId == 'school-sourced-id'
-        student.agents.first().sourcedId == PersonUtil.maskNin('person-sourced-id')
-    }
-
     def "teacher() returns user object of type teacher"() {
         when:
         def teacher = defaultUserFactory.teacher(FintObjectFactory.newTeacher(), FintObjectFactory.newPersonnel(), FintObjectFactory.newPerson(), [FintObjectFactory.newSchool()])
