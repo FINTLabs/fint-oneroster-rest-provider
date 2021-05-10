@@ -1,4 +1,4 @@
-package no.fint.oneroster.util
+package no.fint.oneroster
 
 import no.fint.model.felles.kompleksedatatyper.Identifikator
 import no.fint.model.felles.kompleksedatatyper.Kontaktinformasjon
@@ -13,6 +13,8 @@ import no.fint.model.resource.utdanning.elev.ElevforholdResource
 import no.fint.model.resource.utdanning.elev.KontaktlarergruppeResource
 import no.fint.model.resource.utdanning.elev.SkoleressursResource
 import no.fint.model.resource.utdanning.elev.UndervisningsforholdResource
+import no.fint.model.resource.utdanning.kodeverk.SkolearResource
+import no.fint.model.resource.utdanning.kodeverk.TerminResource
 import no.fint.model.resource.utdanning.timeplan.FagResource
 import no.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource
 import no.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResource
@@ -20,7 +22,6 @@ import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource
 
 import java.time.LocalDate
 import java.time.ZoneId
-import java.time.ZonedDateTime
 
 class FintObjectFactory {
 
@@ -46,7 +47,10 @@ class FintObjectFactory {
         name.setMellomnavn('middle-name')
         name.setEtternavn('family-name')
         resource.setNavn(name)
-        resource.setFodselsnummer(new Identifikator(identifikatorverdi: 'identifier'))
+        resource.setFodselsnummer(new Identifikator(identifikatorverdi: 'person-sourced-id'))
+        resource.addForeldreansvar(Link.with('/person-sourced-id'))
+        resource.addForeldre(Link.with('/person-sourced-id'))
+        resource.addElev(Link.with('/student-sourced-id'))
         resource.addSelf(Link.with('/person-sourced-id'))
 
         return resource
@@ -118,14 +122,14 @@ class FintObjectFactory {
     static BasisgruppeResource newBasisGroup() {
         BasisgruppeResource resource = new BasisgruppeResource()
         resource.setSystemId(new Identifikator(identifikatorverdi: 'basis-group-sourced-id'))
-        resource.setPeriode([new Periode(start: Date.from(LocalDate.of(2020, 8, 1).atStartOfDay(ZoneId.of('Z')).toInstant()),
-                slutt: Date.from(LocalDate.of(2030, 7, 31).atStartOfDay(ZoneId.of('Z')).toInstant()))])
         resource.setNavn('Basis group')
         resource.setBeskrivelse('Basis group at school')
         resource.addSkole(Link.with('/school-sourced-id'))
         resource.addTrinn(Link.with('/level-sourced-id'))
         resource.addElevforhold(Link.with('/student-relation-sourced-id'))
         resource.addUndervisningsforhold(Link.with('/teaching-relation-sourced-id'))
+        resource.addTermin(Link.with('/term-sourced-id'))
+        resource.addSkolear(Link.with('/school-year-sourced-id'))
         resource.addSelf(Link.with('/basis-group-sourced-id'))
         return resource
     }
@@ -133,14 +137,14 @@ class FintObjectFactory {
     static UndervisningsgruppeResource newTeachingGroup() {
         UndervisningsgruppeResource resource = new UndervisningsgruppeResource()
         resource.setSystemId(new Identifikator(identifikatorverdi: 'teaching-group-sourced-id'))
-        resource.setPeriode([new Periode(start: Date.from(LocalDate.of(2020, 8, 1).atStartOfDay(ZoneId.of('Z')).toInstant()),
-                slutt: Date.from(LocalDate.of(2030, 7, 31).atStartOfDay(ZoneId.of('Z')).toInstant()))])
         resource.setNavn('Teaching group')
         resource.setBeskrivelse('Teaching group at school')
         resource.addSkole(Link.with('/school-sourced-id'))
         resource.addFag(Link.with('/subject-sourced-id'))
         resource.addElevforhold(Link.with('/student-relation-sourced-id'))
         resource.addUndervisningsforhold(Link.with('/teaching-relation-sourced-id'))
+        resource.addTermin(Link.with('/term-sourced-id'))
+        resource.addSkolear(Link.with('/school-year-sourced-id'))
         resource.addSelf(Link.with('/teaching-group-sourced-id'))
         return resource
     }
@@ -148,14 +152,14 @@ class FintObjectFactory {
     static KontaktlarergruppeResource newContactTeacherGroup() {
         KontaktlarergruppeResource resource = new KontaktlarergruppeResource()
         resource.setSystemId(new Identifikator(identifikatorverdi: 'contact-teacher-group-sourced-id'))
-        resource.setPeriode([new Periode(start: Date.from(LocalDate.of(2020, 8, 1).atStartOfDay(ZoneId.of('Z')).toInstant()),
-                slutt: Date.from(LocalDate.of(2030, 7, 31).atStartOfDay(ZoneId.of('Z')).toInstant()))])
         resource.setNavn('Contact teacher group')
         resource.setBeskrivelse('Contact teacher group at school')
         resource.addSkole(Link.with('/school-sourced-id'))
         resource.addBasisgruppe(Link.with('/basis-group-sourced-id'))
         resource.addElevforhold(Link.with('/student-relation-sourced-id'))
         resource.addUndervisningsforhold(Link.with('/teaching-relation-sourced-id'))
+        resource.addTermin(Link.with('/term-sourced-id'))
+        resource.addSkolear(Link.with('/school-year-sourced-id'))
         resource.addSelf(Link.with('/contact-teacher-group-sourced-id'))
         return resource
     }
@@ -163,7 +167,6 @@ class FintObjectFactory {
     static ArstrinnResource newLevel() {
         ArstrinnResource resource = new ArstrinnResource()
         resource.setSystemId(new Identifikator(identifikatorverdi: 'level-sourced-id'))
-        resource.setPeriode([])
         resource.setNavn('Level')
         resource.setBeskrivelse('A level')
         resource.addGrepreferanse(Link.with('/grep-level'))
@@ -174,11 +177,34 @@ class FintObjectFactory {
     static FagResource newSubject() {
         FagResource resource = new FagResource()
         resource.setSystemId(new Identifikator(identifikatorverdi: 'subject-sourced-id'))
-        resource.setPeriode([])
         resource.setNavn('Subject')
         resource.setBeskrivelse('A subject')
         resource.addGrepreferanse(Link.with('/grep-subject'))
         resource.addSelf(Link.with('/subject-sourced-id'))
+        return resource
+    }
+
+    static TerminResource newTerm() {
+        TerminResource resource = new TerminResource()
+        resource.setSystemId(new Identifikator(identifikatorverdi: 'term-sourced-id'))
+        resource.setNavn('Term')
+        resource.setKode('Term')
+        resource.setPassiv(false)
+        resource.setGyldighetsperiode(new Periode(start: Date.from(LocalDate.of(2020, 8, 1).atStartOfDay(ZoneId.of('Z')).toInstant()),
+                slutt: Date.from(LocalDate.of(2020, 12, 31).atStartOfDay(ZoneId.of('Z')).toInstant())))
+        resource.addSelf(Link.with('/term-sourced-id'))
+        return resource
+    }
+
+    static SkolearResource newSchoolYear() {
+        SkolearResource resource = new SkolearResource()
+        resource.setSystemId(new Identifikator(identifikatorverdi: 'school-year-sourced-id'))
+        resource.setNavn('SchoolYear')
+        resource.setKode('SchoolYear')
+        resource.setPassiv(false)
+        resource.setGyldighetsperiode(new Periode(start: Date.from(LocalDate.of(2020, 8, 1).atStartOfDay(ZoneId.of('Z')).toInstant()),
+                slutt: Date.from(LocalDate.of(2021, 7, 31).atStartOfDay(ZoneId.of('Z')).toInstant())))
+        resource.addSelf(Link.with('/school-year-sourced-id'))
         return resource
     }
 }

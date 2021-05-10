@@ -2,13 +2,12 @@ package no.fint.oneroster.controller;
 
 import no.fint.oneroster.model.Clazz;
 import no.fint.oneroster.model.User;
+import no.fint.oneroster.response.OneRosterCollectionResponse;
+import no.fint.oneroster.response.OneRosterItemResponse;
 import no.fint.oneroster.service.ClazzService;
-import no.fint.oneroster.util.OneRosterResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/classes")
@@ -24,30 +23,24 @@ public class ClazzController {
                                            @RequestParam(value = "fields", required = false) String fields,
                                            Pageable pageable) {
 
-        List<Clazz> clazzes = clazzService.getAllClazzes();
-
-        OneRosterResponse<Clazz> oneRosterResponse = new OneRosterResponse<>(Clazz.class, "classes")
-                .collection(clazzes)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(clazzService.getAllClazzes(), Clazz.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
-                .fieldSelection(fields);
+                .fieldSelection(fields)
+                .build();
 
-        return ResponseEntity.ok()
-                .headers(oneRosterResponse.getHeaders())
-                .body(oneRosterResponse.getBody());
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getBody());
     }
 
     @GetMapping("/{sourcedId}")
     public ResponseEntity<?> getClazz(@PathVariable String sourcedId,
                                       @RequestParam(value = "fields", required = false) String fields) {
 
-        Clazz clazz = clazzService.getClazz(sourcedId);
+        OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(clazzService.getClazz(sourcedId))
+                .fieldSelection(fields)
+                .build();
 
-        OneRosterResponse<Clazz> oneRosterResponse = new OneRosterResponse<>(Clazz.class, "class")
-                .item(clazz)
-                .fieldSelection(fields);
-
-        return ResponseEntity.ok(oneRosterResponse.getBody());
+        return ResponseEntity.ok(response.getBody());
     }
 
     @GetMapping("/{sourcedId}/students")
@@ -55,17 +48,13 @@ public class ClazzController {
                                                  @RequestParam(value = "filter", required = false) String filter,
                                                  @RequestParam(value = "fields", required = false) String fields) {
 
-        List<User> students = clazzService.getStudentsForClazz(sourcedId);
-
-        OneRosterResponse<User> oneRosterResponse = new OneRosterResponse<>(User.class, "users")
-                .collection(students)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(clazzService.getStudentsForClazz(sourcedId), User.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
-                .fieldSelection(fields);
+                .fieldSelection(fields)
+                .build();
 
-        return ResponseEntity.ok()
-                .headers(oneRosterResponse.getHeaders())
-                .body(oneRosterResponse.getBody());
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getBody());
     }
 
     @GetMapping("/{sourcedId}/teachers")
@@ -73,16 +62,12 @@ public class ClazzController {
                                                  @RequestParam(value = "filter", required = false) String filter,
                                                  @RequestParam(value = "fields", required = false) String fields) {
 
-        List<User> teachers = clazzService.getTeachersForClazz(sourcedId);
-
-        OneRosterResponse<User> oneRosterResponse = new OneRosterResponse<>(User.class, "users")
-                .collection(teachers)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(clazzService.getTeachersForClazz(sourcedId), User.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
-                .fieldSelection(fields);
+                .fieldSelection(fields)
+                .build();
 
-        return ResponseEntity.ok()
-                .headers(oneRosterResponse.getHeaders())
-                .body(oneRosterResponse.getBody());
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getBody());
     }
 }

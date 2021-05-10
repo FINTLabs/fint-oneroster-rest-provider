@@ -12,7 +12,7 @@ import no.fint.oneroster.model.vocab.OrgType
 import no.fint.oneroster.model.vocab.RoleType
 import no.fint.oneroster.model.vocab.SessionType
 import no.fint.oneroster.model.vocab.StatusType
-import no.fint.oneroster.repository.OneRosterService
+import no.fint.oneroster.repository.OneRosterRepository
 import spock.lang.Specification
 
 import java.time.LocalDate
@@ -20,20 +20,16 @@ import java.time.Year
 
 class OrgServiceSpec extends Specification {
 
-    OneRosterService oneRosterService = Mock()
+    OneRosterRepository repository = Mock()
 
-    AcademicSessionService academicSessionService = Mock {
-        getAllTerms() >> getTerms()
-    }
-
-    OrgService orgService = new OrgService(oneRosterService, academicSessionService)
+    OrgService orgService = new OrgService(repository)
 
     def "getAllOrgs returns a list of orgs"() {
         when:
         def orgs = orgService.getAllOrgs()
 
         then:
-        oneRosterService.getOrgs() >> [getSchoolOwner(), getSchool()]
+        repository.getOrgs() >> [getSchoolOwner(), getSchool()]
         orgs.size() == 2
         orgs.first().sourcedId == 'school-owner-sourced-id'
         orgs.first().name == 'School owner'
@@ -49,7 +45,7 @@ class OrgServiceSpec extends Specification {
         def org = orgService.getOrg('school-owner-sourced-id')
 
         then:
-        oneRosterService.getOrgById(_ as String) >> getSchoolOwner()
+        repository.getOrgById(_ as String) >> getSchoolOwner()
         org.sourcedId == 'school-owner-sourced-id'
         org.name == 'School owner'
         org.type == OrgType.DISTRICT
@@ -60,7 +56,7 @@ class OrgServiceSpec extends Specification {
         def schools = orgService.getAllSchools()
 
         then:
-        oneRosterService.getOrgs() >> [getSchoolOwner(), getSchool()]
+        repository.getOrgs() >> [getSchoolOwner(), getSchool()]
         schools.size() == 1
     }
 
@@ -69,7 +65,7 @@ class OrgServiceSpec extends Specification {
         def school = orgService.getSchool('school-sourced-id')
 
         then:
-        oneRosterService.getOrgById(_ as String) >> getSchool()
+        repository.getOrgById(_ as String) >> getSchool()
         school.sourcedId == 'school-sourced-id'
         school.name == 'School'
         school.type == OrgType.SCHOOL
@@ -80,8 +76,8 @@ class OrgServiceSpec extends Specification {
         def clazzes = orgService.getClazzesForSchool('school-sourced-id')
 
         then:
-        oneRosterService.getOrgById(_ as String) >> getSchool()
-        oneRosterService.getClazzes() >> [getBasisGroup(), getTeachingGroup()]
+        repository.getOrgById(_ as String) >> getSchool()
+        repository.getClazzes() >> [getBasisGroup(), getTeachingGroup()]
         clazzes.size() == 2
     }
 
@@ -90,8 +86,8 @@ class OrgServiceSpec extends Specification {
         def enrollments = orgService.getEnrollmentsForSchool('school-sourced-id')
 
         then:
-        oneRosterService.getOrgById(_ as String) >> getSchool()
-        oneRosterService.getEnrollments() >> [getStudentEnrollment(), getTeacherEnrollment()]
+        repository.getOrgById(_ as String) >> getSchool()
+        repository.getEnrollments() >> [getStudentEnrollment(), getTeacherEnrollment()]
         enrollments.size() == 2
     }
 
@@ -100,8 +96,8 @@ class OrgServiceSpec extends Specification {
         def students = orgService.getStudentsForSchool('school-sourced-id')
 
         then:
-        oneRosterService.getOrgById(_ as String) >> getSchool()
-        oneRosterService.getUsers() >> [getStudent(), getTeacher()]
+        repository.getOrgById(_ as String) >> getSchool()
+        repository.getUsers() >> [getStudent(), getTeacher()]
         students.size() == 1
     }
 
@@ -110,8 +106,8 @@ class OrgServiceSpec extends Specification {
         def teachers = orgService.getTeachersForSchool('school-sourced-id')
 
         then:
-        oneRosterService.getOrgById(_ as String) >> getSchool()
-        oneRosterService.getUsers() >> [getStudent(), getTeacher()]
+        repository.getOrgById(_ as String) >> getSchool()
+        repository.getUsers() >> [getStudent(), getTeacher()]
         teachers.size() == 1
     }
 
@@ -120,9 +116,9 @@ class OrgServiceSpec extends Specification {
         def enrollments = orgService.getEnrollmentsForClazzInSchool('school-sourced-id', 'basis-group-sourced-id')
 
         then:
-        oneRosterService.getOrgById(_ as String) >> getSchool()
-        oneRosterService.getClazzById(_ as String) >> getBasisGroup()
-        oneRosterService.getEnrollments() >> [getStudentEnrollment(), getTeacherEnrollment()]
+        repository.getOrgById(_ as String) >> getSchool()
+        repository.getClazzById(_ as String) >> getBasisGroup()
+        repository.getEnrollments() >> [getStudentEnrollment(), getTeacherEnrollment()]
         enrollments.size() == 1
     }
 
@@ -131,8 +127,10 @@ class OrgServiceSpec extends Specification {
         def terms = orgService.getTermsForSchool('school-sourced-id')
 
         then:
-        oneRosterService.getOrgById(_ as String) >> getSchool()
-        terms.size() == 2
+        repository.getOrgById(_ as String) >> getSchool()
+        repository.getClazzes() >> [getBasisGroup()]
+        repository.getAcademicSessionById(_ as String) >> getTerm()
+        terms.size() == 1
     }
 
     Org getSchoolOwner() {
@@ -154,7 +152,6 @@ class OrgServiceSpec extends Specification {
     Enrollment getStudentEnrollment() {
         return new Enrollment(
                 'student-relation-sourced-id_basis-group-sourced-id',
-                StatusType.ACTIVE,
                 GUIDRef.of(GUIDType.USER, 'student-sourced-id'),
                 GUIDRef.of(GUIDType.CLASS, 'basis-group-sourced-id'),
                 GUIDRef.of(GUIDType.ORG, 'school-sourced-id'),
@@ -165,7 +162,6 @@ class OrgServiceSpec extends Specification {
     Enrollment getTeacherEnrollment() {
         return new Enrollment(
                 'teaching-relation-sourced-id_teaching-group-sourced-id',
-                StatusType.ACTIVE,
                 GUIDRef.of(GUIDType.USER, 'teacher-sourced-id'),
                 GUIDRef.of(GUIDType.CLASS, 'teaching-group-sourced-id'),
                 GUIDRef.of(GUIDType.ORG, 'school-sourced-id'),
@@ -200,7 +196,6 @@ class OrgServiceSpec extends Specification {
     Clazz getBasisGroup() {
         return new Clazz(
                 'basis-group-sourced-id',
-                StatusType.ACTIVE,
                 'Basis group',
                 ClazzType.HOMEROOM,
                 GUIDRef.of(GUIDType.COURSE, 'level-sourced-id'),
@@ -212,7 +207,6 @@ class OrgServiceSpec extends Specification {
     Clazz getTeachingGroup() {
         return new Clazz(
                 'teaching-group-sourced-id',
-                StatusType.ACTIVE,
                 'Teaching group',
                 ClazzType.SCHEDULED,
                 GUIDRef.of(GUIDType.COURSE, 'subject-sourced-id'),
@@ -221,23 +215,13 @@ class OrgServiceSpec extends Specification {
         )
     }
 
-    List<AcademicSession> getTerms() {
-        AcademicSession firstTerm = new AcademicSession(
-                'T1SY20192020',
-                '1. termin 2019/2020',
+    AcademicSession getTerm() {
+        return new AcademicSession(
+                'term-sourced-id',
+                'Term',
                 LocalDate.parse('2019-08-01'),
                 LocalDate.parse('2019-12-31'),
                 SessionType.TERM,
                 Year.of(2020))
-
-        AcademicSession secondTerm = new AcademicSession(
-                'T2SY20192020',
-                '2. termin 2019/2020',
-                LocalDate.parse('2020-01-01'),
-                LocalDate.parse('2020-07-31'),
-                SessionType.TERM,
-                Year.of(2020))
-
-        return [firstTerm, secondTerm]
     }
 }

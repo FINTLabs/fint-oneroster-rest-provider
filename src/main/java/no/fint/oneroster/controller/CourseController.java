@@ -1,13 +1,12 @@
 package no.fint.oneroster.controller;
 
 import no.fint.oneroster.model.Course;
+import no.fint.oneroster.response.OneRosterCollectionResponse;
+import no.fint.oneroster.response.OneRosterItemResponse;
 import no.fint.oneroster.service.CourseService;
-import no.fint.oneroster.util.OneRosterResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/courses")
@@ -23,29 +22,23 @@ public class CourseController {
                                            @RequestParam(value = "fields", required = false) String fields,
                                            Pageable pageable) {
 
-        List<Course> courses = courseService.getAllCourses();
-
-        OneRosterResponse<Course> oneRosterResponse = new OneRosterResponse<>(Course.class, "courses")
-                .collection(courses)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(courseService.getAllCourses(), Course.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
-                .fieldSelection(fields);
+                .fieldSelection(fields)
+                .build();
 
-        return ResponseEntity.ok()
-                .headers(oneRosterResponse.getHeaders())
-                .body(oneRosterResponse.getBody());
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getBody());
     }
 
     @GetMapping("/{sourcedId}")
     public ResponseEntity<?> getCourse(@PathVariable String sourcedId,
                                        @RequestParam(value = "fields", required = false) String fields) {
 
-        Course course = courseService.getCourse(sourcedId);
+        OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(courseService.getCourse(sourcedId))
+                .fieldSelection(fields)
+                .build();
 
-        OneRosterResponse<Course> oneRosterResponse = new OneRosterResponse<>(Course.class, "course")
-                .item(course)
-                .fieldSelection(fields);
-
-        return ResponseEntity.ok(oneRosterResponse.getBody());
+        return ResponseEntity.ok(response.getBody());
     }
 }

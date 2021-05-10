@@ -3,22 +3,13 @@ oneroster:
     sourced-id:
     name:
     identifier:
-  academic-session:
-    first-term:
-      sourced-id:
-      begin-date:
-      end-date:
+  user-factory:
+  class-factory:
+  access-control:
+  clients:
+    1:
+      id:
       name:
-    second-term:
-      sourced-id:
-      begin-date:
-      end-date:
-      name:
-  profile:
-    user-factory: default
-    clazz-factory: default
-    clazz-filter:
-
 fint:
   component:
     education:
@@ -38,6 +29,9 @@ fint:
         level:
         teaching-group:
         subject:
+        contact-teacher-group:
+        term:
+        school-year:
     administration:
       registration:
         1:

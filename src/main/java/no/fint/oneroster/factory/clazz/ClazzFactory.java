@@ -3,19 +3,16 @@ package no.fint.oneroster.factory.clazz;
 import no.fint.model.resource.Link;
 import no.fint.model.resource.utdanning.elev.BasisgruppeResource;
 import no.fint.model.resource.utdanning.elev.KontaktlarergruppeResource;
+import no.fint.model.resource.utdanning.kodeverk.TerminResource;
 import no.fint.model.resource.utdanning.timeplan.FagResource;
 import no.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
-import no.fint.model.utdanning.basisklasser.Gruppe;
-import no.fint.oneroster.model.AcademicSession;
 import no.fint.oneroster.model.Clazz;
 import no.fint.oneroster.model.GUIDRef;
 import no.fint.oneroster.model.vocab.ClazzType;
 import no.fint.oneroster.model.vocab.GUIDType;
-import no.fint.oneroster.util.FactoryUtil;
 
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,16 +22,15 @@ import java.util.stream.Stream;
 import static no.fint.oneroster.util.StringNormalizer.normalize;
 
 public interface ClazzFactory {
-    default Clazz basisGroup(BasisgruppeResource basisgruppeResource, ArstrinnResource arstrinnResource, SkoleResource skoleResource, List<AcademicSession> terms) {
+    default Clazz basisGroup(BasisgruppeResource basisgruppeResource, ArstrinnResource arstrinnResource, SkoleResource skoleResource, List<TerminResource> terms) {
         Clazz basisGroup = new Clazz(
                 normalize(basisgruppeResource.getSystemId().getIdentifikatorverdi()),
-                FactoryUtil.getStatusType(basisgruppeResource, ZonedDateTime.now()),
-                basisGroupNameConverter(basisgruppeResource),
+                basisGroupNameConverter(basisgruppeResource, skoleResource),
                 ClazzType.HOMEROOM,
                 GUIDRef.of(GUIDType.COURSE, normalize(arstrinnResource.getSystemId().getIdentifikatorverdi())),
                 GUIDRef.of(GUIDType.ORG, normalize(skoleResource.getSystemId().getIdentifikatorverdi())),
                 terms.stream()
-                        .map(term -> GUIDRef.of(GUIDType.ACADEMICSESSION, term.getSourcedId()))
+                        .map(term -> GUIDRef.of(GUIDType.ACADEMICSESSION, normalize(term.getSystemId().getIdentifikatorverdi())))
                         .collect(Collectors.toList()));
 
         arstrinnResource.getGrepreferanse()
@@ -46,16 +42,15 @@ public interface ClazzFactory {
         return basisGroup;
     }
 
-    default Clazz teachingGroup(UndervisningsgruppeResource undervisningsgruppeResource, FagResource fagResource, SkoleResource skoleResource, List<AcademicSession> terms) {
+    default Clazz teachingGroup(UndervisningsgruppeResource undervisningsgruppeResource, FagResource fagResource, SkoleResource skoleResource, List<TerminResource> terms) {
         Clazz teachingGroup = new Clazz(
                 normalize(undervisningsgruppeResource.getSystemId().getIdentifikatorverdi()),
-                FactoryUtil.getStatusType(undervisningsgruppeResource, ZonedDateTime.now()),
-                teachingGroupNameConverter(undervisningsgruppeResource),
+                teachingGroupNameConverter(undervisningsgruppeResource, skoleResource, fagResource),
                 ClazzType.SCHEDULED,
                 GUIDRef.of(GUIDType.COURSE, normalize(fagResource.getSystemId().getIdentifikatorverdi())),
                 GUIDRef.of(GUIDType.ORG, normalize(skoleResource.getSystemId().getIdentifikatorverdi())),
                 terms.stream()
-                        .map(term -> GUIDRef.of(GUIDType.ACADEMICSESSION, term.getSourcedId()))
+                        .map(term -> GUIDRef.of(GUIDType.ACADEMICSESSION, normalize(term.getSystemId().getIdentifikatorverdi())))
                         .collect(Collectors.toList()));
 
         if (!fagResource.getVigoreferanse().isEmpty() || !fagResource.getGrepreferanse().isEmpty()) {
@@ -70,16 +65,15 @@ public interface ClazzFactory {
         return teachingGroup;
     }
 
-    default Clazz contactTeacherGroup(KontaktlarergruppeResource kontaktlarergruppeResource, ArstrinnResource arstrinnResource, SkoleResource skoleResource, List<AcademicSession> terms) {
+    default Clazz contactTeacherGroup(KontaktlarergruppeResource kontaktlarergruppeResource, ArstrinnResource arstrinnResource, SkoleResource skoleResource, List<TerminResource> terms) {
         Clazz contactTeacherGroup = new Clazz(
                 normalize(kontaktlarergruppeResource.getSystemId().getIdentifikatorverdi()),
-                FactoryUtil.getStatusType(kontaktlarergruppeResource, ZonedDateTime.now()),
-                contactTeacherGroupNameConverter(kontaktlarergruppeResource),
+                contactTeacherGroupNameConverter(kontaktlarergruppeResource, skoleResource),
                 ClazzType.HOMEROOM,
                 GUIDRef.of(GUIDType.COURSE, normalize(arstrinnResource.getSystemId().getIdentifikatorverdi())),
                 GUIDRef.of(GUIDType.ORG, normalize(skoleResource.getSystemId().getIdentifikatorverdi())),
                 terms.stream()
-                        .map(term -> GUIDRef.of(GUIDType.ACADEMICSESSION, term.getSourcedId()))
+                        .map(term -> GUIDRef.of(GUIDType.ACADEMICSESSION, normalize(term.getSystemId().getIdentifikatorverdi())))
                         .collect(Collectors.toList()));
 
         arstrinnResource.getGrepreferanse()
@@ -93,15 +87,15 @@ public interface ClazzFactory {
         return contactTeacherGroup;
     }
 
-    default String basisGroupNameConverter(Gruppe basisGroup) {
+    default String basisGroupNameConverter(BasisgruppeResource basisGroup, SkoleResource school) {
         return basisGroup.getNavn();
     }
 
-    default String teachingGroupNameConverter(Gruppe teachingGroup) {
+    default String teachingGroupNameConverter(UndervisningsgruppeResource teachingGroup, SkoleResource school, FagResource subject) {
         return teachingGroup.getNavn();
     }
 
-    default String contactTeacherGroupNameConverter(Gruppe contactTeacherGroup) {
+    default String contactTeacherGroupNameConverter(KontaktlarergruppeResource contactTeacherGroup, SkoleResource school) {
         return contactTeacherGroup.getNavn();
     }
 }

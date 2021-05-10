@@ -26,8 +26,8 @@ public class Clazz extends Base {
     private List<String> subjectCodes;
     private List<String> periods;
 
-    public Clazz(String sourcedId, StatusType statusType, String title, ClazzType classType, GUIDRef course, GUIDRef school, List<GUIDRef> terms) {
-        super(sourcedId, statusType, ZonedDateTime.now(ZoneId.of("Z")));
+    public Clazz(String sourcedId, String title, ClazzType classType, GUIDRef course, GUIDRef school, List<GUIDRef> terms) {
+        super(sourcedId, StatusType.ACTIVE, ZonedDateTime.now(ZoneId.of("Z")));
         this.title = title;
         this.classType = classType;
         this.course = course;

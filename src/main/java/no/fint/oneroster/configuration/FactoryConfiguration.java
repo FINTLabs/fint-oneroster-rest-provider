@@ -4,7 +4,7 @@ import no.fint.oneroster.factory.clazz.ClazzFactory;
 import no.fint.oneroster.factory.clazz.DefaultClazzFactory;
 import no.fint.oneroster.factory.clazz.MrfylkeClazzFactory;
 import no.fint.oneroster.factory.user.DefaultUserFactory;
-import no.fint.oneroster.factory.user.ItslearningUserFactory;
+import no.fint.oneroster.factory.user.NinUserFactory;
 import no.fint.oneroster.factory.user.UserFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -14,26 +14,26 @@ import org.springframework.context.annotation.Configuration;
 public class FactoryConfiguration {
 
     @Bean
-    @ConditionalOnProperty(value = "oneroster.profile.clazz-factory", havingValue = "default", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "oneroster", name = "class-factory", havingValue = "default", matchIfMissing = true)
     public ClazzFactory clazzFactory() {
         return new DefaultClazzFactory();
     }
 
     @Bean
-    @ConditionalOnProperty(value = "oneroster.profile.clazz-factory", havingValue = "mrfylke")
+    @ConditionalOnProperty(prefix = "oneroster", name = "class-factory", havingValue = "mrfylke")
     public ClazzFactory mrfylkeClazzFactory() {
         return new MrfylkeClazzFactory();
     }
 
     @Bean
-    @ConditionalOnProperty(value = "oneroster.profile.user-factory", havingValue = "default", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "oneroster", name = "user-factory", havingValue = "default", matchIfMissing = true)
     public UserFactory userFactory() {
         return new DefaultUserFactory();
     }
 
     @Bean
-    @ConditionalOnProperty(value = "oneroster.profile.user-factory", havingValue = "itslearning")
-    public UserFactory itslearningUserFactory() {
-        return new ItslearningUserFactory();
+    @ConditionalOnProperty(prefix = "oneroster", name = "user-factory", havingValue = "nin")
+    public UserFactory ninUserFactory() {
+        return new NinUserFactory();
     }
 }

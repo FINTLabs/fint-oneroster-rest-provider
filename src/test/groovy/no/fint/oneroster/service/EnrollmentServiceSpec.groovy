@@ -5,12 +5,12 @@ import no.fint.oneroster.model.GUIDRef
 import no.fint.oneroster.model.vocab.GUIDType
 import no.fint.oneroster.model.vocab.RoleType
 import no.fint.oneroster.model.vocab.StatusType
-import no.fint.oneroster.repository.OneRosterService
+import no.fint.oneroster.repository.OneRosterRepository
 import spock.lang.Specification
 
 class EnrollmentServiceSpec extends Specification {
 
-    OneRosterService oneRosterService = Mock()
+    OneRosterRepository oneRosterService = Mock()
 
     EnrollmentService enrollmentService = new EnrollmentService(oneRosterService)
 
@@ -50,7 +50,6 @@ class EnrollmentServiceSpec extends Specification {
     Enrollment getStudentEnrollment() {
         return new Enrollment(
                 'student-relation-sourced-id_basis-group-sourced-id',
-                StatusType.ACTIVE,
                 GUIDRef.of(GUIDType.USER, 'student-sourced-id'),
                 GUIDRef.of(GUIDType.CLASS, 'basis-group-sourced-id'),
                 GUIDRef.of(GUIDType.ORG, 'school-sourced-id'),
@@ -61,7 +60,6 @@ class EnrollmentServiceSpec extends Specification {
     Enrollment getTeacherEnrollment() {
         return new Enrollment(
                 'teaching-relation-sourced-id_teaching-group-sourced-id',
-                StatusType.ACTIVE,
                 GUIDRef.of(GUIDType.USER, 'teacher-sourced-id'),
                 GUIDRef.of(GUIDType.CLASS, 'teaching-group-sourced-id'),
                 GUIDRef.of(GUIDType.ORG, 'school-sourced-id'),

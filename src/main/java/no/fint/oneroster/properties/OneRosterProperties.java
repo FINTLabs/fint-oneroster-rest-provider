@@ -2,19 +2,19 @@ package no.fint.oneroster.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.util.StringUtils;
 
-import java.time.LocalDate;
-import java.util.Set;
+import java.util.Map;
 
 @Data
 @ConfigurationProperties("oneroster")
 public class OneRosterProperties {
     private Org org;
-    private AcademicSession academicSession;
-    private Profile profile;
+    private String classFactory;
+    private String userFactory;
+    private boolean contactTeacherGroups;
+    private boolean parents;
     private boolean accessControl;
-    private String[] clientIds;
+    private Map<String, Client> clients;
 
     @Data
     public static class Org {
@@ -24,34 +24,8 @@ public class OneRosterProperties {
     }
 
     @Data
-    public static class AcademicSession {
-        private Term firstTerm;
-        private Term secondTerm;
-    }
-
-    @Data
-    public static class Term {
-        private String sourcedId;
-        private LocalDate beginDate;
-        private LocalDate endDate;
+    public static class Client {
+        private String id;
         private String name;
-
-        public void setBeginDate(String beginDate) {
-            this.beginDate = LocalDate.parse(beginDate);
-        }
-
-        public void setEndDate(String endDate) {
-            this.endDate = LocalDate.parse(endDate);
-        }
-    }
-
-    @Data
-    public static class Profile {
-        private Set<String> clazzFilter;
-        private boolean contactTeacherGroups;
-
-        public void setClazzFilter(String clazzFilter) {
-            this.clazzFilter = StringUtils.commaDelimitedListToSet(StringUtils.trimAllWhitespace(clazzFilter));
-        }
     }
 }

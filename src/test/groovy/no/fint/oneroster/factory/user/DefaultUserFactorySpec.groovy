@@ -1,7 +1,9 @@
 package no.fint.oneroster.factory.user
 
 import no.fint.oneroster.model.vocab.RoleType
-import no.fint.oneroster.util.FintObjectFactory
+import no.fint.oneroster.FintObjectFactory
+import no.fint.oneroster.properties.OneRosterProperties
+import no.fint.oneroster.util.PersonUtil
 import spock.lang.Specification
 
 class DefaultUserFactorySpec extends Specification {
@@ -33,5 +35,20 @@ class DefaultUserFactorySpec extends Specification {
         teacher.familyName == 'family-name'
         teacher.role == RoleType.TEACHER
         teacher.orgs.first().sourcedId == 'school-sourced-id'
+    }
+
+    def "parent() returns user object of type parent"() {
+        when:
+        def parent = defaultUserFactory.parent(FintObjectFactory.newPerson(), FintObjectFactory.newStudent(), new OneRosterProperties.Org(sourcedId: 'org-sourced-id') )
+
+        then:
+        parent.sourcedId == 'person-sourced-id'
+        parent.username == ''
+        parent.enabledUser
+        parent.givenName == 'given-name'
+        parent.familyName == 'family-name'
+        parent.role == RoleType.PARENT
+        parent.orgs.first().sourcedId == 'org-sourced-id'
+        parent.agents.first().sourcedId == 'student-sourced-id'
     }
 }

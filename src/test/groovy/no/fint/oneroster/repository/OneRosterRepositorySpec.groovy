@@ -4,22 +4,16 @@ import no.fint.oneroster.factory.clazz.ClazzFactory
 import no.fint.oneroster.factory.clazz.DefaultClazzFactory
 import no.fint.oneroster.factory.user.DefaultUserFactory
 import no.fint.oneroster.factory.user.UserFactory
-import no.fint.oneroster.model.AcademicSession
 import no.fint.oneroster.model.vocab.ClazzType
 import no.fint.oneroster.model.vocab.OrgType
 import no.fint.oneroster.model.vocab.RoleType
-import no.fint.oneroster.model.vocab.SessionType
 import no.fint.oneroster.properties.OneRosterProperties
-import no.fint.oneroster.service.AcademicSessionService
-import no.fint.oneroster.util.FintObjectFactory
+import no.fint.oneroster.FintObjectFactory
 import spock.lang.Specification
 
-import java.time.LocalDate
-import java.time.Year
+class OneRosterRepositorySpec extends Specification {
 
-class OneRosterServiceSpec extends Specification {
-
-    FintService fintService = Stub() {
+    FintRepository fintService = Stub() {
         getSchools() >> [FintObjectFactory.newSchool()]
         getSchoolById(_ as String) >> FintObjectFactory.newSchool()
         getPersonById(_ as String) >> FintObjectFactory.newPerson()
@@ -33,6 +27,8 @@ class OneRosterServiceSpec extends Specification {
         getLevelById(_ as String) >> FintObjectFactory.newLevel()
         getSubjectById(_ as String) >> FintObjectFactory.newSubject()
         getPersonnelById(_ as String) >> FintObjectFactory.newPersonnel()
+        getTermById(_ as String) >> FintObjectFactory.newTerm()
+        getSchoolYearById(_ as String) >> FintObjectFactory.newSchoolYear()
     }
 
     OneRosterProperties oneRosterProperties = Stub() {
@@ -42,27 +38,22 @@ class OneRosterServiceSpec extends Specification {
                 identifier: 'identifier'
         )
 
-        getProfile() >> new OneRosterProperties.Profile(
-                contactTeacherGroups: true
-        )
-    }
-
-    AcademicSessionService academicSessionService = Stub() {
-        getAllTerms() >> getTerms()
+        isContactTeacherGroups() >> true
+        isParents() >> true
     }
 
     ClazzFactory clazzFactory = new DefaultClazzFactory()
     UserFactory userFactory = new DefaultUserFactory()
 
-    OneRosterService oneRosterService = new OneRosterService(oneRosterProperties, academicSessionService, clazzFactory, userFactory, fintService)
+    OneRosterRepository oneRosterRepository = new OneRosterRepository(oneRosterProperties, clazzFactory, userFactory, fintService)
 
     def setup()  {
-        oneRosterService.update()
+        oneRosterRepository.update()
     }
 
     def "getAllOrgs returns a list of orgs"() {
         when:
-        def orgs = oneRosterService.getOrgs()
+        def orgs = oneRosterRepository.getOrgs()
 
         then:
         orgs.size() == 2
@@ -75,7 +66,7 @@ class OneRosterServiceSpec extends Specification {
 
     def "getAllClazzes returns a list of clazzes"() {
         when:
-        def clazzes = oneRosterService.getClazzes()
+        def clazzes = oneRosterRepository.getClazzes()
 
         then:
         clazzes.size() == 3
@@ -84,13 +75,13 @@ class OneRosterServiceSpec extends Specification {
         clazzes.first().classType == ClazzType.HOMEROOM
         clazzes.first().course.sourcedId == 'level-sourced-id'
         clazzes.first().school.sourcedId == 'school-sourced-id'
-        clazzes.first().terms.size() == 2
-        clazzes.first().terms.first().sourcedId == 'T1SY20192020'
+        clazzes.first().terms.size() == 1
+        clazzes.first().terms.first().sourcedId == 'term-sourced-id'
     }
 
     def "getAllCourses returns a list of courses"() {
         when:
-        def courses = oneRosterService.getCourses()
+        def courses = oneRosterRepository.getCourses()
 
         then:
         courses.size() == 2
@@ -101,7 +92,7 @@ class OneRosterServiceSpec extends Specification {
 
     def "getAllEnrollments returns a list of enrollments"() {
         when:
-        def enrollments = oneRosterService.getEnrollments()
+        def enrollments = oneRosterRepository.getEnrollments()
 
         then:
         enrollments.size() == 6
@@ -114,42 +105,31 @@ class OneRosterServiceSpec extends Specification {
 
     def "getAllUsers returns a list of users"() {
         when:
-        def users = oneRosterService.getUsers()
+        def users = oneRosterRepository.getUsers()
 
         then:
-        users.size() == 2
-        users.first().sourcedId == 'student-sourced-id'
-        users.first().username == 'username'
-        users.first().userIds.first().type == 'Feide'
-        users.first().userIds.first().identifier == 'feide'
+        users.size() == 3
+        users.first().sourcedId == 'person-sourced-id'
+        users.first().username == ''
         users.first().enabledUser
         users.first().givenName == 'given-name'
         users.first().middleName == 'middle-name'
         users.first().familyName == 'family-name'
-        users.first().role == RoleType.STUDENT
-        users.first().email == 'email'
-        users.first().orgs.first().sourcedId == 'school-sourced-id'
-    }
+        users.first().role == RoleType.PARENT
+        users.first().orgs.first().sourcedId == 'school-owner-sourced-id'
+        users.first().agents.first().sourcedId == 'student-sourced-id'
 
-    List<AcademicSession> getTerms() {
-        AcademicSession firstTerm = new AcademicSession(
-                'T1SY20192020',
-                '1 termin 2019/2020',
-                LocalDate.of(2019, 8, 1),
-                LocalDate.of(2010, 12, 31),
-                SessionType.TERM,
-                Year.of(2020)
-        )
-
-        AcademicSession secondTerm = new AcademicSession(
-                'T2SY20192020',
-                '2 termin 2019/2020',
-                LocalDate.of(2020, 1, 1),
-                LocalDate.of(2020, 7, 31),
-                SessionType.TERM,
-                Year.of(2020)
-        )
-
-        return [firstTerm, secondTerm]
+        users[1].sourcedId == 'student-sourced-id'
+        users[1].username == 'username'
+        users[1].userIds.first().type == 'Feide'
+        users[1].userIds.first().identifier == 'feide'
+        users[1].enabledUser
+        users[1].givenName == 'given-name'
+        users[1].middleName == 'middle-name'
+        users[1].familyName == 'family-name'
+        users[1].role == RoleType.STUDENT
+        users[1].email == 'email'
+        users[1].orgs.first().sourcedId == 'school-sourced-id'
+        users[1].agents.first().sourcedId == 'person-sourced-id'
     }
 }
