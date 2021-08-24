@@ -23,6 +23,14 @@ class DefaultUserFactorySpec extends Specification {
         student.orgs.first().sourcedId == 'school-sourced-id'
     }
 
+    def "student() without username returns user with username from feide upn"() {
+        when:
+        def student = defaultUserFactory.student(FintObjectFactory.newStudentWithoutUsername(), FintObjectFactory.newPerson(), [FintObjectFactory.newSchool()])
+
+        then:
+        student.username == 'feide'
+    }
+
     def "teacher() returns user object of type teacher"() {
         when:
         def teacher = defaultUserFactory.teacher(FintObjectFactory.newTeacher(), FintObjectFactory.newPersonnel(), FintObjectFactory.newPerson(), [FintObjectFactory.newSchool()])
