@@ -15,6 +15,7 @@ import no.fint.oneroster.model.vocab.GUIDType;
 import no.fint.oneroster.model.vocab.RoleType;
 import no.fint.oneroster.properties.OneRosterProperties;
 import no.fint.oneroster.util.PersonUtil;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -35,10 +36,7 @@ public interface UserFactory {
                                         .getBrukernavn())
                         .map(Identifikator::getIdentifikatorverdi)
                         .orElse(
-                                getUsernameFromFeideUPN(elevResource
-                                        .getFeidenavn()
-                                        .getIdentifikatorverdi()
-                                )
+                                getUsernameFromFeideUPN(elevResource)
                         ),
                 true,
                 personResource.getNavn().getFornavn(),
@@ -134,12 +132,15 @@ public interface UserFactory {
         return Optional.empty();
     }
 
-    default String getUsernameFromFeideUPN(String feideUPN) {
-        if (StringUtils.hasText(feideUPN)) {
-            if (feideUPN.contains("@")) {
-                return feideUPN.substring(0, feideUPN.lastIndexOf("@"));
+    default String getUsernameFromFeideUPN(ElevResource elevResource) {
+        if (ObjectUtils.isNotEmpty(elevResource.getFeidenavn())) {
+            String feideUpn = elevResource.getFeidenavn().getIdentifikatorverdi();
+            if (StringUtils.hasText(feideUpn)) {
+                if (feideUpn.contains("@")) {
+                    return feideUpn.substring(0, feideUpn.lastIndexOf("@"));
+                }
+                return feideUpn;
             }
-            return feideUPN;
         }
         return "";
     }
