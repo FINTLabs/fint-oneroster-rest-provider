@@ -54,6 +54,19 @@ public class UserService {
                 .orElseThrow(NotFoundException::new);
     }
 
+    public List<User> getAllAdministrators() {
+        return getAllUsers()
+                .stream()
+                .filter(user -> user.getRole().equals(RoleType.ADMINISTRATOR))
+                .collect(Collectors.toList());
+    }
+
+    public User getAdministrator(String sourcedId) {
+        return Optional.ofNullable(oneRosterRepository.getUserById(sourcedId))
+                .filter(user -> user.getRole().equals(RoleType.ADMINISTRATOR))
+                .orElseThrow(NotFoundException::new);
+    }
+
     public List<Clazz> getClazzesForStudent(String sourcedId) {
         User student = getStudent(sourcedId);
 

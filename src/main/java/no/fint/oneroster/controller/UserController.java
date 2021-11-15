@@ -92,6 +92,31 @@ public class UserController {
         return ResponseEntity.ok(response.getBody());
     }
 
+    @GetMapping("/administrators")
+    public ResponseEntity<?> getAllAdministrators(@RequestParam(value = "filter", required = false) String filter,
+                                            @RequestParam(value = "fields", required = false) String fields,
+                                            Pageable pageable) {
+
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(userService.getAllAdministrators() , User.class)
+                .filter(filter)
+                .pagingAndSorting(pageable)
+                .fieldSelection(fields)
+                .build();
+
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getBody());
+    }
+
+    @GetMapping("c")
+    public ResponseEntity<?> getAdministrator(@PathVariable String sourcedId,
+                                        @RequestParam(value = "fields", required = false) String fields) {
+
+        OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(userService.getAdministrator(sourcedId))
+                .fieldSelection(fields)
+                .build();
+
+        return ResponseEntity.ok(response.getBody());
+    }
+
     @GetMapping("/students/{sourcedId}/classes")
     public ResponseEntity<?> getClazzesForStudent(@PathVariable String sourcedId, Pageable pageable,
                                                   @RequestParam(value = "filter", required = false) String filter,
