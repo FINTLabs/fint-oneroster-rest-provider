@@ -16,7 +16,10 @@ import no.fint.oneroster.model.vocab.RoleType;
 import no.fint.oneroster.properties.OneRosterProperties;
 import no.fint.oneroster.util.PersonUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static no.fint.oneroster.util.StringNormalizer.normalize;
@@ -86,6 +89,39 @@ public interface UserFactory {
         getNin(personResource).ifPresent(teacher::setIdentifier);
 
         return teacher;
+    }
+
+    default User administrator(SkoleressursResource skoleressursResource, PersonalressursResource personalressursResource, PersonResource personResource, List<SkoleResource> skoleResources) {
+        User staff = new User(
+                normalize(skoleressursResource.getSystemId().getIdentifikatorverdi()),
+                Optional.ofNullable(personalressursResource.getBrukernavn()).map(Identifikator::getIdentifikatorverdi).orElse(""),
+                true,
+                personResource.getNavn().getFornavn(),
+                personResource.getNavn().getEtternavn(),
+                RoleType.ADMINISTRATOR,
+                skoleResources.stream()
+                        .map(skoleResource -> GUIDRef.of(GUIDType.ORG, normalize(skoleResource.getSystemId().getIdentifikatorverdi())))
+                        .collect(Collectors.toList())
+        );
+
+        Optional<PersonalressursResource> resource = Optional.of(personalressursResource);
+
+        resource.map(PersonalressursResource::getKontaktinformasjon)
+                .map(Kontaktinformasjon::getEpostadresse)
+                .ifPresent(staff::setEmail);
+
+        Optional.ofNullable(skoleressursResource.getFeidenavn())
+                .map(Identifikator::getIdentifikatorverdi)
+                .map(identifier -> new UserId("Feide", identifier))
+                .ifPresent(userId -> staff.setUserIds(Collections.singletonList(userId)));
+
+        Optional.of(personResource.getNavn())
+                .map(Personnavn::getMellomnavn)
+                .ifPresent(staff::setMiddleName);
+
+        getNin(personResource).ifPresent(staff::setIdentifier);
+
+        return staff;
     }
 
     default User parent(PersonResource personResource, ElevResource child, OneRosterProperties.Org org) {

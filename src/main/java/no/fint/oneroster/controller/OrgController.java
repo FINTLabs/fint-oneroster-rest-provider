@@ -6,7 +6,10 @@ import no.fint.oneroster.response.OneRosterItemResponse;
 import no.fint.oneroster.service.OrgService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class OrgController {
@@ -104,8 +107,8 @@ public class OrgController {
 
     @GetMapping("/schools/{schoolSourcedId}/classes/{clazzSourcedId}/enrollments")
     public ResponseEntity<?> getEnrollmentsForClazzInSchool(@PathVariable String schoolSourcedId, @PathVariable String clazzSourcedId, Pageable pageable,
-                                                     @RequestParam(value = "filter", required = false) String filter,
-                                                     @RequestParam(value = "fields", required = false) String fields) {
+                                                            @RequestParam(value = "filter", required = false) String filter,
+                                                            @RequestParam(value = "fields", required = false) String fields) {
 
         OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(orgService.getEnrollmentsForClazzInSchool(schoolSourcedId, clazzSourcedId), Enrollment.class)
                 .filter(filter)
@@ -152,8 +155,8 @@ public class OrgController {
 
     @GetMapping("/schools/{sourcedId}/terms")
     public ResponseEntity<?> getTermsForSchool(@PathVariable String sourcedId, Pageable pageable,
-                                                  @RequestParam(value = "filter", required = false) String filter,
-                                                  @RequestParam(value = "fields", required = false) String fields) {
+                                               @RequestParam(value = "filter", required = false) String filter,
+                                               @RequestParam(value = "fields", required = false) String fields) {
 
         OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(orgService.getTermsForSchool(sourcedId), AcademicSession.class)
                 .filter(filter)

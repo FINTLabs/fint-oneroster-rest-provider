@@ -7,8 +7,12 @@ public enum SessionType {
 
     private final String sessionType;
 
-    SessionType(String sessionType) { this.sessionType = sessionType; }
+    SessionType(String sessionType) {
+        this.sessionType = sessionType;
+    }
 
     @JsonValue
-    public String getSessionType() { return sessionType; }
+    public String getSessionType() {
+        return sessionType;
+    }
 }

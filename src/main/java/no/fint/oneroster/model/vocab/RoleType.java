@@ -7,8 +7,12 @@ public enum RoleType {
 
     private final String roleType;
 
-    RoleType(String roleType) { this.roleType = roleType; }
+    RoleType(String roleType) {
+        this.roleType = roleType;
+    }
 
     @JsonValue
-    public String getRoleType() { return roleType; }
+    public String getRoleType() {
+        return roleType;
+    }
 }

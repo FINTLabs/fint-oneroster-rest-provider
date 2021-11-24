@@ -20,8 +20,8 @@ import no.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResources;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResources;
-import no.fint.oneroster.client.FintEndpoint;
 import no.fint.oneroster.client.FintClient;
+import no.fint.oneroster.client.FintEndpoint;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 
@@ -174,20 +174,20 @@ public class FintRepository {
 
     public void update() {
         Flux.concat(fintClient.getEducationResources(SkoleResources.class, FintEndpoint.SCHOOL.getKey()),
-                fintClient.getEducationResources(PersonResources.class, FintEndpoint.PERSON.getKey()),
-                fintClient.getEducationResources(ElevResources.class, FintEndpoint.STUDENT.getKey()),
-                fintClient.getEducationResources(SkoleressursResources.class, FintEndpoint.TEACHER.getKey()),
-                fintClient.getEducationResources(ElevforholdResources.class, FintEndpoint.STUDENT_RELATION.getKey()),
-                fintClient.getEducationResources(UndervisningsforholdResources.class, FintEndpoint.TEACHING_RELATION.getKey()),
-                fintClient.getEducationResources(BasisgruppeResources.class, FintEndpoint.BASIS_GROUP.getKey()),
-                fintClient.getEducationResources(UndervisningsgruppeResources.class, FintEndpoint.TEACHING_GROUP.getKey()),
-                fintClient.getEducationResources(KontaktlarergruppeResources.class, FintEndpoint.CONTACT_TEACHER_GROUP.getKey()),
-                fintClient.getEducationResources(ArstrinnResources.class, FintEndpoint.LEVEL.getKey()),
-                fintClient.getEducationResources(FagResources.class, FintEndpoint.SUBJECT.getKey()),
-                fintClient.getEducationResources(TerminResources.class, FintEndpoint.TERM.getKey()),
-                fintClient.getEducationResources(SkolearResources.class, FintEndpoint.SCHOOL_YEAR.getKey()),
-                fintClient.getAdministrationResources(PersonalressursResources.class, FintEndpoint.PERSONNEL.getKey()),
-                fintClient.getAdministrationResources(PersonResources.class, FintEndpoint.PERSON.getKey()))
+                        fintClient.getEducationResources(PersonResources.class, FintEndpoint.PERSON.getKey()),
+                        fintClient.getEducationResources(ElevResources.class, FintEndpoint.STUDENT.getKey()),
+                        fintClient.getEducationResources(SkoleressursResources.class, FintEndpoint.TEACHER.getKey()),
+                        fintClient.getEducationResources(ElevforholdResources.class, FintEndpoint.STUDENT_RELATION.getKey()),
+                        fintClient.getEducationResources(UndervisningsforholdResources.class, FintEndpoint.TEACHING_RELATION.getKey()),
+                        fintClient.getEducationResources(BasisgruppeResources.class, FintEndpoint.BASIS_GROUP.getKey()),
+                        fintClient.getEducationResources(UndervisningsgruppeResources.class, FintEndpoint.TEACHING_GROUP.getKey()),
+                        fintClient.getEducationResources(KontaktlarergruppeResources.class, FintEndpoint.CONTACT_TEACHER_GROUP.getKey()),
+                        fintClient.getEducationResources(ArstrinnResources.class, FintEndpoint.LEVEL.getKey()),
+                        fintClient.getEducationResources(FagResources.class, FintEndpoint.SUBJECT.getKey()),
+                        fintClient.getEducationResources(TerminResources.class, FintEndpoint.TERM.getKey()),
+                        fintClient.getEducationResources(SkolearResources.class, FintEndpoint.SCHOOL_YEAR.getKey()),
+                        fintClient.getAdministrationResources(PersonalressursResources.class, FintEndpoint.PERSONNEL.getKey()),
+                        fintClient.getAdministrationResources(PersonResources.class, FintEndpoint.PERSON.getKey()))
                 .toStream()
                 .forEach(resource -> {
                     List<String> links = getSelfLinks(resource);

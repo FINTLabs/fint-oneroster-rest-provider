@@ -7,9 +7,10 @@ import no.fint.oneroster.model.vocab.StatusType;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.List;
 
-@Getter @Setter
+@Getter
+@Setter
 @EqualsAndHashCode(callSuper = true)
 public class Course extends Base {
     private final String title;

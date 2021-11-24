@@ -6,7 +6,10 @@ import no.fint.oneroster.response.OneRosterItemResponse;
 import no.fint.oneroster.service.AcademicSessionService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class AcademicSessionController {

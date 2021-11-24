@@ -7,7 +7,10 @@ import no.fint.oneroster.response.OneRosterItemResponse;
 import no.fint.oneroster.service.UserService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class UserController {
@@ -94,10 +97,10 @@ public class UserController {
 
     @GetMapping("/administrators")
     public ResponseEntity<?> getAllAdministrators(@RequestParam(value = "filter", required = false) String filter,
-                                            @RequestParam(value = "fields", required = false) String fields,
-                                            Pageable pageable) {
+                                                  @RequestParam(value = "fields", required = false) String fields,
+                                                  Pageable pageable) {
 
-        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(userService.getAllAdministrators() , User.class)
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(userService.getAllAdministrators(), User.class)
                 .filter(filter)
                 .pagingAndSorting(pageable)
                 .fieldSelection(fields)
@@ -108,7 +111,7 @@ public class UserController {
 
     @GetMapping("c")
     public ResponseEntity<?> getAdministrator(@PathVariable String sourcedId,
-                                        @RequestParam(value = "fields", required = false) String fields) {
+                                              @RequestParam(value = "fields", required = false) String fields) {
 
         OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(userService.getAdministrator(sourcedId))
                 .fieldSelection(fields)

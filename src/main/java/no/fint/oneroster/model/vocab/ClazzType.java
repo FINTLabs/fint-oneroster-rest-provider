@@ -7,8 +7,12 @@ public enum ClazzType {
 
     private final String clazzType;
 
-    ClazzType(String clazzType) { this.clazzType = clazzType; }
+    ClazzType(String clazzType) {
+        this.clazzType = clazzType;
+    }
 
     @JsonValue
-    public String getClazzType() { return clazzType; }
+    public String getClazzType() {
+        return clazzType;
+    }
 }

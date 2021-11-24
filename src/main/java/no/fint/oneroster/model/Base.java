@@ -11,7 +11,8 @@ import java.time.ZonedDateTime;
 import java.util.Map;
 
 @ToString
-@Getter @Setter
+@Getter
+@Setter
 @EqualsAndHashCode(exclude = "dateLastModified")
 @JsonFilter("fields")
 public class Base {

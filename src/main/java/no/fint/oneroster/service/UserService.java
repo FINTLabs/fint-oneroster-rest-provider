@@ -2,12 +2,17 @@ package no.fint.oneroster.service;
 
 import lombok.extern.slf4j.Slf4j;
 import no.fint.oneroster.exception.NotFoundException;
-import no.fint.oneroster.model.*;
+import no.fint.oneroster.model.Clazz;
+import no.fint.oneroster.model.Enrollment;
+import no.fint.oneroster.model.GUIDRef;
+import no.fint.oneroster.model.User;
 import no.fint.oneroster.model.vocab.RoleType;
 import no.fint.oneroster.repository.OneRosterRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
