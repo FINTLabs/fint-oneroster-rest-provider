@@ -109,7 +109,7 @@ public class UserController {
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getBody());
     }
 
-    @GetMapping("c")
+    @GetMapping("/administrators/{sourcedId}")
     public ResponseEntity<?> getAdministrator(@PathVariable String sourcedId,
                                               @RequestParam(value = "fields", required = false) String fields) {
 
