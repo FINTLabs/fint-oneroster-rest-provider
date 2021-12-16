@@ -181,7 +181,9 @@ public class OneRosterRepository {
                     });
                 }
 
-                resources.put(user.getSourcedId(), user);
+                String sid = user.getSourcedId() + "-s";
+
+                resources.put(sid, user);
             }
         };
     }
@@ -242,7 +244,9 @@ public class OneRosterRepository {
             if (staff.isPresent() && personnelResource.isPresent() && personResource.isPresent() && !schoolResources.isEmpty()) {
                 User user = userFactory.administrator(staff.get(), personnelResource.get(), personResource.get(), schoolResources);
 
-                resources.put(user.getSourcedId(), user);
+                String sid = user.getSourcedId() + "-a";
+
+                resources.put(sid, user);
             }
         };
     }
@@ -269,7 +273,9 @@ public class OneRosterRepository {
             if (teacher.isPresent() && personnelResource.isPresent() && personResource.isPresent() && !schoolResources.isEmpty()) {
                 User user = userFactory.teacher(teacher.get(), personnelResource.get(), personResource.get(), schoolResources);
 
-                resources.put(user.getSourcedId(), user);
+                String sid = user.getSourcedId() + "-t";
+
+                resources.put(sid, user);
             }
         };
     }

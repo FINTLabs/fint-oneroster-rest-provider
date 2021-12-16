@@ -28,9 +28,19 @@ public class UserService {
         return oneRosterRepository.getUsers();
     }
 
+
     public User getUser(String sourcedId) {
         return Optional.ofNullable(oneRosterRepository.getUserById(sourcedId))
                 .orElseThrow(NotFoundException::new);
+    }
+
+    // Test
+    public List<User> getUserRoles(String sourcedId) {
+        return getAllUsers()
+                .stream()
+                .filter(user -> user.getSourcedId().equals(sourcedId))
+                .collect(Collectors.toList());
+        // return Optional.ofNullable(oneRosterRepository.getUserById(sourcedId)).orElseThrow(NotFoundException::new);
     }
 
     public List<User> getAllStudents() {
@@ -41,7 +51,7 @@ public class UserService {
     }
 
     public User getStudent(String sourcedId) {
-        return Optional.ofNullable(oneRosterRepository.getUserById(sourcedId))
+        return Optional.ofNullable(oneRosterRepository.getUserById(sourcedId + "-s"))
                 .filter(user -> user.getRole().equals(RoleType.STUDENT))
                 .orElseThrow(NotFoundException::new);
     }
@@ -54,7 +64,7 @@ public class UserService {
     }
 
     public User getTeacher(String sourcedId) {
-        return Optional.ofNullable(oneRosterRepository.getUserById(sourcedId))
+        return Optional.ofNullable(oneRosterRepository.getUserById(sourcedId + "-t"))
                 .filter(user -> user.getRole().equals(RoleType.TEACHER))
                 .orElseThrow(NotFoundException::new);
     }
@@ -67,7 +77,7 @@ public class UserService {
     }
 
     public User getAdministrator(String sourcedId) {
-        return Optional.ofNullable(oneRosterRepository.getUserById(sourcedId))
+        return Optional.ofNullable(oneRosterRepository.getUserById(sourcedId + "-a"))
                 .filter(user -> user.getRole().equals(RoleType.ADMINISTRATOR))
                 .orElseThrow(NotFoundException::new);
     }

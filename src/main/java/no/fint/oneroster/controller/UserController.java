@@ -36,13 +36,15 @@ public class UserController {
 
     @GetMapping("/users/{sourcedId}")
     public ResponseEntity<?> getUser(@PathVariable String sourcedId,
-                                     @RequestParam(value = "fields", required = false) String fields) {
+                                     @RequestParam(value = "fields", required = false) String fields,
+                                     Pageable pageable) {
 
-        OneRosterItemResponse response = new OneRosterItemResponse.Builder<>(userService.getUser(sourcedId))
+        OneRosterCollectionResponse response = new OneRosterCollectionResponse.Builder<>(userService.getUserRoles(sourcedId) , User.class )
+                .pagingAndSorting(pageable)
                 .fieldSelection(fields)
                 .build();
 
-        return ResponseEntity.ok(response.getBody());
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getBody());
     }
 
     @GetMapping("/students")
