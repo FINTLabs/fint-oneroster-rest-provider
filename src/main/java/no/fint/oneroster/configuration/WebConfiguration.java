@@ -17,6 +17,7 @@ public class WebConfiguration {
     @Bean
     public PageableHandlerMethodArgumentResolverCustomizer pageableCustomizer() {
         return pageable -> {
+            pageable.setMaxPageSize(100000);
             pageable.setPageParameterName("offset");
             pageable.setSizeParameterName("limit");
             pageable.setFallbackPageable(PageRequest.of(0, 100));
