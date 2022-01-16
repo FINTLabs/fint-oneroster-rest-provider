@@ -55,7 +55,7 @@ public class ClazzService {
                 .filter(enrollment -> enrollment.getClazz().getSourcedId().equals(clazz.getSourcedId()))
                 .map(Enrollment::getUser)
                 .map(GUIDRef::getSourcedId)
-                .map(oneRosterRepository::getUserById)
+                .map(oneRosterRepository::getTeacherById)
                 .filter(Objects::nonNull)
                 .filter(user -> user.getRole().equals(RoleType.TEACHER))
                 .collect(Collectors.toList());
