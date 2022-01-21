@@ -99,6 +99,10 @@ public class OneRosterRepository {
         return getResourceByTypeAndId(User.class, sourcedId + "-t");
     }
 
+    public User getStudentById(String sourcedId) {
+        return getResourceByTypeAndId(User.class, sourcedId + "-s");
+    }
+
     public List<AcademicSession> getAcademicSessions() {
         return getResourcesByType(AcademicSession.class);
     }
