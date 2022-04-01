@@ -6,6 +6,7 @@ oneroster:
   user-factory:
   class-factory:
   access-control:
+  extract-username-from-feideupn:
   clients:
     1:
       id:

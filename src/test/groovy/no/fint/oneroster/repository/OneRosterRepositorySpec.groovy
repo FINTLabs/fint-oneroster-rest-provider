@@ -122,7 +122,7 @@ class OneRosterRepositorySpec extends Specification {
         users[1].sourcedId == 'student-sourced-id'
         users[1].username == 'username'
         users[1].userIds.first().type == 'Feide'
-        users[1].userIds.first().identifier == 'feide'
+        users[1].userIds.first().identifier == 'feide@feide.no'
         users[1].enabledUser
         users[1].givenName == 'given-name'
         users[1].middleName == 'middle-name'

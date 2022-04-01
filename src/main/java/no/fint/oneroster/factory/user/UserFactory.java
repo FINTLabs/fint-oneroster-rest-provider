@@ -15,6 +15,8 @@ import no.fint.oneroster.model.vocab.GUIDType;
 import no.fint.oneroster.model.vocab.RoleType;
 import no.fint.oneroster.properties.OneRosterProperties;
 import no.fint.oneroster.util.PersonUtil;
+import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,11 +26,18 @@ import java.util.stream.Collectors;
 
 import static no.fint.oneroster.util.StringNormalizer.normalize;
 
+
 public interface UserFactory {
     default User student(ElevResource elevResource, PersonResource personResource, List<SkoleResource> skoleResources) {
         User student = new User(
                 normalize(elevResource.getSystemId().getIdentifikatorverdi()),
-                Optional.ofNullable(elevResource.getBrukernavn()).map(Identifikator::getIdentifikatorverdi).orElse(""),
+                Optional.ofNullable(
+                                elevResource
+                                        .getBrukernavn())
+                        .map(Identifikator::getIdentifikatorverdi)
+                        .orElse(
+                                getUsernameFromFeideUPN(elevResource)
+                        ),
                 true,
                 personResource.getNavn().getFornavn(),
                 personResource.getNavn().getEtternavn(),
@@ -154,5 +163,18 @@ public interface UserFactory {
 
     default Optional<String> getNin(PersonResource person) {
         return Optional.empty();
+    }
+
+    default String getUsernameFromFeideUPN(ElevResource elevResource) {
+        if (ObjectUtils.isNotEmpty(elevResource.getFeidenavn())) {
+            String feideUpn = elevResource.getFeidenavn().getIdentifikatorverdi();
+            if (StringUtils.hasText(feideUpn)) {
+                if (feideUpn.contains("@")) {
+                    return feideUpn.substring(0, feideUpn.lastIndexOf("@"));
+                }
+                return feideUpn;
+            }
+        }
+        return "";
     }
 }

@@ -61,7 +61,23 @@ class FintObjectFactory {
         resource.setSystemId(new Identifikator(identifikatorverdi: 'student-sourced-id'))
         resource.setBrukernavn(new Identifikator(identifikatorverdi: 'username'))
         resource.setElevnummer(new Identifikator(identifikatorverdi: 'identifier'))
-        resource.setFeidenavn(new Identifikator(identifikatorverdi: 'feide'))
+        resource.setFeidenavn(new Identifikator(identifikatorverdi: 'feide@feide.no'))
+        Kontaktinformasjon contactInformation = new Kontaktinformasjon()
+        contactInformation.setEpostadresse('email')
+        contactInformation.setMobiltelefonnummer('sms')
+        contactInformation.setTelefonnummer('phone')
+        resource.setKontaktinformasjon(contactInformation)
+        resource.addPerson(Link.with('/person-sourced-id'))
+        resource.addElevforhold(Link.with('/student-relation-sourced-id'))
+        resource.addSelf(Link.with('/student-sourced-id'))
+        return resource
+    }
+
+    static ElevResource newStudentWithoutUsername() {
+        ElevResource resource = new ElevResource()
+        resource.setSystemId(new Identifikator(identifikatorverdi: 'student-sourced-id'))
+        resource.setElevnummer(new Identifikator(identifikatorverdi: 'identifier'))
+        resource.setFeidenavn(new Identifikator(identifikatorverdi: 'feide@feide.no'))
         Kontaktinformasjon contactInformation = new Kontaktinformasjon()
         contactInformation.setEpostadresse('email')
         contactInformation.setMobiltelefonnummer('sms')
