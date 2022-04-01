@@ -2,12 +2,17 @@ package no.fint.oneroster.service;
 
 import lombok.extern.slf4j.Slf4j;
 import no.fint.oneroster.exception.NotFoundException;
-import no.fint.oneroster.model.*;
+import no.fint.oneroster.model.Clazz;
+import no.fint.oneroster.model.Enrollment;
+import no.fint.oneroster.model.GUIDRef;
+import no.fint.oneroster.model.User;
 import no.fint.oneroster.model.vocab.RoleType;
 import no.fint.oneroster.repository.OneRosterRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -23,9 +28,19 @@ public class UserService {
         return oneRosterRepository.getUsers();
     }
 
+
     public User getUser(String sourcedId) {
         return Optional.ofNullable(oneRosterRepository.getUserById(sourcedId))
                 .orElseThrow(NotFoundException::new);
+    }
+
+    // Test
+    public List<User> getUserRoles(String sourcedId) {
+        return getAllUsers()
+                .stream()
+                .filter(user -> user.getSourcedId().equals(sourcedId))
+                .collect(Collectors.toList());
+        // return Optional.ofNullable(oneRosterRepository.getUserById(sourcedId)).orElseThrow(NotFoundException::new);
     }
 
     public List<User> getAllStudents() {
@@ -36,7 +51,7 @@ public class UserService {
     }
 
     public User getStudent(String sourcedId) {
-        return Optional.ofNullable(oneRosterRepository.getUserById(sourcedId))
+        return Optional.ofNullable(oneRosterRepository.getUserById(sourcedId + "-s"))
                 .filter(user -> user.getRole().equals(RoleType.STUDENT))
                 .orElseThrow(NotFoundException::new);
     }
@@ -49,8 +64,21 @@ public class UserService {
     }
 
     public User getTeacher(String sourcedId) {
-        return Optional.ofNullable(oneRosterRepository.getUserById(sourcedId))
+        return Optional.ofNullable(oneRosterRepository.getUserById(sourcedId + "-t"))
                 .filter(user -> user.getRole().equals(RoleType.TEACHER))
+                .orElseThrow(NotFoundException::new);
+    }
+
+    public List<User> getAllAdministrators() {
+        return getAllUsers()
+                .stream()
+                .filter(user -> user.getRole().equals(RoleType.ADMINISTRATOR))
+                .collect(Collectors.toList());
+    }
+
+    public User getAdministrator(String sourcedId) {
+        return Optional.ofNullable(oneRosterRepository.getUserById(sourcedId + "-a"))
+                .filter(user -> user.getRole().equals(RoleType.ADMINISTRATOR))
                 .orElseThrow(NotFoundException::new);
     }
 

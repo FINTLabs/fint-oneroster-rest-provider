@@ -7,8 +7,12 @@ public enum GUIDType {
 
     private final String guidType;
 
-    GUIDType(String guidType) { this.guidType = guidType; }
+    GUIDType(String guidType) {
+        this.guidType = guidType;
+    }
 
     @JsonValue
-    public String getGuidType() { return guidType; }
+    public String getGuidType() {
+        return guidType;
+    }
 }

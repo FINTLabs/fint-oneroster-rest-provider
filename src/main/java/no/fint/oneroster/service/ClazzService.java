@@ -10,7 +10,9 @@ import no.fint.oneroster.model.vocab.RoleType;
 import no.fint.oneroster.repository.OneRosterRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -39,7 +41,7 @@ public class ClazzService {
                 .filter(enrollment -> enrollment.getClazz().getSourcedId().equals(clazz.getSourcedId()))
                 .map(Enrollment::getUser)
                 .map(GUIDRef::getSourcedId)
-                .map(oneRosterRepository::getUserById)
+                .map(oneRosterRepository::getStudentById)
                 .filter(Objects::nonNull)
                 .filter(user -> user.getRole().equals(RoleType.STUDENT))
                 .collect(Collectors.toList());
@@ -53,7 +55,7 @@ public class ClazzService {
                 .filter(enrollment -> enrollment.getClazz().getSourcedId().equals(clazz.getSourcedId()))
                 .map(Enrollment::getUser)
                 .map(GUIDRef::getSourcedId)
-                .map(oneRosterRepository::getUserById)
+                .map(oneRosterRepository::getTeacherById)
                 .filter(Objects::nonNull)
                 .filter(user -> user.getRole().equals(RoleType.TEACHER))
                 .collect(Collectors.toList());

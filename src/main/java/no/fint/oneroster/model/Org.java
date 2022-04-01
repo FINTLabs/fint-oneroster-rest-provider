@@ -10,7 +10,8 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-@Getter @Setter
+@Getter
+@Setter
 @EqualsAndHashCode(callSuper = true)
 public class Org extends Base {
     private final String name;

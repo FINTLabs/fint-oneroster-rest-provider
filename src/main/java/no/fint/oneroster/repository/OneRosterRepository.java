@@ -95,6 +95,14 @@ public class OneRosterRepository {
         return getResourceByTypeAndId(User.class, sourcedId);
     }
 
+    public User getTeacherById(String sourcedId) {
+        return getResourceByTypeAndId(User.class, sourcedId + "-t");
+    }
+
+    public User getStudentById(String sourcedId) {
+        return getResourceByTypeAndId(User.class, sourcedId + "-s");
+    }
+
     public List<AcademicSession> getAcademicSessions() {
         return getResourcesByType(AcademicSession.class);
     }
@@ -137,6 +145,7 @@ public class OneRosterRepository {
 
             updateStudents(schoolResource.getElevforhold())
                     .andThen(updateTeachers(schoolResource.getUndervisningsforhold()))
+                    .andThen(updateStaffs(schoolResource.getUndervisningsforhold()))
                     .accept(resources);
         };
     }
@@ -180,7 +189,9 @@ public class OneRosterRepository {
                     });
                 }
 
-                resources.put(user.getSourcedId(), user);
+                String sid = user.getSourcedId() + "-s";
+
+                resources.put(sid, user);
             }
         };
     }
@@ -210,6 +221,44 @@ public class OneRosterRepository {
                 .forEach(teachingRelation -> updateTeacher(teachingRelation).accept(resources));
     }
 
+    private Consumer<Map<String, Base>> updateStaffs(List<Link> teachingRelations) {
+        return resources -> teachingRelations.stream()
+                .map(linkToString)
+                .map(fintRepository::getTeachingRelationById)
+                .filter(Objects::nonNull)
+                .filter(isStaff)
+                .forEach(teachingRelation -> updateStaff(teachingRelation).accept(resources));
+    }
+
+    private Consumer<Map<String, Base>> updateStaff(UndervisningsforholdResource teachingRelation) {
+        return resources -> {
+            Optional<SkoleressursResource> staff = getTeacher(teachingRelation);
+
+            Optional<PersonalressursResource> personnelResource = staff
+                    .map(SkoleressursResource::getPersonalressurs)
+                    .orElseGet(Collections::emptyList)
+                    .stream()
+                    .map(linkToString)
+                    .map(fintRepository::getPersonnelById)
+                    .filter(Objects::nonNull)
+                    .findAny();
+
+            Optional<PersonResource> personResource = personnelResource
+                    .map(PersonalressursResource::getPerson)
+                    .flatMap(this::getPerson);
+
+            List<SkoleResource> schoolResources = getSchools(teachingRelation.getSkole());
+
+            if (staff.isPresent() && personnelResource.isPresent() && personResource.isPresent() && !schoolResources.isEmpty()) {
+                User user = userFactory.administrator(staff.get(), personnelResource.get(), personResource.get(), schoolResources);
+
+                String sid = user.getSourcedId() + "-a";
+
+                resources.put(sid, user);
+            }
+        };
+    }
+
     private Consumer<Map<String, Base>> updateTeacher(UndervisningsforholdResource teachingRelation) {
         return resources -> {
             Optional<SkoleressursResource> teacher = getTeacher(teachingRelation);
@@ -232,7 +281,9 @@ public class OneRosterRepository {
             if (teacher.isPresent() && personnelResource.isPresent() && personResource.isPresent() && !schoolResources.isEmpty()) {
                 User user = userFactory.teacher(teacher.get(), personnelResource.get(), personResource.get(), schoolResources);
 
-                resources.put(user.getSourcedId(), user);
+                String sid = user.getSourcedId() + "-t";
+
+                resources.put(sid, user);
             }
         };
     }
@@ -490,6 +541,11 @@ public class OneRosterRepository {
             !teachingRelation.getBasisgruppe().isEmpty() ||
                     !teachingRelation.getUndervisningsgruppe().isEmpty() ||
                     !teachingRelation.getKontaktlarergruppe().isEmpty();
+
+    private final Predicate<UndervisningsforholdResource> isStaff = teachingRelation ->
+            teachingRelation.getBasisgruppe().isEmpty() &&
+                    teachingRelation.getUndervisningsgruppe().isEmpty() &&
+                    teachingRelation.getKontaktlarergruppe().isEmpty();
 
     private final Function<Link, String> linkToString = link -> Optional.ofNullable(link.getHref())
             .map(String::toLowerCase).orElse(null);

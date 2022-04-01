@@ -3,7 +3,7 @@ package no.fint.oneroster.serializer;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import no.fint.oneroster.model.*;
+import no.fint.oneroster.model.GUIDRef;
 import no.fint.oneroster.model.vocab.GUIDType;
 import org.springframework.boot.jackson.JsonComponent;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;

@@ -13,7 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ToString(callSuper = true)
-@Getter @Setter
+@Getter
+@Setter
 @EqualsAndHashCode(callSuper = true)
 public class User extends Base {
     private final String username;

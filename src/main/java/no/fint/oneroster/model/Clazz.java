@@ -11,7 +11,8 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter @Setter
+@Getter
+@Setter
 @EqualsAndHashCode(callSuper = true)
 public class Clazz extends Base {
     private final String title;
