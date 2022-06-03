@@ -16,6 +16,10 @@ configurations {
     }
 }
 
+jar {
+    enabled = false
+}
+
 repositories {
     mavenCentral()
     maven { url "https://repo.fintlabs.no/releases" }
