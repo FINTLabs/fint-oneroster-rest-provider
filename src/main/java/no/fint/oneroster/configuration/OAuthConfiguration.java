@@ -66,6 +66,7 @@ public class OAuthConfiguration {
                                 .build())
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 300000)
                 .responseTimeout(Duration.ofMinutes(5))
+                .wiretap(true)
         );
     }
 
