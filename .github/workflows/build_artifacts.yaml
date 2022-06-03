@@ -45,11 +45,11 @@ jobs:
           path: ./data/app.jar
 
 ## Uncomment to trigger a build and publish image to ACR
-#      - name: Start publish workflow
-#        if: github.ref == 'refs/heads/main'
-#        uses: peter-evans/repository-dispatch@v1
-#        with:
-#          token: ${{ secrets.GITHUBACTION_TOKEN }}
-#          repository: ${{ github.repository }}
-#          event-type: trigger-to-publish
+      - name: Start publish workflow
+        if: github.ref == 'refs/heads/main'
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.GITHUBACTION_TOKEN }}
+          repository: ${{ github.repository }}
+          event-type: trigger-to-publish
 
