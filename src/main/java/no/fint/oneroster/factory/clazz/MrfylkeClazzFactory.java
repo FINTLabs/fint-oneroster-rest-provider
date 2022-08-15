@@ -32,12 +32,10 @@ public class MrfylkeClazzFactory implements ClazzFactory {
 
     private final Map<String, String> schoolAbbreviations = Map.ofEntries(
             Map.entry("15001", "VATL"), //Atlanten
-            Map.entry("15005", "VFAG"), //Fagerlia
-            Map.entry("15006", "VFAN"), //Fannefjord
-            Map.entry("15007", "VFRA"), //Fræna
             Map.entry("15008", "VGJE"), //Gjermundnes
             Map.entry("15010", "VHAR"), //Haram
             Map.entry("15011", "VHER"), //Herøy
+            Map.entry("15007", "VHUS"), //Hustadvika
             Map.entry("15012", "VKRI"), //Kristiansund
             Map.entry("15014", "VMOL"), //Molde
             Map.entry("15018", "VRAU"), //Rauma
@@ -50,9 +48,8 @@ public class MrfylkeClazzFactory implements ClazzFactory {
             Map.entry("15026", "VTIN"), //Tingvoll
             Map.entry("15027", "VULS"), //Ulstein
             Map.entry("15029", "VVOL"), //Volda
-            Map.entry("15030", "VUPA"), //UPA-skole
             Map.entry("15031", "VORS"), //Ørsta
-            Map.entry("15033", "VALE"), //Ålesund
+            Map.entry("15037", "VALE"), //Ålesund
             Map.entry("15035", "VBOR"), //Borgund
             Map.entry("913587987", "KRIFAG"), //Fagskolen i Kristiansund
             Map.entry("874576662", "FIALS")); //Fagskolen i Ålesund
