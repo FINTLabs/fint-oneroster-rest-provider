@@ -168,7 +168,7 @@ public class OneRosterRepository {
 
             List<SkoleResource> schoolResources = getSchools(studentRelation.getSkole());
 
-            if (student.isPresent() && person.isPresent() && !schoolResources.isEmpty()) {
+            if (student.isPresent() && person.isPresent() && !schoolResources.isEmpty() && isValidStudentRelation(studentRelation)) {
                 User user = userFactory.student(student.get(), person.get(), schoolResources);
 
                 if (oneRosterProperties.isParents()) {
@@ -194,6 +194,14 @@ public class OneRosterRepository {
                 resources.put(sid, user);
             }
         };
+    }
+
+    private boolean isValidStudentRelation(ElevforholdResource studentRelation) {
+        Date currentDate = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
+        return studentRelation.getGyldighetsperiode() == null
+                || studentRelation.getGyldighetsperiode().getSlutt() == null
+                || studentRelation.getGyldighetsperiode().getSlutt().after(currentDate);
+
     }
 
     private Consumer<Map<String, Base>> updateParent(PersonResource parent, ElevResource child) {
