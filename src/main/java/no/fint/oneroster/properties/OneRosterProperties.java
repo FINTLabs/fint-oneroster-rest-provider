@@ -14,6 +14,7 @@ public class OneRosterProperties {
     private boolean contactTeacherGroups;
     private boolean parents;
     private boolean accessControl;
+    private String ignoredPersonalressurskategori;
     private Map<String, Client> clients;
 
     @Data
