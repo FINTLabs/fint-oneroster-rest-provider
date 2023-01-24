@@ -22,6 +22,7 @@ import no.fint.oneroster.model.*;
 import no.fint.oneroster.model.vocab.GUIDType;
 import no.fint.oneroster.properties.OneRosterProperties;
 import no.fint.oneroster.util.PersonUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
@@ -257,7 +258,7 @@ public class OneRosterRepository {
 
             List<SkoleResource> schoolResources = getSchools(teachingRelation.getSkole());
 
-            if (staff.isPresent() && personnelResource.isPresent() && personResource.isPresent() && !schoolResources.isEmpty()) {
+            if (staff.isPresent() && personnelResource.isPresent() && personResource.isPresent() && !schoolResources.isEmpty() && !isIgnorableStaff(staff)) {
                 User user = userFactory.administrator(staff.get(), personnelResource.get(), personResource.get(), schoolResources);
 
                 String sid = user.getSourcedId() + "-a";
@@ -286,7 +287,7 @@ public class OneRosterRepository {
 
             List<SkoleResource> schoolResources = getSchools(teachingRelation.getSkole());
 
-            if (teacher.isPresent() && personnelResource.isPresent() && personResource.isPresent() && !schoolResources.isEmpty()) {
+            if (teacher.isPresent() && personnelResource.isPresent() && personResource.isPresent() && !schoolResources.isEmpty() && !isIgnorableStaff(teacher)) {
                 User user = userFactory.teacher(teacher.get(), personnelResource.get(), personResource.get(), schoolResources);
 
                 String sid = user.getSourcedId() + "-t";
@@ -294,6 +295,15 @@ public class OneRosterRepository {
                 resources.put(sid, user);
             }
         };
+    }
+
+    private boolean isIgnorableStaff(Optional<SkoleressursResource> skoleressursResource) {
+        if (StringUtils.isBlank(oneRosterProperties.getIgnoredPersonalressurskategori())) return false;
+        if (skoleressursResource.isEmpty() || skoleressursResource.get().getPersonalressurs().isEmpty()) return false;
+
+        PersonalressursResource personalressurs = fintRepository.getPersonnelById(skoleressursResource.get().getPersonalressurs().get(0).getHref());
+        String hrefPersonalressurskategori = personalressurs.getPersonalressurskategori().get(0).getHref();
+        return hrefPersonalressurskategori.toLowerCase().endsWith(oneRosterProperties.getIgnoredPersonalressurskategori().toLowerCase());
     }
 
     private BiConsumer<SkoleResource, Map<String, Base>> updateBasisGroups() {
