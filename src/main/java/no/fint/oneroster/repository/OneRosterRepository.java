@@ -420,6 +420,7 @@ public class OneRosterRepository {
                 .map(linkToString)
                 .map(fintRepository::getStudentRelationById)
                 .filter(Objects::nonNull)
+                .filter(this::isValidStudentRelation)
                 .forEach(studentRelation -> getStudent(studentRelation).ifPresent(student -> {
                     Enrollment enrollment = EnrollmentFactory.student(studentRelation, student, group, school);
 
