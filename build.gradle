@@ -44,6 +44,7 @@ dependencies {
     implementation 'com.google.guava:guava:32.1.2-jre'
     implementation 'org.apache.commons:commons-lang3:3.13.0'
     implementation 'commons-beanutils:commons-beanutils:1.9.4'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
 
     antlr 'org.antlr:antlr4:4.13.1'
     implementation 'org.antlr:antlr4-runtime:4.13.1'
