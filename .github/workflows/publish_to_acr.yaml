@@ -35,17 +35,17 @@ jobs:
           cache: 'gradle'
 
       - name: Connect to Azure Container Registry (ACR)
-        uses: azure/docker-login@v1
+        uses: azure/docker-login@v3
         with:
            login-server: ${{ env.REGISTRY_NAME }}.azurecr.io
            username: ${{ secrets.REGISTRY_USERNAME }}
            password: ${{ secrets.REGISTRY_PASSWORD }}
 
       - name: Gradle Wrapper Validation
-        uses: gradle/wrapper-validation-action@v1.0.4
+        uses: gradle/wrapper-validation-action@v1.1.0
 
       - name: Gradle Setup
-        uses: gradle/gradle-build-action@v2.4.2
+        uses: gradle/gradle-build-action@v2.8.0
         with:
           gradle-version: wrapper
 

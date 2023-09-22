@@ -32,12 +32,21 @@ jobs:
 ##
 
 ## Alpha cluster ##
-      - name: Set the target Alpha cluster.
-        uses: azure/aks-set-context@v1
+      - uses: azure/login@v1
         with:
          creds: '${{ secrets.AKS_ALPHA_FINT_GITHUB }}'
+
+      - uses: azure/use-kubelogin@v1.1
+        with:
+          kubelogin-version: 'v0.0.26'
+
+      - name: Set the target Alpha cluster.
+        uses: azure/aks-set-context@v3
+        with:
          cluster-name: ${{ env.ALPHA_CLUSTER_NAME }}
          resource-group: ${{ env.ALPHA_CLUSTER_RESOURCE_GROUP }}
+         admin: 'true'
+         use-kubelogin: 'true'
 
       - name: Deploy to Alpha
         uses: azure/k8s-deploy@v3.1
@@ -50,13 +59,22 @@ jobs:
          action: deploy
 
       ## Beta cluster ##
-#      - name: Set the target Beta cluster.
-#        uses: azure/aks-set-context@v1
+#      - uses: azure/login@v1
 #        with:
 #          creds: '${{ secrets.AKS_BETA_FINT_GITHUB }}'
+#
+#      - uses: azure/use-kubelogin@v1.1
+#        with:
+#          kubelogin-version: 'v0.0.26'
+#
+#      - name: Set the target Beta cluster.
+#        uses: azure/aks-set-context@v3
+#        with:
 #          cluster-name: ${{ env.BETA_CLUSTER_NAME }}
 #          resource-group: ${{ env.BETA_CLUSTER_RESOURCE_GROUP }}
-#
+#          admin: 'true'
+#          use-kubelogin: 'true'
+
 #      - name: Deploy to Beta
 #        uses: azure/k8s-deploy@v1
 #        with:
@@ -67,13 +85,23 @@ jobs:
 #          namespace: ${{ env.NAMESPACE }}
 
 ## Api cluster ##
-#      - name: Set the target Api cluster.
-#        uses: azure/aks-set-context@v1
+#
+#      - uses: azure/login@v1
 #        with:
 #          creds: '${{ secrets.AKS_API_FINT_GITHUB }}'
+#
+#      - uses: azure/use-kubelogin@v1.1
+#        with:
+#          kubelogin-version: 'v0.0.26'
+#
+#      - name: Set the target Api cluster.
+#        uses: azure/aks-set-context@v3
+#        with:
 #          cluster-name: ${{ env.API_CLUSTER_NAME }}
 #          resource-group: ${{ env.API_CLUSTER_RESOURCE_GROUP }}
-#
+#          admin: 'true'
+#          use-kubelogin: 'true'
+
 #      - name: Deploy to Api
 #        uses: azure/k8s-deploy@v1
 #        with:
