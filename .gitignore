@@ -5,7 +5,7 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**
 !**/src/test/**
-application-*.yaml
+#application-*.yaml
 k8s-secret-*.yaml
 vigo.key
 
