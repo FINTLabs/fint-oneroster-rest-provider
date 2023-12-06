@@ -20,19 +20,19 @@ fint:
           username:
           password:
       endpoint:
-        school:
-        person:
-        student:
-        student-relation:
-        teacher:
-        teaching-relation:
-        basis-group:
-        level:
-        teaching-group:
-        subject:
-        contact-teacher-group:
-        term:
-        school-year:
+        school: https://api.felleskomponent.no/utdanning/utdanningsprogram/skole
+        person: https://api.felleskomponent.no/utdanning/elev/person
+        student: https://api.felleskomponent.no/utdanning/elev/elev
+        student-relation: https://api.felleskomponent.no/utdanning/elev/elevforhold
+        teacher: https://api.felleskomponent.no/utdanning/elev/skoleressurs
+        teaching-relation: https://api.felleskomponent.no/utdanning/elev/undervisningsforhold
+        basis-group: https://api.felleskomponent.no/utdanning/elev/basisgruppe
+        level: https://api.felleskomponent.no/utdanning/utdanningsprogram/arstrinn
+        teaching-group: https://api.felleskomponent.no/utdanning/timeplan/undervisningsgruppe
+        subject: https://api.felleskomponent.no/utdanning/timeplan/fag
+        contact-teacher-group: https://api.felleskomponent.no/utdanning/elev/kontaktlarergruppe
+        term: https://api.felleskomponent.no/utdanning/kodeverk/termin
+        school-year: https://api.felleskomponent.no/utdanning/kodeverk/skolear
     administration:
       registration:
         1:
