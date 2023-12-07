@@ -43,6 +43,10 @@ fint:
         person: https://api.felleskomponent.no/administrasjon/personal/person
         personnel: https://api.felleskomponent.no/administrasjon/personal/personalressurs
 
+scheduling:
+  initial-delay: 10000
+  fixed-delay: 3600000
+  cron: 0 0 0 * * *
 
 management:
   endpoints:
