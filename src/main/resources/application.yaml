@@ -40,8 +40,9 @@ fint:
           username:
           password:
       endpoint:
-        person:
-        personnel:
+        person: https://api.felleskomponent.no/administrasjon/personal/person
+        personnel: https://api.felleskomponent.no/administrasjon/personal/personalressurs
+
 
 management:
   endpoints:
