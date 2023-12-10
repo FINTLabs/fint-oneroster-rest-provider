@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fint-oneroster-rest-provider
+spec:
+  template:
+    spec:
+      containers:
+        - name: fint-oneroster-rest-provider
+          readinessProbe:
+            httpGet:
+              path: /nfk/ims/oneroster/v1p1/actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 60
+            timeoutSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /nfk/ims/oneroster/v1p1/actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 120
+            timeoutSeconds: 5
+          env:
+            - name: server.servlet.context-path
+              value: /nfk/ims/oneroster/v1p1
+            - name: oneroster.access-control
+              value: 'true'
+            - name: oneroster.clients.itslearning.name
+              value: oneroster_client_itslearning
+            - name: oneroster.clients.itslearning.id
+              value: 1df4c371-f4c4-48b0-a6b4-3f9183472720
+            - name: oneroster.user-factory
+              value: nin
+            - name: oneroster.class-factory
+              value: default
+            - name: oneroster.contact-teacher-groups
+              value: 'true'
+            - name: oneroster.parents
+              value: 'true'
+            - name: oneroster.org.sourced-id
+              value: '964982953'
+            - name: oneroster.org.name
+              value: Nordland fylkeskommune
+            - name: oneroster.org.identifier
+              value: '964982953'
+            - name: spring.security.oauth2.client.registration.nfk.client-id
+              valueFrom:
+                secretKeyRef:
+                  key: client-id
+                  name: oneroster-nfk
+            - name: spring.security.oauth2.client.registration.nfk.client-secret
+              valueFrom:
+                secretKeyRef:
+                  key: client-secret
+                  name: oneroster-nfk
+            - name: spring.security.oauth2.client.registration.nfk.authorization-grant-type
+              value: password
+            - name: spring.security.oauth2.client.registration.nfk.scope
+              value: fint-client
+            - name: spring.security.oauth2.client.registration.nfk.provider
+              value: fint

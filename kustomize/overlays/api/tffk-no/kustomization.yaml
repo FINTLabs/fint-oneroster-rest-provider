@@ -1,0 +1,6 @@
+namespace: tffk-no
+resources:
+  - ../../../base
+  - onepassworditem.yaml
+patchesStrategicMerge:
+  - deployment.yaml

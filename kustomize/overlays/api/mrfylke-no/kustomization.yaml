@@ -1,0 +1,6 @@
+namespace: mrfylke-no
+resources:
+  - ../../../base
+  - onepassworditem.yaml
+patchesStrategicMerge:
+  - deployment.yaml

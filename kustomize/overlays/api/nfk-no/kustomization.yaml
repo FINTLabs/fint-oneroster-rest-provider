@@ -1,0 +1,6 @@
+namespace: nfk-no
+resources:
+  - ../../../base
+  - onepassworditem.yaml
+patchesStrategicMerge:
+  - deployment.yaml
