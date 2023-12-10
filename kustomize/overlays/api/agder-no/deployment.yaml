@@ -53,12 +53,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: client-id
-                  name: oneroster-agder
+                  name: oneroster-rest-provider-op
             - name: spring.security.oauth2.client.registration.agder.client-secret
               valueFrom:
                 secretKeyRef:
                   key: client-secret
-                  name: oneroster-agder
+                  name: oneroster-rest-provider-op
             - name: spring.security.oauth2.client.registration.agder.authorization-grant-type
               value: password
             - name: spring.security.oauth2.client.registration.agder.scope

@@ -53,12 +53,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: client-id
-                  name: oneroster-oslo
+                  name: oneroster-rest-provider-op
             - name: spring.security.oauth2.client.registration.oslo.client-secret
               valueFrom:
                 secretKeyRef:
                   key: client-secret
-                  name: oneroster-oslo
+                  name: oneroster-rest-provider-op
             - name: spring.security.oauth2.client.registration.oslo.authorization-grant-type
               value: password
             - name: spring.security.oauth2.client.registration.oslo.scope

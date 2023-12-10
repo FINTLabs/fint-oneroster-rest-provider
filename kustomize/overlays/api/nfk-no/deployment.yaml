@@ -53,12 +53,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: client-id
-                  name: oneroster-nfk
+                  name: oneroster-rest-provider-op
             - name: spring.security.oauth2.client.registration.nfk.client-secret
               valueFrom:
                 secretKeyRef:
                   key: client-secret
-                  name: oneroster-nfk
+                  name: oneroster-rest-provider-op
             - name: spring.security.oauth2.client.registration.nfk.authorization-grant-type
               value: password
             - name: spring.security.oauth2.client.registration.nfk.scope
