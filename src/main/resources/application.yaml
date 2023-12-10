@@ -17,34 +17,43 @@ fint:
       registration:
         1:
           id:
-          username:
-          password:
+          username: ${username}
+          password: ${password}
       endpoint:
-        school:
-        person:
-        student:
-        student-relation:
-        teacher:
-        teaching-relation:
-        basis-group:
-        level:
-        teaching-group:
-        subject:
-        contact-teacher-group:
-        term:
-        school-year:
+        school: https://api.felleskomponent.no/utdanning/utdanningsprogram/skole
+        person: https://api.felleskomponent.no/utdanning/elev/person
+        student: https://api.felleskomponent.no/utdanning/elev/elev
+        student-relation: https://api.felleskomponent.no/utdanning/elev/elevforhold
+        teacher: https://api.felleskomponent.no/utdanning/elev/skoleressurs
+        teaching-relation: https://api.felleskomponent.no/utdanning/elev/undervisningsforhold
+        basis-group: https://api.felleskomponent.no/utdanning/elev/basisgruppe
+        level: https://api.felleskomponent.no/utdanning/utdanningsprogram/arstrinn
+        teaching-group: https://api.felleskomponent.no/utdanning/timeplan/undervisningsgruppe
+        subject: https://api.felleskomponent.no/utdanning/timeplan/fag
+        contact-teacher-group: https://api.felleskomponent.no/utdanning/elev/kontaktlarergruppe
+        term: https://api.felleskomponent.no/utdanning/kodeverk/termin
+        school-year: https://api.felleskomponent.no/utdanning/kodeverk/skolear
     administration:
       registration:
         1:
           id:
-          username:
-          password:
+          username: ${username}
+          password: ${password}
       endpoint:
-        person:
-        personnel:
+        person: https://api.felleskomponent.no/administrasjon/personal/person
+        personnel: https://api.felleskomponent.no/administrasjon/personal/personalressurs
+
+scheduling:
+  initial-delay: 10000
+  fixed-delay: 3600000
+  cron: 0 0 0 * * *
 
 management:
   endpoints:
     web:
       exposure:
         include: info, health, metrics, prometheus
+spring:
+  profiles:
+    include:
+      - oauth

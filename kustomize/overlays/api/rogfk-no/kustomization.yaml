@@ -1,0 +1,6 @@
+namespace: rogfk-no
+resources:
+  - ../../../base
+  - onepassworditem.yaml
+patchesStrategicMerge:
+  - deployment.yaml

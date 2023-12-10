@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fint-oneroster-rest-provider
+spec:
+  template:
+    spec:
+      containers:
+        - name: fint-oneroster-rest-provider
+          readinessProbe:
+            httpGet:
+              path: /vtfk/ims/oneroster/v1p1/actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 60
+            timeoutSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /vtfk/ims/oneroster/v1p1/actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 120
+            timeoutSeconds: 5
+          envFrom:
+            - secretRef:
+                name: oneroster-rest-provider-op
+          env:
+            - name: server.servlet.context-path
+              value: /vtfk/ims/oneroster/v1p1
+            - name: oneroster.access-control
+              value: 'true'
+            - name: oneroster.clients.itslearning.name
+              value: oneroster_client_vtfk
+            - name: oneroster.clients.itslearning.id
+              value: a2cd703e-d818-46c1-8099-10dc30f00477
+            - name: oneroster.user-factory
+              value: nin
+            - name: oneroster.class-factory
+              value: default
+            - name: oneroster.contact-teacher-groups
+              value: 'true'
+            - name: oneroster.parents
+              value: 'false'
+            - name: oneroster.org.sourced-id
+              value: '821227062'
+            - name: oneroster.org.name
+              value: Vestfold og Telemark fylkeskommune
+            - name: oneroster.org.identifier
+              value: '821227062'
+            - name: fint.component.education.registration.1.id
+              value: vtfk
+            - name: fint.component.administration.registration.1.id
+              value: vtfk
+            - name: spring.security.oauth2.client.registration.vtfk.client-id
+              valueFrom:
+                secretKeyRef:
+                  key: client-id
+                  name: oneroster-rest-provider-op
+            - name: spring.security.oauth2.client.registration.vtfk.client-secret
+              valueFrom:
+                secretKeyRef:
+                  key: client-secret
+                  name: oneroster-rest-provider-op
+            - name: spring.security.oauth2.client.registration.vtfk.authorization-grant-type
+              value: password
+            - name: spring.security.oauth2.client.registration.vtfk.scope
+              value: fint-client
+            - name: spring.security.oauth2.client.registration.vtfk.provider
+              value: fint

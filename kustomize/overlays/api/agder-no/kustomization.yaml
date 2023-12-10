@@ -1,0 +1,6 @@
+namespace: agder-no
+resources:
+  - ../../../base
+  - onepassworditem.yaml
+patchesStrategicMerge:
+  - deployment.yaml
