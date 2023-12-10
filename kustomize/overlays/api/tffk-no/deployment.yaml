@@ -19,6 +19,9 @@ spec:
               port: 8080
             initialDelaySeconds: 120
             timeoutSeconds: 5
+          envFrom:
+            - secretRef:
+                name: oneroster-rest-provider-op
           env:
             - name: server.servlet.context-path
               value: /tffk/ims/oneroster/v1p1
@@ -42,16 +45,20 @@ spec:
               value: Troms og Finnmark fylkeskommune
             - name: oneroster.org.identifier
               value: '821227062'
+            - name: fint.component.education.registration.1.id
+              value: tffk
+            - name: fint.component.administration.registration.1.id
+              value: tffk
             - name: spring.security.oauth2.client.registration.tffk.client-id
               valueFrom:
                 secretKeyRef:
                   key: client-id
-                  name: oneroster-tffk
+                  name: oneroster-rest-provider-op
             - name: spring.security.oauth2.client.registration.tffk.client-secret
               valueFrom:
                 secretKeyRef:
                   key: client-secret
-                  name: oneroster-tffk
+                  name: oneroster-rest-provider-op
             - name: spring.security.oauth2.client.registration.tffk.authorization-grant-type
               value: password
             - name: spring.security.oauth2.client.registration.tffk.scope

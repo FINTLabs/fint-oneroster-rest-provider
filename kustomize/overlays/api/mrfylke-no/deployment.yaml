@@ -19,6 +19,9 @@ spec:
               port: 8080
             initialDelaySeconds: 120
             timeoutSeconds: 5
+          envFrom:
+            - secretRef:
+                name: oneroster-rest-provider-op
           env:
             - name: server.servlet.context-path
               value: /mrfylke/ims/oneroster/v1p1
@@ -28,10 +31,6 @@ spec:
               value: oneroster_client_itslearning
             - name: oneroster.clients.itslearning.id
               value: 1df4c371-f4c4-48b0-a6b4-3f9183472720
-            - name: oneroster.clients.microsoft.name
-              value: oneroster_client_mrfylke
-            - name: oneroster.clients.microsoft.id
-              value: 829282fe-45b1-4661-bc78-e3f3068a6839
             - name: oneroster.user-factory
               value: nin
             - name: oneroster.class-factory
@@ -46,6 +45,10 @@ spec:
               value: Møre og Romsdal fylkeskommune
             - name: oneroster.org.identifier
               value: '944183779'
+            - name: fint.component.education.registration.1.id
+              value: mrfylke
+            - name: fint.component.administration.registration.1.id
+              value: mrfylke
             - name: spring.security.oauth2.client.registration.mrfylke.client-id
               valueFrom:
                 secretKeyRef:

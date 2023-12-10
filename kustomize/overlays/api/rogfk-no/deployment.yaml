@@ -19,6 +19,9 @@ spec:
               port: 8080
             initialDelaySeconds: 120
             timeoutSeconds: 5
+          envFrom:
+            - secretRef:
+                name: oneroster-rest-provider-op
           env:
             - name: server.servlet.context-path
               value: /rogfk/ims/oneroster/v1p1
@@ -44,38 +47,18 @@ spec:
               value: '971045698'
             - name: fint.component.education.registration.1.id
               value: rogfk
-            - name: fint.component.education.registration.1.username
-              valueFrom:
-                secretKeyRef:
-                  name: oneroster-rogfk
-                  key: username
-            - name: fint.component.education.registration.1.password
-              valueFrom:
-                secretKeyRef:
-                  name: oneroster-rogfk
-                  key: password
             - name: fint.component.administration.registration.1.id
               value: rogfk
-            - name: fint.component.administration.registration.1.username
-              valueFrom:
-                secretKeyRef:
-                  name: oneroster-rogfk
-                  key: username
-            - name: fint.component.administration.registration.1.password
-              valueFrom:
-                secretKeyRef:
-                  name: oneroster-rogfk
-                  key: password
             - name: spring.security.oauth2.client.registration.rogfk.client-id
               valueFrom:
                 secretKeyRef:
                   key: client-id
-                  name: oneroster-rogfk
+                  name: oneroster-rest-provider-op
             - name: spring.security.oauth2.client.registration.rogfk.client-secret
               valueFrom:
                 secretKeyRef:
                   key: client-secret
-                  name: oneroster-rogfk
+                  name: oneroster-rest-provider-op
             - name: spring.security.oauth2.client.registration.rogfk.authorization-grant-type
               value: password
             - name: spring.security.oauth2.client.registration.rogfk.scope

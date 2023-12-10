@@ -19,6 +19,9 @@ spec:
               port: 8080
             initialDelaySeconds: 120
             timeoutSeconds: 5
+          envFrom:
+            - secretRef:
+                name: oneroster-rest-provider-op
           env:
             - name: server.servlet.context-path
               value: /innlandet/ims/oneroster/v1p1
@@ -42,6 +45,10 @@ spec:
               value: Innlandet fylkeskommune
             - name: oneroster.org.identifier
               value: '920717152'
+            - name: fint.component.education.registration.1.id
+              value: innlandet
+            - name: fint.component.administration.registration.1.id
+              value: innlandet
             - name: spring.security.oauth2.client.registration.innlandet.client-id
               valueFrom:
                 secretKeyRef:

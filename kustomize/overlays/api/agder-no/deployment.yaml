@@ -19,6 +19,9 @@ spec:
               port: 8080
             initialDelaySeconds: 120
             timeoutSeconds: 5
+          envFrom:
+            - secretRef:
+                name: oneroster-rest-provider-op
           env:
             - name: server.servlet.context-path
               value: /agder/ims/oneroster/v1p1
@@ -28,10 +31,6 @@ spec:
               value: oneroster_client_itslearning
             - name: oneroster.clients.itslearning.id
               value: 1df4c371-f4c4-48b0-a6b4-3f9183472720
-            - name: oneroster.clients.agder.name
-              value: oneroster_client_agder
-            - name: oneroster.clients.agder.id
-              value: ea612a35-adf5-4d0a-ac80-21717c990289
             - name: oneroster.user-factory
               value: nin
             - name: oneroster.class-factory
@@ -46,6 +45,10 @@ spec:
               value: Agder fylkeskommune
             - name: oneroster.org.identifier
               value: '921707134'
+            - name: fint.component.education.registration.1.id
+              value: agder
+            - name: fint.component.administration.registration.1.id
+              value: agder
             - name: spring.security.oauth2.client.registration.agder.client-id
               valueFrom:
                 secretKeyRef:
