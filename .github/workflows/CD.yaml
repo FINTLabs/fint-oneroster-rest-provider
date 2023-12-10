@@ -3,9 +3,6 @@ name: CD
 on:
   repository_dispatch:
     types: [trigger-cd]
-  push:
-    branches:
-      - CT-1008-upgrade-deployment
 
 env:
   REGISTRY: ghcr.io
