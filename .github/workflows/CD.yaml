@@ -55,7 +55,7 @@ jobs:
     strategy:
       matrix:
         org:
-          - agder-no
+          - agderfk-no
           - innlandet-no
           - mrfylke-no
           - nfk-no
