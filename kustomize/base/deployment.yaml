@@ -10,9 +10,14 @@ spec:
       io.kompose.service: fint-oneroster-rest-provider
   template:
     metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "personvern/samtykke/actuator/prometheus"
       labels:
         io.kompose.service: fint-oneroster-rest-provider
     spec:
+      restartPolicy: Always
       containers:
         - name: fint-oneroster-rest-provider
           image: ghcr.io/fintlabs/fint-oneroster-rest-provider:latest
