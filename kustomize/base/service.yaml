@@ -2,11 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: oneroster-rest-provider
-  annotations:
-    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
 spec:
-  type: LoadBalancer
   ports:
     - port: 8080
-  selector:
-    io.kompose.service: oneroster-rest-provider
+  type: ClusterIP
