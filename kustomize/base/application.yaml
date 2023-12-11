@@ -1,0 +1,27 @@
+apiVersion: fintlabs.no/v1alpha1
+kind: Application
+metadata:
+  name: fint-oneroster-rest-provider
+spec:
+  port: 8080
+  image: ghcr.io/fintlabs/fint-oneroster-rest-provider:latest
+  envFrom:
+    - configMapRef:
+        name: fint-oneroster-rest-provider-config
+    - secretRef:
+        name: oneroster-rest-provider-op
+  onePassword:
+    itemPath: vaults/aks-api-vault/items/oneroster-rogfk
+  url:
+    hostname: api.felleskomponent.no
+    basePath: /
+  ingress:
+    enabled: true
+    basePath: /rogfk/ims/oneroster/v1p1
+  resources:
+    limits:
+      cpu: '2'
+      memory: 4Gi
+    requests:
+      cpu: '1'
+      memory: 2Gi

@@ -1,0 +1,55 @@
+apiVersion: fintlabs.no/v1alpha1
+kind: Application
+metadata:
+  name: fint-oneroster-rest-provider
+spec:
+  env:
+    - name: server.servlet.context-path
+      value: /agder/ims/oneroster/v1p1
+    - name: oneroster.access-control
+      value: 'true'
+    - name: oneroster.clients.itslearning.name
+      value: oneroster_client_itslearning
+    - name: oneroster.clients.itslearning.id
+      value: 1df4c371-f4c4-48b0-a6b4-3f9183472720
+    - name: oneroster.user-factory
+      value: nin
+    - name: oneroster.class-factory
+      value: default
+    - name: oneroster.contact-teacher-groups
+      value: 'true'
+    - name: oneroster.parents
+      value: 'false'
+    - name: oneroster.org.sourced-id
+      value: '921707134'
+    - name: oneroster.org.name
+      value: Agder fylkeskommune
+    - name: oneroster.org.identifier
+      value: '921707134'
+    - name: fint.component.education.registration.1.id
+      value: agder
+    - name: fint.component.administration.registration.1.id
+      value: agder
+    - name: spring.security.oauth2.client.registration.agder.client-id
+      valueFrom:
+        secretKeyRef:
+          key: client-id
+          name: oneroster-rest-provider-op
+    - name: spring.security.oauth2.client.registration.agder.client-secret
+      valueFrom:
+        secretKeyRef:
+          key: client-secret
+          name: oneroster-rest-provider-op
+    - name: spring.security.oauth2.client.registration.agder.authorization-grant-type
+      value: password
+    - name: spring.security.oauth2.client.registration.agder.scope
+      value: fint-client
+    - name: spring.security.oauth2.client.registration.agder.provider
+      value: fint
+  onePassword:
+    itemPath: vaults/aks-api-vault/items/oneroster-agder
+  url:
+    hostname: api.felleskomponent.no
+    basePath: /agder/ims/oneroster/v1p1
+  ingress:
+    basePath: /agder/ims/oneroster/v1p1

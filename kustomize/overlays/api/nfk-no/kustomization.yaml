@@ -1,7 +1,8 @@
 namespace: nfk-no
 resources:
   - ../../../base
-  - onepassworditem.yaml
-  - ingress_route.yaml
 patchesStrategicMerge:
-  - deployment.yaml
+  - application.yaml
+commonLabels:
+  app.kubernetes.io/instance: fint-oneroster-rest-provider_nfk-no
+  fintlabs.no/org-id: nfk.no

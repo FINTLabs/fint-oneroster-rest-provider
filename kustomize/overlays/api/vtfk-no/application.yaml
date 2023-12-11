@@ -1,0 +1,55 @@
+apiVersion: fintlabs.no/v1alpha1
+kind: Application
+metadata:
+  name: fint-oneroster-rest-provider
+spec:
+  env:
+    - name: server.servlet.context-path
+      value: /vtfk/ims/oneroster/v1p1
+    - name: oneroster.access-control
+      value: 'true'
+    - name: oneroster.clients.itslearning.name
+      value: oneroster_client_vtfk
+    - name: oneroster.clients.itslearning.id
+      value: a2cd703e-d818-46c1-8099-10dc30f00477
+    - name: oneroster.user-factory
+      value: nin
+    - name: oneroster.class-factory
+      value: default
+    - name: oneroster.contact-teacher-groups
+      value: 'true'
+    - name: oneroster.parents
+      value: 'false'
+    - name: oneroster.org.sourced-id
+      value: '821227062'
+    - name: oneroster.org.name
+      value: Vestfold og Telemark fylkeskommune
+    - name: oneroster.org.identifier
+      value: '821227062'
+    - name: fint.component.education.registration.1.id
+      value: vtfk
+    - name: fint.component.administration.registration.1.id
+      value: vtfk
+    - name: spring.security.oauth2.client.registration.vtfk.client-id
+      valueFrom:
+        secretKeyRef:
+          key: client-id
+          name: oneroster-rest-provider-op
+    - name: spring.security.oauth2.client.registration.vtfk.client-secret
+      valueFrom:
+        secretKeyRef:
+          key: client-secret
+          name: oneroster-rest-provider-op
+    - name: spring.security.oauth2.client.registration.vtfk.authorization-grant-type
+      value: password
+    - name: spring.security.oauth2.client.registration.vtfk.scope
+      value: fint-client
+    - name: spring.security.oauth2.client.registration.vtfk.provider
+      value: fint
+  onePassword:
+    itemPath: vaults/aks-api-vault/items/oneroster-vtfk
+  url:
+    hostname: api.felleskomponent.no
+    basePath: /vtfk/ims/oneroster/v1p1
+  ingress:
+    basePath: /vtfk/ims/oneroster/v1p1

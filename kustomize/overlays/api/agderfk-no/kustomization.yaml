@@ -1,0 +1,8 @@
+namespace: agder-no
+resources:
+  - ../../../base
+patchesStrategicMerge:
+  - application.yaml
+commonLabels:
+  app.kubernetes.io/instance: fint-oneroster-rest-provider_agderfk-no
+  fintlabs.no/org-id: agderfk.no
