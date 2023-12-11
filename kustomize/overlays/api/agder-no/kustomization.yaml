@@ -2,6 +2,6 @@ namespace: agder-no
 resources:
   - ../../../base
   - onepassworditem.yaml
+  - ingress_route.yaml
 patchesStrategicMerge:
   - deployment.yaml
-  - ingress_route.yaml
