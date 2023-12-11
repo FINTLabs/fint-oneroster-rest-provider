@@ -4,3 +4,4 @@ resources:
   - onepassworditem.yaml
 patchesStrategicMerge:
   - deployment.yaml
+  - ingress_route.yaml

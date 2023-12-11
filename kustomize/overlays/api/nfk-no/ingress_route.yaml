@@ -1,0 +1,7 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: fint-oneroster-rest-provider
+spec:
+  routes:
+    - match: Host(`api.felleskomponent.no`) && PathPrefix(`/nfk/ims/oneroster/v1p1`)
