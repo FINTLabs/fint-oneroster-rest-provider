@@ -31,15 +31,9 @@ spec:
     - name: fint.component.administration.registration.1.id
       value: vtfk
     - name: spring.security.oauth2.client.registration.vtfk.client-id
-      valueFrom:
-        secretKeyRef:
-          key: client-id
-          name: oneroster-rest-provider-op
+      value: ${client-id}
     - name: spring.security.oauth2.client.registration.vtfk.client-secret
-      valueFrom:
-        secretKeyRef:
-          key: client-secret
-          name: oneroster-rest-provider-op
+      value: ${client-secret}
     - name: spring.security.oauth2.client.registration.vtfk.authorization-grant-type
       value: password
     - name: spring.security.oauth2.client.registration.vtfk.scope
