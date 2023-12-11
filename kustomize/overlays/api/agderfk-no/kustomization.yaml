@@ -1,4 +1,4 @@
-namespace: agder-no
+namespace: agderfk-no
 resources:
   - ../../../base
 patchesStrategicMerge:
