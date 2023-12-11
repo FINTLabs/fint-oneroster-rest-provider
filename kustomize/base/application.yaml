@@ -9,7 +9,7 @@ spec:
     - configMapRef:
         name: fint-oneroster-rest-provider-config
     - secretRef:
-        name: oneroster-rest-provider-op
+        name: fint-oneroster-rest-provider-op
   onePassword:
     itemPath: vaults/aks-api-vault/items/oneroster-rogfk
   url:
