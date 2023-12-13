@@ -6,8 +6,6 @@ spec:
   port: 8080
   image: ghcr.io/fintlabs/fint-oneroster-rest-provider:latest
   envFrom:
-    - configMapRef:
-        name: fint-oneroster-rest-provider-config
     - secretRef:
         name: fint-oneroster-rest-provider-op
   onePassword:
