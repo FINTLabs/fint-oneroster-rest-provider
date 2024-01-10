@@ -3,6 +3,9 @@ kind: Application
 metadata:
   name: fint-oneroster-rest-provider
 spec:
+  resources:
+    limits:
+      memory: 5Gi
   env:
     - name: server.servlet.context-path
       value: /vlfk/ims/oneroster/v1p1
