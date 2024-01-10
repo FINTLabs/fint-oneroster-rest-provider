@@ -31,9 +31,15 @@ spec:
     - name: fint.component.administration.registration.1.id
       value: tffk
     - name: spring.security.oauth2.client.registration.tffk.client-id
-      value: ${client-id}
+      valueFrom:
+        secretKeyRef:
+          name: fint-oneroster-rest-provider-op
+          key: client-id
     - name: spring.security.oauth2.client.registration.tffk.client-secret
-      value: ${client-secret}
+      valueFrom:
+        secretKeyRef:
+          name: fint-oneroster-rest-provider-op
+          key: client-secret
     - name: spring.security.oauth2.client.registration.tffk.authorization-grant-type
       value: password
     - name: spring.security.oauth2.client.registration.tffk.scope

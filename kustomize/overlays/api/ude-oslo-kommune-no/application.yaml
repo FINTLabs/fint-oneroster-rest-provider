@@ -34,9 +34,15 @@ spec:
     - name: fint.component.administration.registration.1.id
       value: oslo
     - name: spring.security.oauth2.client.registration.oslo.client-id
-      value: ${client-id}
+      valueFrom:
+        secretKeyRef:
+          name: fint-oneroster-rest-provider-op
+          key: client-id
     - name: spring.security.oauth2.client.registration.oslo.client-secret
-      value: ${client-secret}
+      valueFrom:
+        secretKeyRef:
+          name: fint-oneroster-rest-provider-op
+          key: client-secret
     - name: spring.security.oauth2.client.registration.oslo.authorization-grant-type
       value: password
     - name: spring.security.oauth2.client.registration.oslo.scope
