@@ -1,6 +1,5 @@
 resources:
   - application.yaml
-  - config_map.yaml
 commonLabels:
   app.kubernetes.io/name: fint-oneroster-rest-provider
   app.kubernetes.io/version: latest
