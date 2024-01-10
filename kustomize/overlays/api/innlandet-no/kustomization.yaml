@@ -1,8 +1,0 @@
-namespace: innlandet-no
-resources:
-  - ../../../base
-patchesStrategicMerge:
-  - application.yaml
-commonLabels:
-  app.kubernetes.io/instance: fint-oneroster-rest-provider_innlandet-no
-  fintlabs.no/org-id: innlandet.no

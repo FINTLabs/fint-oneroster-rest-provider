@@ -56,7 +56,7 @@ jobs:
       matrix:
         org:
           - agderfk-no
-          - innlandet-no
+          - innlandetfylke-no
           - mrfylke-no
           - nfk-no
           - oslo-kommune-no
