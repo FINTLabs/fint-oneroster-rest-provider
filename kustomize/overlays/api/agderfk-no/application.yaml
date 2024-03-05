@@ -47,12 +47,12 @@ spec:
     - name: spring.security.oauth2.client.registration.agder2.client-id
       valueFrom:
         secretKeyRef:
-          name: fint-oneroster-rest-provider-op
+          name: fint-oneroster-rest-provider-op2
           key: client-id2
     - name: spring.security.oauth2.client.registration.agder2.client-secret
       valueFrom:
         secretKeyRef:
-          name: fint-oneroster-rest-provider-op
+          name: fint-oneroster-rest-provider-op2
           key: client-secret2
     - name: spring.security.oauth2.client.registration.agder.authorization-grant-type
       value: client_credentials
