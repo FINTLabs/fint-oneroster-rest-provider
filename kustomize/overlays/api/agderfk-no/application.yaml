@@ -12,6 +12,16 @@ spec:
       value: oneroster_client_itslearning
     - name: oneroster.clients.itslearning.id
       value: 1df4c371-f4c4-48b0-a6b4-3f9183472720
+    - name: oneroster.clients.agder2.name
+      valueFrom:
+        secretKeyRef:
+          name: fint-oneroster-rest-provider-op
+          key: username2
+    - name: oneroster.clients.agder2.id
+      valueFrom:
+        secretKeyRef:
+          name: fint-oneroster-rest-provider-op
+          key: client-id2
     - name: oneroster.user-factory
       value: nin
     - name: oneroster.class-factory
