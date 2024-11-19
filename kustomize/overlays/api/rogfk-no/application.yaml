@@ -46,6 +46,8 @@ spec:
       value: fint-client
     - name: spring.security.oauth2.client.registration.rogfk.provider
       value: fint
+    - name: logging.level.root
+      value: debug
   onePassword:
     itemPath: vaults/aks-api-vault/items/oneroster-rogfk
   url:
