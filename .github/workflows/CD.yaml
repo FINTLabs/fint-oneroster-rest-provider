@@ -55,15 +55,14 @@ jobs:
     strategy:
       matrix:
         org:
-          - agderfk-no
-          - innlandetfylke-no
-          - mrfylke-no
-          - nfk-no
-          - ude-oslo-kommune-no
-          - rogfk-no
-          - tffk-no
-          - vlfk-no
-          - vtfk-no
+# THIS DEPLOYMENT STRATEGI IS CURRENTLY NOT WORKING. DEPLOY MANUALLY
+#          - agderfk-no
+#          - innlandetfylke-no
+#          - mrfylke-no
+#          - nfk-no
+#          - ude-oslo-kommune-no
+#          - rogfk-no
+#          - vlfk-no
         cluster:
 #          - aks-alpha-fint-2021-11-18
 #          - aks-beta-fint-2021-11-23

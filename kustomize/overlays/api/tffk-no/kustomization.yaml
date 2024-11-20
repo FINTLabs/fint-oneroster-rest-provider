@@ -1,8 +1,0 @@
-namespace: tffk-no
-resources:
-  - ../../../base
-patchesStrategicMerge:
-  - application.yaml
-commonLabels:
-  app.kubernetes.io/instance: fint-oneroster-rest-provider_tffk-no
-  fintlabs.no/org-id: tffk.no
