@@ -57,7 +57,6 @@ jobs:
         org:
 # THIS DEPLOYMENT STRATEGI IS CURRENTLY NOT WORKING. DEPLOY MANUALLY
 #          - agderfk-no
-#          - innlandetfylke-no
 #          - mrfylke-no
 #          - nfk-no
 #          - ude-oslo-kommune-no

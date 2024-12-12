@@ -1,8 +1,0 @@
-namespace: innlandetfylke-no
-resources:
-  - ../../../base
-patchesStrategicMerge:
-  - application.yaml
-commonLabels:
-  app.kubernetes.io/instance: fint-oneroster-rest-provider_innlandefylke-no
-  fintlabs.no/org-id: innlandetfylke.no
