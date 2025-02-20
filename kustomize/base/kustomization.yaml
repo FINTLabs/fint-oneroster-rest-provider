@@ -1,8 +1,9 @@
 resources:
   - application.yaml
-commonLabels:
-  app.kubernetes.io/name: fint-oneroster-rest-provider
-  app.kubernetes.io/version: latest
-  app.kubernetes.io/component: backend
-  app.kubernetes.io/part-of: fint-core
-  fintlabs.no/team: core
+labels:
+  - pairs:
+      app.kubernetes.io/name: fint-oneroster-rest-provider
+      app.kubernetes.io/version: latest
+      app.kubernetes.io/component: backend
+      app.kubernetes.io/part-of: fint-core
+      fintlabs.no/team: core

@@ -3,6 +3,7 @@ resources:
   - ../../../base
 patchesStrategicMerge:
   - application.yaml
-commonLabels:
-  app.kubernetes.io/instance: fint-oneroster-rest-provider_nfk-no
-  fintlabs.no/org-id: nfk.no
+labels:
+  - pairs:
+      app.kubernetes.io/instance: fint-oneroster-rest-provider_nfk-no
+      fintlabs.no/org-id: nfk.no

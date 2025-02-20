@@ -3,6 +3,7 @@ resources:
   - ../../../base
 patchesStrategicMerge:
   - application.yaml
-commonLabels:
-  app.kubernetes.io/instance: fint-oneroster-rest-provider_ude-oslo-kommune-no
-  fintlabs.no/org-id: ude-oslo-kommune-no
+labels:
+  - pairs:
+      app.kubernetes.io/instance: fint-oneroster-rest-provider_ude-oslo-kommune-no
+      fintlabs.no/org-id: ude-oslo-kommune-no
