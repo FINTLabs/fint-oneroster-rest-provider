@@ -16,7 +16,7 @@ spec:
     - name: oneroster.user-factory
       value: nin
     - name: oneroster.class-factory
-      value: default
+      value: trondelagfylke
     - name: oneroster.contact-teacher-groups
       value: 'false'
     - name: oneroster.parents
