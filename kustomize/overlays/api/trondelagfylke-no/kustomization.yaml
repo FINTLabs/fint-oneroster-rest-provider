@@ -1,0 +1,9 @@
+namespace: trondelagfylke-no
+resources:
+  - ../../../base
+patchesStrategicMerge:
+  - application.yaml
+labels:
+  - pairs:
+      app.kubernetes.io/instance: fint-oneroster-rest-provider_trondelagfylke-no
+      fintlabs.no/org-id: trondelagfylke.no

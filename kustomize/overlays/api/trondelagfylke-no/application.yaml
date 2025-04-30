@@ -1,0 +1,55 @@
+apiVersion: fintlabs.no/v1alpha1
+kind: Application
+metadata:
+  name: fint-oneroster-rest-provider
+spec:
+  env:
+    - name: server.servlet.context-path
+      value: /trondelagfylke/ims/oneroster/v1p1
+    - name: oneroster.access-control
+      value: 'true'
+    - name: oneroster.clients.itslearning.name
+      value: oneroster_client_itslearning
+    - name: oneroster.clients.itslearning.id
+      value: 1df4c371-f4c4-48b0-a6b4-3f9183472720
+    - name: oneroster.user-factory
+      value: nin
+    - name: oneroster.class-factory
+      value: trondelagfylke
+    - name: oneroster.contact-teacher-groups
+      value: 'false'
+    - name: oneroster.parents
+      value: 'false'
+    - name: oneroster.org.sourced-id
+      value: '817920632'
+    - name: oneroster.org.name
+      value: Trøndelag fylkeskommune
+    - name: oneroster.org.identifier
+      value: '944183779'
+    - name: fint.component.education.registration.1.id
+      value: trondelagfylke
+    - name: fint.component.administration.registration.1.id
+      value: trondelagfylke
+    - name: spring.security.oauth2.client.registration.trondelagfylke.client-id
+      valueFrom:
+        secretKeyRef:
+          name: fint-oneroster-rest-provider-op
+          key: client-id
+    - name: spring.security.oauth2.client.registration.trondelagfylke.client-secret
+      valueFrom:
+        secretKeyRef:
+          name: fint-oneroster-rest-provider-op
+          key: client-secret
+    - name: spring.security.oauth2.client.registration.trondelagfylke.authorization-grant-type
+      value: password
+    - name: spring.security.oauth2.client.registration.trondelagfylke.scope
+      value: fint-client
+    - name: spring.security.oauth2.client.registration.trondelagfylke.provider
+      value: fint
+  onePassword:
+    itemPath: vaults/aks-api-vault/items/oneroster-trondelagfylke
+  url:
+    hostname: api.felleskomponent.no
+    basePath: /trondelagfylke/ims/oneroster/v1p1
+  ingress:
+    basePath: /trondelagfylke/ims/oneroster/v1p1
