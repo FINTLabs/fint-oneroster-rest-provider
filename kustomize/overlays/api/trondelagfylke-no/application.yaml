@@ -3,6 +3,7 @@ kind: Application
 metadata:
   name: fint-oneroster-rest-provider
 spec:
+  orgId: trondelagfylke.no
   env:
     - name: server.servlet.context-path
       value: /trondelagfylke/ims/oneroster/v1p1
