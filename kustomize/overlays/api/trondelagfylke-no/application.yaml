@@ -68,7 +68,6 @@ spec:
       value: fint
     - name: JAVA_TOOL_OPTIONS
       value: "-Xmx3500m"
-  image: ghcr.io/fintlabs/fint-oneroster-rest-provider:v2.1.0
   ingress:
     basePath: /trondelagfylke/ims/oneroster/v1p1
     enabled: true
