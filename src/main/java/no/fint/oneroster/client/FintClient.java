@@ -65,6 +65,10 @@ public class FintClient {
 
         OAuth2AuthorizedClient authorizedClient = authorizedClientManager.authorize(authorizeRequest);
 
+        if (authorizedClient == null) {
+            log.error("Client configuration is wrong, check out FintProperties.Registration and match it with your env variables");
+        }
+
         return webClient.get()
                 .uri(endpoint.concat("/last-updated"))
                 .attributes(oauth2AuthorizedClient(authorizedClient))
