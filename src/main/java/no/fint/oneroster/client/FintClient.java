@@ -56,6 +56,8 @@ public class FintClient {
     }
 
     private <T> Mono<T> get(Class<T> clazz, FintProperties.Registration credential, String endpoint) {
+        log.info("Getting credential {}", credential);
+
         OAuth2AuthorizeRequest authorizeRequest = OAuth2AuthorizeRequest.withClientRegistrationId(credential.getId())
                 .principal(principal)
                 .attributes(attrs -> {
