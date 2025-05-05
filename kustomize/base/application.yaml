@@ -4,7 +4,7 @@ metadata:
   name: fint-oneroster-rest-provider
 spec:
   port: 8080
-  image: ghcr.io/fintlabs/fint-oneroster-rest-provider:v2.1.0
+  image: ghcr.io/fintlabs/fint-oneroster-rest-provider:v2.2.0
   envFrom:
     - secretRef:
         name: fint-oneroster-rest-provider-op
