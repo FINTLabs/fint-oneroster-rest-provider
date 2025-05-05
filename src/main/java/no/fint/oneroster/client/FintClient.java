@@ -1,6 +1,7 @@
 package no.fint.oneroster.client;
 
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import no.fint.model.resource.AbstractCollectionResources;
 import no.fint.oneroster.properties.FintProperties;
 import org.springframework.security.core.Authentication;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 import static org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction.oauth2AuthorizedClient;
 
+@Slf4j
 @Component
 public class FintClient {
     private final WebClient webClient;
@@ -62,6 +64,10 @@ public class FintClient {
                 }).build();
 
         OAuth2AuthorizedClient authorizedClient = authorizedClientManager.authorize(authorizeRequest);
+
+        log.info("OAuth2: registration-id = {}, client-id = {}",
+                authorizedClient.getClientRegistration().getRegistrationId(),
+                authorizedClient.getClientRegistration().getClientId());
 
         return webClient.get()
                 .uri(endpoint.concat("/last-updated"))
