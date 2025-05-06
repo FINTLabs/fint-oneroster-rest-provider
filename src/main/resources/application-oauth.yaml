@@ -4,6 +4,7 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: https://idp.felleskomponent.no/nidp/oauth/nam/keys
+          issuer-uri: https://idp.felleskomponent.no/nidp/oauth/nam
       client:
         provider:
           fint:
