@@ -18,6 +18,8 @@ vigo.key
 .springBeans
 .sts4-cache
 
+src/main/resources/application-local.yaml
+
 ### IntelliJ IDEA ###
 .idea
 *.iws
