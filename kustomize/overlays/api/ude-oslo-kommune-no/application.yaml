@@ -15,6 +15,10 @@ spec:
       value: oneroster_client_itslearning
     - name: oneroster.clients.itslearning.id
       value: 1df4c371-f4c4-48b0-a6b4-3f9183472720
+    - name: oneroster.clients.kent.name
+      value: oneroster_client_kent
+    - name: oneroster.clients.itslearning.id
+      value: a7d93edb-99d7-481e-9c34-e2eda7db7149
     - name: oneroster.user-factory
       value: nin
     - name: oneroster.class-factory
