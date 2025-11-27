@@ -36,9 +36,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.data:spring-data-commons'
 
-    implementation 'no.fint:fint-administrasjon-resource-model-java:3.16.0'
-    implementation 'no.fint:fint-utdanning-resource-model-java:3.16.0'
-    implementation 'no.fint:fint-felles-resource-model-java:3.16.0'
+    implementation "no.fint:fint-administrasjon-resource-model-java:${apiVersion}"
+    implementation "no.fint:fint-utdanning-resource-model-java:${apiVersion}"
+    implementation "no.fint:fint-felles-resource-model-java:${apiVersion}"
     implementation 'no.fint:fint-model-resource:0.4.1'
 
     implementation 'com.google.guava:guava:33.0.0-jre'
