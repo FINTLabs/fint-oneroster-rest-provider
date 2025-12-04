@@ -66,3 +66,14 @@ generateGrammarSource {
     arguments += ["-visitor"]
 }
 
+test {
+    useJUnitPlatform()
+
+    // Spock-specific test configuration
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+        showStandardStreams = false
+    }
+
+}
+
