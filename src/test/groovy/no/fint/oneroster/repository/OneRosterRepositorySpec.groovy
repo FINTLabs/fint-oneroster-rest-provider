@@ -21,7 +21,7 @@ class OneRosterRepositorySpec extends Specification {
         getStudentRelationById(_ as String) >> FintObjectFactory.newStudentRelation()
         getTeacherById(_ as String) >> FintObjectFactory.newTeacher()
         getTeachingRelationById(_ as String) >> FintObjectFactory.newTeachingRelation()
-        getBasisGroupById(_ as String) >> FintObjectFactory.newBasisGroup()
+        getClassesById(_ as String) >> FintObjectFactory.newBasisGroup()
         getTeachingGroupById(_ as String) >> FintObjectFactory.newTeachingGroup()
         getContactTeacherGroupById(_ as String) >> FintObjectFactory.newContactTeacherGroup()
         getLevelById(_ as String) >> FintObjectFactory.newLevel()

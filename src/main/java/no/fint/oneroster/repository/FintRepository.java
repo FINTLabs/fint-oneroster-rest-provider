@@ -80,13 +80,21 @@ public class FintRepository {
         return getResourceByTypeAndId(UndervisningsforholdResource.class, id);
     }
 
-    public List<BasisgruppeResource> getBasisGroups() {
-        return getResourcesByType(BasisgruppeResource.class);
+    public List<KlasseResource> getClasses() {
+        return getResourcesByType(KlasseResource.class);
     }
 
-    public BasisgruppeResource getBasisGroupById(String id) {
-        return getResourceByTypeAndId(BasisgruppeResource.class, id);
+    public KlasseResource getClassesById(String id) {
+        return getResourceByTypeAndId(KlasseResource.class, id);
     }
+
+    // Created this to be able to get a KlassemedlemskapResource in OneRosterRepository.
+    // Not sure about this so commenting it out for now to not forget it and leave it hanging.
+    /*
+    public KlassemedlemskapResource getClassMembershipById(String id) {
+        return getResourceByTypeAndId(KlassemedlemskapResource.class, id);
+    }
+     */
 
     public List<KontaktlarergruppeResource> getContactTeacherGroups() {
         return getResourcesByType(KontaktlarergruppeResource.class);
@@ -179,7 +187,7 @@ public class FintRepository {
                         fintClient.getEducationResources(SkoleressursResources.class, FintEndpoint.TEACHER.getKey()),
                         fintClient.getEducationResources(ElevforholdResources.class, FintEndpoint.STUDENT_RELATION.getKey()),
                         fintClient.getEducationResources(UndervisningsforholdResources.class, FintEndpoint.TEACHING_RELATION.getKey()),
-                        fintClient.getEducationResources(BasisgruppeResources.class, FintEndpoint.BASIS_GROUP.getKey()),
+                        fintClient.getEducationResources(KlasseResources.class, FintEndpoint.CLASS.getKey()),
                         fintClient.getEducationResources(UndervisningsgruppeResources.class, FintEndpoint.TEACHING_GROUP.getKey()),
                         fintClient.getEducationResources(KontaktlarergruppeResources.class, FintEndpoint.CONTACT_TEACHER_GROUP.getKey()),
                         fintClient.getEducationResources(ArstrinnResources.class, FintEndpoint.LEVEL.getKey()),

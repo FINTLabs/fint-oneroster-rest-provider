@@ -59,7 +59,7 @@ public class ResetAndUpdate {
                 fintRepository.getTeachers().isEmpty() ||
                 fintRepository.getStudentRelations().isEmpty() ||
                 fintRepository.getTeachingRelations().isEmpty() ||
-                fintRepository.getBasisGroups().isEmpty() ||
+                fintRepository.getClasses().isEmpty() ||
                 fintRepository.getTeachingGroups().isEmpty() ||
                 fintRepository.getContactTeacherGroups().isEmpty() ||
                 fintRepository.getSubjects().isEmpty() ||
