@@ -90,11 +90,9 @@ public class FintRepository {
 
     // Created this to be able to get a KlassemedlemskapResource in OneRosterRepository.
     // Not sure about this so commenting it out for now to not forget it and leave it hanging.
-    /*
     public KlassemedlemskapResource getClassMembershipById(String id) {
         return getResourceByTypeAndId(KlassemedlemskapResource.class, id);
     }
-     */
 
     public List<KontaktlarergruppeResource> getContactTeacherGroups() {
         return getResourcesByType(KontaktlarergruppeResource.class);

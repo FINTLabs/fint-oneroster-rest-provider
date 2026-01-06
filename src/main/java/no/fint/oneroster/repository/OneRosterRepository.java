@@ -6,12 +6,12 @@ import lombok.extern.slf4j.Slf4j;
 import no.fint.model.resource.Link;
 import no.fint.model.resource.administrasjon.personal.PersonalressursResource;
 import no.fint.model.resource.felles.PersonResource;
-import no.fint.model.resource.utdanning.basisklasser.GruppeResource;
 import no.fint.model.resource.utdanning.elev.*;
 import no.fint.model.resource.utdanning.kodeverk.SkolearResource;
 import no.fint.model.resource.utdanning.kodeverk.TerminResource;
 import no.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource;
 import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
+import no.fint.oneroster.client.FintClient;
 import no.fint.oneroster.factory.AcademicSessionFactory;
 import no.fint.oneroster.factory.CourseFactory;
 import no.fint.oneroster.factory.EnrollmentFactory;
@@ -44,16 +44,18 @@ public class OneRosterRepository {
     private final ClazzFactory clazzFactory;
     private final UserFactory userFactory;
     private final FintRepository fintRepository;
+    private final FintClient fintClient;
 
     private final ConcurrentMap<String, Base> cache = new ConcurrentSkipListMap<>();
 
     private final AtomicBoolean init = new AtomicBoolean(false);
 
-    public OneRosterRepository(OneRosterProperties oneRosterProperties, ClazzFactory clazzFactory, UserFactory userFactory, FintRepository fintRepository) {
+    public OneRosterRepository(OneRosterProperties oneRosterProperties, ClazzFactory clazzFactory, UserFactory userFactory, FintRepository fintRepository, FintClient fintClient) {
         this.oneRosterProperties = oneRosterProperties;
         this.clazzFactory = clazzFactory;
         this.userFactory = userFactory;
         this.fintRepository = fintRepository;
+        this.fintClient = fintClient;
     }
 
     public List<Org> getOrgs() {
@@ -335,29 +337,21 @@ public class OneRosterRepository {
                     terms.forEach(term -> resources.computeIfAbsent(term.getSystemId().getIdentifikatorverdi(), it ->
                             AcademicSessionFactory.term(term, getSchoolYear(klasse.getSkolear()))));
 
-                    // Attempt at getting Elevforhold through Klassemedlemsskap:
-                    /*
-                    Optional<Link> klasseMedlemsskap = klasse.getKlassemedlemskap().stream().findFirst();
-
-                    KlassemedlemskapResource klassemedlemskapResource = klasseMedlemsskap
-                            .map(linkToString)
-                            .map(fintRepository::getClassMembershipById)
-                            .orElse(null);
-
-
-                    if (klassemedlemskapResource != null) {
-                        addStudentEnrollment(klassemedlemskapResource.getElevforhold(), schoolResource)
-                                .andThen(addTeachingEnrollment(klasse.getUndervisningsforhold(), schoolResource))
-                                .accept(klasse, resources);
+                    if (!klasse.getKlassemedlemskap().isEmpty()) {
+                        List<Link> links = getElevforholdLinkFromKlasse(klasse);
+                        if (links != null && !links.isEmpty()) {
+                            addStudentEnrollment(links, schoolResource)
+                                    .andThen(addTeachingEnrollment(klasse.getUndervisningsforhold(), schoolResource))
+                                    .accept(klasse, resources);
+                        }
                     }
-                    */
-
-                    // The commented code above was an attempt at replacing this:
-                    addStudentEnrollment(klasse.getElevforhold(), schoolResource)
-                            .andThen(addTeachingEnrollment(klasse.getUndervisningsforhold(), schoolResource))
-                            .accept(klasse, resources);
-
                 });
+    }
+
+    private List<Link> getElevforholdLinkFromKlasse(KlasseResource klasse) {
+        return fintClient.getEducationResources(KlassemedlemskapResources.class, klasse.getKlassemedlemskap().toString()).map(
+                KlassemedlemskapResource::getElevforhold
+        ).blockFirst();
     }
 
     private BiConsumer<SkoleResource, Map<String, Base>> updateTeachingGroups() {
@@ -389,11 +383,20 @@ public class OneRosterRepository {
                     terms.forEach(term -> resources.computeIfAbsent(term.getSystemId().getIdentifikatorverdi(), it ->
                             AcademicSessionFactory.term(term, getSchoolYear(teachingGroup.getSkolear()))));
 
-                    addStudentEnrollment(teachingGroup.getElevforhold(), schoolResource)
+                    addStudentEnrollment(getElevForholdLinkFromTeachingGroup(teachingGroup), schoolResource)
                             .andThen(addTeachingEnrollment(teachingGroup.getUndervisningsforhold(), schoolResource))
                             .accept(teachingGroup, resources);
                 });
     }
+
+    //TODO: The model we need to finish this is note yet released
+//    private List<Link> getElevForholdLinkFromTeachingGroup(UndervisningsgruppeResource teachingGroup) {
+//        return fintClient.getEducationResources(UndervisningsgruppemedlemskapResources.class, teachingGroup.getGruppemedlemskap()).map(
+//                gruppemedlemskap -> gruppemedlemskap
+//        ).blockFirst();
+//
+//    }
+
 
     private BiConsumer<SkoleResource, Map<String, Base>> updateContactTeacherGroups() {
         return (schoolResource, resources) -> schoolResource.getKontaktlarergruppe()
@@ -433,8 +436,7 @@ public class OneRosterRepository {
                 });
     }
 
-
-    private BiConsumer<GruppeResource, Map<String, Base>> addStudentEnrollment(List<Link> studentRelations, SkoleResource school) {
+    private BiConsumer<KlasseResource, Map<String, Base>> addStudentEnrollment(List<Link> studentRelations, SkoleResource school) {
         return (group, resources) -> studentRelations.stream()
                 .map(linkToString)
                 .map(fintRepository::getStudentRelationById)
@@ -442,12 +444,11 @@ public class OneRosterRepository {
                 .filter(this::isValidStudentRelation)
                 .forEach(studentRelation -> getStudent(studentRelation).ifPresent(student -> {
                     Enrollment enrollment = EnrollmentFactory.student(studentRelation, student, group, school);
-
                     resources.put(enrollment.getSourcedId(), enrollment);
                 }));
     }
 
-    private BiConsumer<GruppeResource, Map<String, Base>> addTeachingEnrollment(List<Link> teachingRelations, SkoleResource school) {
+    private BiConsumer<KlasseResource, Map<String, Base>> addTeachingEnrollment(List<Link> teachingRelations, SkoleResource school) {
         return (group, resources) -> teachingRelations.stream()
                 .map(linkToString)
                 .map(fintRepository::getTeachingRelationById)
