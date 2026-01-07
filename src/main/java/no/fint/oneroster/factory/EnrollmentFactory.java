@@ -1,11 +1,11 @@
 package no.fint.oneroster.factory;
 
-import no.fint.model.resource.utdanning.basisklasser.GruppeResource;
-import no.fint.model.resource.utdanning.elev.ElevResource;
-import no.fint.model.resource.utdanning.elev.ElevforholdResource;
-import no.fint.model.resource.utdanning.elev.SkoleressursResource;
-import no.fint.model.resource.utdanning.elev.UndervisningsforholdResource;
-import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
+import no.novari.fint.model.resource.utdanning.basisklasser.GruppeResource;
+import no.novari.fint.model.resource.utdanning.elev.ElevResource;
+import no.novari.fint.model.resource.utdanning.elev.ElevforholdResource;
+import no.novari.fint.model.resource.utdanning.elev.SkoleressursResource;
+import no.novari.fint.model.resource.utdanning.elev.UndervisningsforholdResource;
+import no.novari.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
 import no.fint.oneroster.model.Enrollment;
 import no.fint.oneroster.model.GUIDRef;
 import no.fint.oneroster.model.vocab.GUIDType;

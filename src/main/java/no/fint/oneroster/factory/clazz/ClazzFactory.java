@@ -1,13 +1,13 @@
 package no.fint.oneroster.factory.clazz;
 
-import no.fint.model.resource.Link;
-import no.fint.model.resource.utdanning.elev.KlasseResource;
-import no.fint.model.resource.utdanning.elev.KontaktlarergruppeResource;
-import no.fint.model.resource.utdanning.kodeverk.TerminResource;
-import no.fint.model.resource.utdanning.timeplan.FagResource;
-import no.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource;
-import no.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResource;
-import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
+import no.novari.fint.model.resource.Link;
+import no.novari.fint.model.resource.utdanning.elev.KlasseResource;
+import no.novari.fint.model.resource.utdanning.elev.KontaktlarergruppeResource;
+import no.novari.fint.model.resource.utdanning.kodeverk.TerminResource;
+import no.novari.fint.model.resource.utdanning.timeplan.FagResource;
+import no.novari.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource;
+import no.novari.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResource;
+import no.novari.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
 import no.fint.oneroster.model.Clazz;
 import no.fint.oneroster.model.GUIDRef;
 import no.fint.oneroster.model.vocab.ClazzType;

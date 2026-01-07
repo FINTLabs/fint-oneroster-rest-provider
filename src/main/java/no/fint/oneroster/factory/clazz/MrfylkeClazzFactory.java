@@ -1,10 +1,10 @@
 package no.fint.oneroster.factory.clazz;
 
-import no.fint.model.felles.kompleksedatatyper.Identifikator;
-import no.fint.model.resource.utdanning.elev.BasisgruppeResource;
-import no.fint.model.resource.utdanning.timeplan.FagResource;
-import no.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource;
-import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
+import no.novari.fint.model.felles.kompleksedatatyper.Identifikator;
+import no.novari.fint.model.resource.utdanning.elev.KlasseResource;
+import no.novari.fint.model.resource.utdanning.timeplan.FagResource;
+import no.novari.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource;
+import no.novari.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
 
 import java.util.Map;
 import java.util.Optional;
@@ -12,8 +12,8 @@ import java.util.Optional;
 public class MrfylkeClazzFactory implements ClazzFactory {
 
     @Override
-    public String basisGroupNameConverter(BasisgruppeResource basisGroup, SkoleResource school) {
-        return basisGroup.getNavn() + " " +
+    public String basisGroupNameConverter(KlasseResource klasse, SkoleResource school) {
+        return klasse.getNavn() + " " +
                 schoolAbbreviations.getOrDefault(school.getSkolenummer().getIdentifikatorverdi(), getValue(school));
     }
 

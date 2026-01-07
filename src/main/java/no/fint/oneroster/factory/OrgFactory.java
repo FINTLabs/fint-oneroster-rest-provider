@@ -1,7 +1,7 @@
 package no.fint.oneroster.factory;
 
-import no.fint.model.felles.kompleksedatatyper.Identifikator;
-import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
+import no.novari.fint.model.felles.kompleksedatatyper.Identifikator;
+import no.novari.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
 import no.fint.oneroster.model.Org;
 import no.fint.oneroster.model.vocab.OrgType;
 import no.fint.oneroster.properties.OneRosterProperties;

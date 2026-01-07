@@ -1,12 +1,12 @@
 package no.fint.oneroster.factory.clazz
 
-import no.fint.model.felles.kompleksedatatyper.Identifikator
-import no.fint.model.felles.kompleksedatatyper.Periode
-import no.fint.model.resource.utdanning.elev.BasisgruppeResource
-import no.fint.model.resource.utdanning.timeplan.FagResource
-import no.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource
-import no.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResource
-import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource
+import no.novari.fint.model.felles.kompleksedatatyper.Identifikator
+import no.novari.fint.model.felles.kompleksedatatyper.Periode
+import no.novari.fint.model.resource.utdanning.elev.KlasseResource
+import no.novari.fint.model.resource.utdanning.timeplan.FagResource
+import no.novari.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource
+import no.novari.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResource
+import no.novari.fint.model.resource.utdanning.utdanningsprogram.SkoleResource
 import no.fint.oneroster.model.vocab.ClazzType
 import no.fint.oneroster.FintObjectFactory
 import spock.lang.Specification
@@ -60,7 +60,7 @@ class MrfylkeClazzFactorySpec extends Specification {
     }
 
     def getBasisGroup() {
-        return new BasisgruppeResource(
+        return new KlasseResource(
                 systemId: new Identifikator(identifikatorverdi: '1010722'),
                 periode: [new Periode(start: Date.from(LocalDate.of(2020, 8, 1).atStartOfDay(ZoneId.of('Z')).toInstant()),
                         slutt: Date.from(LocalDate.of(2021, 7, 31).atStartOfDay(ZoneId.of('Z')).toInstant()))],

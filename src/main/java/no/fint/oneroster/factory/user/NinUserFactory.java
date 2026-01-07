@@ -1,7 +1,7 @@
 package no.fint.oneroster.factory.user;
 
-import no.fint.model.felles.kompleksedatatyper.Identifikator;
-import no.fint.model.resource.felles.PersonResource;
+import no.novari.fint.model.felles.kompleksedatatyper.Identifikator;
+import no.novari.fint.model.resource.felles.PersonResource;
 
 import java.util.Optional;
 

@@ -3,14 +3,15 @@ package no.fint.oneroster.repository;
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
-import no.fint.model.resource.Link;
-import no.fint.model.resource.administrasjon.personal.PersonalressursResource;
-import no.fint.model.resource.felles.PersonResource;
-import no.fint.model.resource.utdanning.elev.*;
-import no.fint.model.resource.utdanning.kodeverk.SkolearResource;
-import no.fint.model.resource.utdanning.kodeverk.TerminResource;
-import no.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource;
-import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
+import no.novari.fint.model.resource.Link;
+import no.novari.fint.model.resource.administrasjon.personal.PersonalressursResource;
+import no.novari.fint.model.resource.felles.PersonResource;
+import no.novari.fint.model.resource.utdanning.elev.*;
+import no.novari.fint.model.resource.utdanning.kodeverk.SkolearResource;
+import no.novari.fint.model.resource.utdanning.kodeverk.TerminResource;
+import no.novari.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource;
+import no.novari.fint.model.resource.utdanning.timeplan.UndervisningsgruppemedlemskapResources;
+import no.novari.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
 import no.fint.oneroster.client.FintClient;
 import no.fint.oneroster.factory.AcademicSessionFactory;
 import no.fint.oneroster.factory.CourseFactory;
@@ -390,12 +391,12 @@ public class OneRosterRepository {
     }
 
     //TODO: The model we need to finish this is note yet released
-//    private List<Link> getElevForholdLinkFromTeachingGroup(UndervisningsgruppeResource teachingGroup) {
-//        return fintClient.getEducationResources(UndervisningsgruppemedlemskapResources.class, teachingGroup.getGruppemedlemskap()).map(
-//                gruppemedlemskap -> gruppemedlemskap
-//        ).blockFirst();
-//
-//    }
+    private List<Link> getElevForholdLinkFromTeachingGroup(UndervisningsgruppeResource teachingGroup) {
+        return fintClient.getEducationResources(UndervisningsgruppemedlemskapResources.class, teachingGroup.getGruppemedlemskap()).map(
+                gruppemedlemskap -> gruppemedlemskap
+        ).blockFirst();
+
+    }
 
 
     private BiConsumer<SkoleResource, Map<String, Base>> updateContactTeacherGroups() {

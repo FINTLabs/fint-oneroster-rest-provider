@@ -1,8 +1,8 @@
 package no.fint.oneroster.factory;
 
-import no.fint.model.resource.Link;
-import no.fint.model.resource.utdanning.timeplan.FagResource;
-import no.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResource;
+import no.novari.fint.model.resource.Link;
+import no.novari.fint.model.resource.utdanning.timeplan.FagResource;
+import no.novari.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResource;
 import no.fint.oneroster.model.Course;
 import no.fint.oneroster.model.GUIDRef;
 import no.fint.oneroster.model.vocab.GUIDType;

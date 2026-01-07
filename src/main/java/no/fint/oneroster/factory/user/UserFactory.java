@@ -1,13 +1,13 @@
 package no.fint.oneroster.factory.user;
 
-import no.fint.model.felles.kompleksedatatyper.Identifikator;
-import no.fint.model.felles.kompleksedatatyper.Kontaktinformasjon;
-import no.fint.model.felles.kompleksedatatyper.Personnavn;
-import no.fint.model.resource.administrasjon.personal.PersonalressursResource;
-import no.fint.model.resource.felles.PersonResource;
-import no.fint.model.resource.utdanning.elev.ElevResource;
-import no.fint.model.resource.utdanning.elev.SkoleressursResource;
-import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
+import no.novari.fint.model.felles.kompleksedatatyper.Identifikator;
+import no.novari.fint.model.felles.kompleksedatatyper.Kontaktinformasjon;
+import no.novari.fint.model.felles.kompleksedatatyper.Personnavn;
+import no.novari.fint.model.resource.administrasjon.personal.PersonalressursResource;
+import no.novari.fint.model.resource.felles.PersonResource;
+import no.novari.fint.model.resource.utdanning.elev.ElevResource;
+import no.novari.fint.model.resource.utdanning.elev.SkoleressursResource;
+import no.novari.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
 import no.fint.oneroster.model.GUIDRef;
 import no.fint.oneroster.model.User;
 import no.fint.oneroster.model.UserId;

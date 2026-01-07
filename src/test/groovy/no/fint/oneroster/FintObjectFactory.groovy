@@ -1,24 +1,24 @@
 package no.fint.oneroster
 
-import no.fint.model.felles.kompleksedatatyper.Identifikator
-import no.fint.model.felles.kompleksedatatyper.Kontaktinformasjon
-import no.fint.model.felles.kompleksedatatyper.Periode
-import no.fint.model.felles.kompleksedatatyper.Personnavn
-import no.fint.model.resource.Link
-import no.fint.model.resource.administrasjon.personal.PersonalressursResource
-import no.fint.model.resource.felles.PersonResource
-import no.fint.model.resource.utdanning.elev.BasisgruppeResource
-import no.fint.model.resource.utdanning.elev.ElevResource
-import no.fint.model.resource.utdanning.elev.ElevforholdResource
-import no.fint.model.resource.utdanning.elev.KontaktlarergruppeResource
-import no.fint.model.resource.utdanning.elev.SkoleressursResource
-import no.fint.model.resource.utdanning.elev.UndervisningsforholdResource
-import no.fint.model.resource.utdanning.kodeverk.SkolearResource
-import no.fint.model.resource.utdanning.kodeverk.TerminResource
-import no.fint.model.resource.utdanning.timeplan.FagResource
-import no.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource
-import no.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResource
-import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource
+import no.novari.fint.model.felles.kompleksedatatyper.Identifikator
+import no.novari.fint.model.felles.kompleksedatatyper.Kontaktinformasjon
+import no.novari.fint.model.felles.kompleksedatatyper.Periode
+import no.novari.fint.model.felles.kompleksedatatyper.Personnavn
+import no.novari.fint.model.resource.Link
+import no.novari.fint.model.resource.administrasjon.personal.PersonalressursResource
+import no.novari.fint.model.resource.felles.PersonResource
+import no.novari.fint.model.resource.utdanning.elev.KlasseResource
+import no.novari.fint.model.resource.utdanning.elev.ElevResource
+import no.novari.fint.model.resource.utdanning.elev.ElevforholdResource
+import no.novari.fint.model.resource.utdanning.elev.KontaktlarergruppeResource
+import no.novari.fint.model.resource.utdanning.elev.SkoleressursResource
+import no.novari.fint.model.resource.utdanning.elev.UndervisningsforholdResource
+import no.novari.fint.model.resource.utdanning.kodeverk.SkolearResource
+import no.novari.fint.model.resource.utdanning.kodeverk.TerminResource
+import no.novari.fint.model.resource.utdanning.timeplan.FagResource
+import no.novari.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource
+import no.novari.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResource
+import no.novari.fint.model.resource.utdanning.utdanningsprogram.SkoleResource
 
 import java.time.LocalDate
 import java.time.ZoneId
@@ -135,8 +135,8 @@ class FintObjectFactory {
         return resource
     }
 
-    static BasisgruppeResource newBasisGroup() {
-        BasisgruppeResource resource = new BasisgruppeResource()
+    static KlasseResource newBasisGroup() {
+        KlasseResource resource = new KlasseResource()
         resource.setSystemId(new Identifikator(identifikatorverdi: 'basis-group-sourced-id'))
         resource.setNavn('Basis group')
         resource.setBeskrivelse('Basis group at school')
