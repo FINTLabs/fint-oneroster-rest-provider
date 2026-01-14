@@ -62,8 +62,8 @@ class MrfylkeClazzFactorySpec extends Specification {
     def getBasisGroup() {
         return new KlasseResource(
                 systemId: new Identifikator(identifikatorverdi: '1010722'),
-                periode: [new Periode(start: Date.from(LocalDate.of(2020, 8, 1).atStartOfDay(ZoneId.of('Z')).toInstant()),
-                        slutt: Date.from(LocalDate.of(2021, 7, 31).atStartOfDay(ZoneId.of('Z')).toInstant()))],
+                //periode: [new Periode(start: Date.from(LocalDate.of(2020, 8, 1).atStartOfDay(ZoneId.of('Z')).toInstant()),
+                //        slutt: Date.from(LocalDate.of(2021, 7, 31).atStartOfDay(ZoneId.of('Z')).toInstant()))],
                 navn: '1TP2',
                 beskrivelse: '1TP2'
         )
@@ -72,8 +72,8 @@ class MrfylkeClazzFactorySpec extends Specification {
     def getTeachingGroup() {
         return new UndervisningsgruppeResource(
                 systemId: new Identifikator(identifikatorverdi: '6434852'),
-                periode: [new Periode(start: Date.from(LocalDate.of(2020, 8, 1).atStartOfDay(ZoneId.of('Z')).toInstant()),
-                        slutt: Date.from(LocalDate.of(2021, 7, 31).atStartOfDay(ZoneId.of('Z')).toInstant()))],
+                //periode: [new Periode(start: Date.from(LocalDate.of(2020, 8, 1).atStartOfDay(ZoneId.of('Z')).toInstant()),
+                //        slutt: Date.from(LocalDate.of(2021, 7, 31).atStartOfDay(ZoneId.of('Z')).toInstant()))],
                 navn: '1BA2/KRO1004',
                 beskrivelse: '1BA2/KRO1004'
         )

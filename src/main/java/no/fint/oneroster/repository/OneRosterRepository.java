@@ -10,9 +10,7 @@ import no.novari.fint.model.resource.utdanning.elev.*;
 import no.novari.fint.model.resource.utdanning.kodeverk.SkolearResource;
 import no.novari.fint.model.resource.utdanning.kodeverk.TerminResource;
 import no.novari.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource;
-import no.novari.fint.model.resource.utdanning.timeplan.UndervisningsgruppemedlemskapResources;
 import no.novari.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
-import no.fint.oneroster.client.FintClient;
 import no.fint.oneroster.factory.AcademicSessionFactory;
 import no.fint.oneroster.factory.CourseFactory;
 import no.fint.oneroster.factory.EnrollmentFactory;
@@ -23,6 +21,7 @@ import no.fint.oneroster.model.*;
 import no.fint.oneroster.model.vocab.GUIDType;
 import no.fint.oneroster.properties.OneRosterProperties;
 import no.fint.oneroster.util.PersonUtil;
+import no.novari.fint.model.utdanning.basisklasser.Gruppe;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
@@ -45,18 +44,16 @@ public class OneRosterRepository {
     private final ClazzFactory clazzFactory;
     private final UserFactory userFactory;
     private final FintRepository fintRepository;
-    private final FintClient fintClient;
 
     private final ConcurrentMap<String, Base> cache = new ConcurrentSkipListMap<>();
 
     private final AtomicBoolean init = new AtomicBoolean(false);
 
-    public OneRosterRepository(OneRosterProperties oneRosterProperties, ClazzFactory clazzFactory, UserFactory userFactory, FintRepository fintRepository, FintClient fintClient) {
+    public OneRosterRepository(OneRosterProperties oneRosterProperties, ClazzFactory clazzFactory, UserFactory userFactory, FintRepository fintRepository) {
         this.oneRosterProperties = oneRosterProperties;
         this.clazzFactory = clazzFactory;
         this.userFactory = userFactory;
         this.fintRepository = fintRepository;
-        this.fintClient = fintClient;
     }
 
     public List<Org> getOrgs() {
@@ -339,7 +336,7 @@ public class OneRosterRepository {
                             AcademicSessionFactory.term(term, getSchoolYear(klasse.getSkolear()))));
 
                     if (!klasse.getKlassemedlemskap().isEmpty()) {
-                        List<Link> links = getElevforholdLinkFromKlasse(klasse);
+                        List<Link> links = getElevforholdLinksFromKlasse(klasse);
                         if (links != null && !links.isEmpty()) {
                             addStudentEnrollment(links, schoolResource)
                                     .andThen(addTeachingEnrollment(klasse.getUndervisningsforhold(), schoolResource))
@@ -349,10 +346,13 @@ public class OneRosterRepository {
                 });
     }
 
-    private List<Link> getElevforholdLinkFromKlasse(KlasseResource klasse) {
-        return fintClient.getEducationResources(KlassemedlemskapResources.class, klasse.getKlassemedlemskap().toString()).map(
-                KlassemedlemskapResource::getElevforhold
-        ).blockFirst();
+    private List<Link> getElevforholdLinksFromKlasse(KlasseResource klasse) {
+        return klasse.getKlassemedlemskap().stream()
+                .map(linkToString)
+                .map(fintRepository::getClassMembershipById)
+                .filter(Objects::nonNull)
+                .flatMap(classMembership -> classMembership.getElevforhold().stream())
+                .collect(Collectors.toList());
     }
 
     private BiConsumer<SkoleResource, Map<String, Base>> updateTeachingGroups() {
@@ -384,18 +384,19 @@ public class OneRosterRepository {
                     terms.forEach(term -> resources.computeIfAbsent(term.getSystemId().getIdentifikatorverdi(), it ->
                             AcademicSessionFactory.term(term, getSchoolYear(teachingGroup.getSkolear()))));
 
-                    addStudentEnrollment(getElevForholdLinkFromTeachingGroup(teachingGroup), schoolResource)
+                    addStudentEnrollment(getElevforholdLinksFromTeachingGroup(teachingGroup), schoolResource)
                             .andThen(addTeachingEnrollment(teachingGroup.getUndervisningsforhold(), schoolResource))
                             .accept(teachingGroup, resources);
                 });
     }
 
-    //TODO: The model we need to finish this is note yet released
-    private List<Link> getElevForholdLinkFromTeachingGroup(UndervisningsgruppeResource teachingGroup) {
-        return fintClient.getEducationResources(UndervisningsgruppemedlemskapResources.class, teachingGroup.getGruppemedlemskap()).map(
-                gruppemedlemskap -> gruppemedlemskap
-        ).blockFirst();
-
+    private List<Link> getElevforholdLinksFromTeachingGroup(UndervisningsgruppeResource teachingGroup) {
+        return teachingGroup.getGruppemedlemskap().stream()
+                .map(linkToString)
+                .map(fintRepository::getTeachingGroupMembershipById)
+                .filter(Objects::nonNull)
+                .flatMap(groupMembership -> groupMembership.getElevforhold().stream())
+                .collect(Collectors.toList());
     }
 
 
@@ -431,13 +432,22 @@ public class OneRosterRepository {
                     terms.forEach(term -> resources.computeIfAbsent(term.getSystemId().getIdentifikatorverdi(), it ->
                             AcademicSessionFactory.term(term, getSchoolYear(contactTeacherGroup.getSkolear()))));
 
-                    addStudentEnrollment(contactTeacherGroup.getElevforhold(), schoolResource)
+                    addStudentEnrollment(getElevforholdLinkFromContactTeacherGroup(contactTeacherGroup), schoolResource)
                             .andThen(addTeachingEnrollment(contactTeacherGroup.getUndervisningsforhold(), schoolResource))
                             .accept(contactTeacherGroup, resources);
                 });
     }
 
-    private BiConsumer<KlasseResource, Map<String, Base>> addStudentEnrollment(List<Link> studentRelations, SkoleResource school) {
+    private List<Link> getElevforholdLinkFromContactTeacherGroup(KontaktlarergruppeResource contactTeacherGroup) {
+        return contactTeacherGroup.getGruppemedlemskap().stream()
+                .map(linkToString)
+                .map(fintRepository::getContactTeacherGroupMembershipById)
+                .filter(Objects::nonNull)
+                .flatMap(groupMembership -> groupMembership.getElevforhold().stream())
+                .collect(Collectors.toList());
+    }
+
+    private BiConsumer<Gruppe, Map<String, Base>> addStudentEnrollment(List<Link> studentRelations, SkoleResource school) {
         return (group, resources) -> studentRelations.stream()
                 .map(linkToString)
                 .map(fintRepository::getStudentRelationById)
@@ -449,7 +459,7 @@ public class OneRosterRepository {
                 }));
     }
 
-    private BiConsumer<KlasseResource, Map<String, Base>> addTeachingEnrollment(List<Link> teachingRelations, SkoleResource school) {
+    private BiConsumer<Gruppe, Map<String, Base>> addTeachingEnrollment(List<Link> teachingRelations, SkoleResource school) {
         return (group, resources) -> teachingRelations.stream()
                 .map(linkToString)
                 .map(fintRepository::getTeachingRelationById)

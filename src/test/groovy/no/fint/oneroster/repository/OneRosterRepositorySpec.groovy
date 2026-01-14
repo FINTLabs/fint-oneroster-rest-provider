@@ -29,6 +29,9 @@ class OneRosterRepositorySpec extends Specification {
         getPersonnelById(_ as String) >> FintObjectFactory.newPersonnel()
         getTermById(_ as String) >> FintObjectFactory.newTerm()
         getSchoolYearById(_ as String) >> FintObjectFactory.newSchoolYear()
+        getClassMembershipById(_ as String) >> FintObjectFactory.newClassMembership()
+        getTeachingGroupMembershipById(_ as String) >> FintObjectFactory.newTeachingGroupMembership()
+        getContactTeacherGroupMembershipById(_ as String) >> FintObjectFactory.newContactTeacherGroupMembership()
     }
 
     OneRosterProperties oneRosterProperties = Stub() {

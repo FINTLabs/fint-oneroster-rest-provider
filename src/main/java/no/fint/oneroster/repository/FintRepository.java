@@ -12,10 +12,7 @@ import no.novari.fint.model.resource.utdanning.kodeverk.SkolearResource;
 import no.novari.fint.model.resource.utdanning.kodeverk.SkolearResources;
 import no.novari.fint.model.resource.utdanning.kodeverk.TerminResource;
 import no.novari.fint.model.resource.utdanning.kodeverk.TerminResources;
-import no.novari.fint.model.resource.utdanning.timeplan.FagResource;
-import no.novari.fint.model.resource.utdanning.timeplan.FagResources;
-import no.novari.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource;
-import no.novari.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResources;
+import no.novari.fint.model.resource.utdanning.timeplan.*;
 import no.novari.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResource;
 import no.novari.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResources;
 import no.novari.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
@@ -88,8 +85,6 @@ public class FintRepository {
         return getResourceByTypeAndId(KlasseResource.class, id);
     }
 
-    // Created this to be able to get a KlassemedlemskapResource in OneRosterRepository.
-    // Not sure about this so commenting it out for now to not forget it and leave it hanging.
     public KlassemedlemskapResource getClassMembershipById(String id) {
         return getResourceByTypeAndId(KlassemedlemskapResource.class, id);
     }
@@ -102,12 +97,20 @@ public class FintRepository {
         return getResourceByTypeAndId(KontaktlarergruppeResource.class, id);
     }
 
+    public KontaktlarergruppemedlemskapResource getContactTeacherGroupMembershipById(String id) {
+        return getResourceByTypeAndId(KontaktlarergruppemedlemskapResource.class, id);
+    }
+
     public List<UndervisningsgruppeResource> getTeachingGroups() {
         return getResourcesByType(UndervisningsgruppeResource.class);
     }
 
     public UndervisningsgruppeResource getTeachingGroupById(String id) {
         return getResourceByTypeAndId(UndervisningsgruppeResource.class, id);
+    }
+
+    public UndervisningsgruppemedlemskapResource getTeachingGroupMembershipById(String id) {
+        return getResourceByTypeAndId(UndervisningsgruppemedlemskapResource.class, id);
     }
 
     public List<ArstrinnResource> getLevels() {

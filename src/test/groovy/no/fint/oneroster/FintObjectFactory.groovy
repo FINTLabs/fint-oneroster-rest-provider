@@ -10,15 +10,19 @@ import no.novari.fint.model.resource.felles.PersonResource
 import no.novari.fint.model.resource.utdanning.elev.KlasseResource
 import no.novari.fint.model.resource.utdanning.elev.ElevResource
 import no.novari.fint.model.resource.utdanning.elev.ElevforholdResource
+import no.novari.fint.model.resource.utdanning.elev.KlassemedlemskapResource
 import no.novari.fint.model.resource.utdanning.elev.KontaktlarergruppeResource
+import no.novari.fint.model.resource.utdanning.elev.KontaktlarergruppemedlemskapResource
 import no.novari.fint.model.resource.utdanning.elev.SkoleressursResource
 import no.novari.fint.model.resource.utdanning.elev.UndervisningsforholdResource
 import no.novari.fint.model.resource.utdanning.kodeverk.SkolearResource
 import no.novari.fint.model.resource.utdanning.kodeverk.TerminResource
 import no.novari.fint.model.resource.utdanning.timeplan.FagResource
 import no.novari.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource
+import no.novari.fint.model.resource.utdanning.timeplan.UndervisningsgruppemedlemskapResource
 import no.novari.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResource
 import no.novari.fint.model.resource.utdanning.utdanningsprogram.SkoleResource
+import no.novari.fint.model.utdanning.elev.Klassemedlemskap
 
 import java.time.LocalDate
 import java.time.ZoneId
@@ -31,7 +35,7 @@ class FintObjectFactory {
         resource.setNavn('School')
         resource.setSkolenummer(new Identifikator(identifikatorverdi: 'identifier'))
         resource.setOrganisasjonsnummer(new Identifikator(identifikatorverdi: 'identifier'))
-        resource.addBasisgruppe(Link.with('/basis-group-sourced-id'))
+        resource.addKlasse(Link.with('/basis-group-sourced-id'))
         resource.addUndervisningsgruppe(Link.with('/teaching-group-sourced-id'))
         resource.addKontaktlarergruppe(Link.with('/contact-teacher-group-sourced-id'))
         resource.addElevforhold(Link.with('/student-relation-sourced-id'))
@@ -93,8 +97,8 @@ class FintObjectFactory {
         ElevforholdResource resource = new ElevforholdResource()
         resource.setSystemId(new Identifikator(identifikatorverdi: 'student-relation-sourced-id'))
         resource.addElev(Link.with('/student-sourced-id'))
-        resource.addBasisgruppe(Link.with('/basis-group-sourced-id'))
-        resource.addUndervisningsgruppe(Link.with('/teaching-group-sourced-id'))
+        resource.addKlassemedlemskap(Link.with('/class-membership-sourced-id'))
+        resource.addUndervisningsgruppemedlemskap(Link.with('/teaching-group-membership-sourced-id'))
         resource.addSkole(Link.with('/school-sourced-id'))
         resource.addSelf(Link.with('/student-relation-sourced-id'))
         return resource
@@ -128,7 +132,7 @@ class FintObjectFactory {
         UndervisningsforholdResource resource = new UndervisningsforholdResource()
         resource.setSystemId(new Identifikator(identifikatorverdi: 'teaching-relation-sourced-id'))
         resource.addSkoleressurs(Link.with('/teacher-sourced-id'))
-        resource.addBasisgruppe(Link.with('/basis-group-sourced-id'))
+        resource.addKlasse(Link.with('/basis-group-sourced-id'))
         resource.addUndervisningsgruppe(Link.with('/teaching-group-sourced-id'))
         resource.addSkole(Link.with('/school-sourced-id'))
         resource.addSelf(Link.with('/teaching-relation-sourced-id'))
@@ -142,11 +146,20 @@ class FintObjectFactory {
         resource.setBeskrivelse('Basis group at school')
         resource.addSkole(Link.with('/school-sourced-id'))
         resource.addTrinn(Link.with('/level-sourced-id'))
-        resource.addElevforhold(Link.with('/student-relation-sourced-id'))
+        resource.addKlassemedlemskap(Link.with('/class-membership-sourced-id'))
         resource.addUndervisningsforhold(Link.with('/teaching-relation-sourced-id'))
         resource.addTermin(Link.with('/term-sourced-id'))
         resource.addSkolear(Link.with('/school-year-sourced-id'))
         resource.addSelf(Link.with('/basis-group-sourced-id'))
+        return resource
+    }
+
+    static KlassemedlemskapResource newClassMembership() {
+        KlassemedlemskapResource resource = new KlassemedlemskapResource()
+        resource.setSystemId(new Identifikator(identifikatorverdi: 'class-membership-sourced-id'))
+        resource.addElevforhold(Link.with('/student-relation-sourced-id'))
+        resource.addKlasse(Link.with('/basis-group-sourced-id'))
+        resource.addSelf(Link.with('/class-membership-sourced-id'))
         return resource
     }
 
@@ -157,7 +170,7 @@ class FintObjectFactory {
         resource.setBeskrivelse('Teaching group at school')
         resource.addSkole(Link.with('/school-sourced-id'))
         resource.addFag(Link.with('/subject-sourced-id'))
-        resource.addElevforhold(Link.with('/student-relation-sourced-id'))
+        resource.addGruppemedlemskap(Link.with('/teaching-group-membership-sourced-id'))
         resource.addUndervisningsforhold(Link.with('/teaching-relation-sourced-id'))
         resource.addTermin(Link.with('/term-sourced-id'))
         resource.addSkolear(Link.with('/school-year-sourced-id'))
@@ -165,18 +178,38 @@ class FintObjectFactory {
         return resource
     }
 
+    static UndervisningsgruppemedlemskapResource newTeachingGroupMembership() {
+        UndervisningsgruppemedlemskapResource resource = new UndervisningsgruppemedlemskapResource()
+        resource.setSystemId(new Identifikator(identifikatorverdi: 'teaching-group-membership-sourced-id'))
+        resource.addElevforhold(Link.with('/student-relation-sourced-id'))
+        resource.addUndervisningsgruppe(Link.with('/teaching-group-sourced-id'))
+        resource.addSelf(Link.with('/teaching-group-membership-sourced-id'))
+        return resource
+    }
+
+
     static KontaktlarergruppeResource newContactTeacherGroup() {
         KontaktlarergruppeResource resource = new KontaktlarergruppeResource()
         resource.setSystemId(new Identifikator(identifikatorverdi: 'contact-teacher-group-sourced-id'))
         resource.setNavn('Contact teacher group')
         resource.setBeskrivelse('Contact teacher group at school')
         resource.addSkole(Link.with('/school-sourced-id'))
-        resource.addBasisgruppe(Link.with('/basis-group-sourced-id'))
-        resource.addElevforhold(Link.with('/student-relation-sourced-id'))
+        resource.addKlasse(Link.with('/basis-group-sourced-id'))
+        //resource.addElevforhold(Link.with('/student-relation-sourced-id'))
+        resource.addGruppemedlemskap(Link.with('/contact-teacher-group-membership-sourced-id'))
         resource.addUndervisningsforhold(Link.with('/teaching-relation-sourced-id'))
         resource.addTermin(Link.with('/term-sourced-id'))
         resource.addSkolear(Link.with('/school-year-sourced-id'))
         resource.addSelf(Link.with('/contact-teacher-group-sourced-id'))
+        return resource
+    }
+
+    static KontaktlarergruppemedlemskapResource newContactTeacherGroupMembership() {
+        KontaktlarergruppemedlemskapResource resource = new KontaktlarergruppemedlemskapResource()
+        resource.setSystemId(new Identifikator(identifikatorverdi: 'contact-teacher-group-membership-sourced-id'))
+        resource.addElevforhold(Link.with('/student-relation-sourced-id'))
+        resource.addKontaktlarergruppe(Link.with('/contact-teacher-group-sourced-id'))
+        resource.addSelf(Link.with('/contact-teacher-group-membership-sourced-id'))
         return resource
     }
 
