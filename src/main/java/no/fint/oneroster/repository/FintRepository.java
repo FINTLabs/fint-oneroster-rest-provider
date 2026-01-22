@@ -188,7 +188,7 @@ public class FintRepository {
                         fintClient.getEducationResources(SkoleressursResources.class, FintEndpoint.TEACHER.getKey()),
                         fintClient.getEducationResources(ElevforholdResources.class, FintEndpoint.STUDENT_RELATION.getKey()),
                         fintClient.getEducationResources(UndervisningsforholdResources.class, FintEndpoint.TEACHING_RELATION.getKey()),
-                        fintClient.getEducationResources(KlasseResources.class, FintEndpoint.CLASS.getKey()),
+                        fintClient.getEducationResources(KlasseResources.class, FintEndpoint.BASIS_GROUP.getKey()),
                         fintClient.getEducationResources(UndervisningsgruppeResources.class, FintEndpoint.TEACHING_GROUP.getKey()),
                         fintClient.getEducationResources(KontaktlarergruppeResources.class, FintEndpoint.CONTACT_TEACHER_GROUP.getKey()),
                         fintClient.getEducationResources(ArstrinnResources.class, FintEndpoint.LEVEL.getKey()),

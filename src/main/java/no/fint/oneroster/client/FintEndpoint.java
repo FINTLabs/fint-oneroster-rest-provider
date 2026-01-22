@@ -7,7 +7,7 @@ public enum FintEndpoint {
     TEACHER("teacher"),
     STUDENT_RELATION("student-relation"),
     TEACHING_RELATION("teaching-relation"),
-    CLASS("class"),
+    BASIS_GROUP("basis-group"),
     TEACHING_GROUP("teaching-group"),
     CONTACT_TEACHER_GROUP("contact-teacher-group"),
     LEVEL("level"),
