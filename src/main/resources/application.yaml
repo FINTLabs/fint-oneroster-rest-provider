@@ -26,11 +26,14 @@ fint:
         student-relation: https://api.felleskomponent.no/utdanning/elev/elevforhold
         teacher: https://api.felleskomponent.no/utdanning/elev/skoleressurs
         teaching-relation: https://api.felleskomponent.no/utdanning/elev/undervisningsforhold
-        basis-group: https://api.felleskomponent.no/utdanning/elev/basisgruppe
+        basis-group: https://api.felleskomponent.no/utdanning/elev/klasse
+        basis-group-membership: https://api.felleskomponent.no/utdanning/elev/klassemedlemskap
         level: https://api.felleskomponent.no/utdanning/utdanningsprogram/arstrinn
         teaching-group: https://api.felleskomponent.no/utdanning/timeplan/undervisningsgruppe
+        teaching-group-membership: https://api.felleskomponent.no/utdanning/timeplan/undervisningsgruppemedlemskap
         subject: https://api.felleskomponent.no/utdanning/timeplan/fag
         contact-teacher-group: https://api.felleskomponent.no/utdanning/elev/kontaktlarergruppe
+        contact-teacher-group-membership: https://api.felleskomponent.no/utdanning/elev/kontaktlarergruppemedlemskap
         term: https://api.felleskomponent.no/utdanning/kodeverk/termin
         school-year: https://api.felleskomponent.no/utdanning/kodeverk/skolear
     administration:
