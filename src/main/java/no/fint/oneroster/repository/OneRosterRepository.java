@@ -399,7 +399,6 @@ public class OneRosterRepository {
                 .collect(Collectors.toList());
     }
 
-
     private BiConsumer<SkoleResource, Map<String, Base>> updateContactTeacherGroups() {
         return (schoolResource, resources) -> schoolResource.getKontaktlarergruppe()
                 .stream()
