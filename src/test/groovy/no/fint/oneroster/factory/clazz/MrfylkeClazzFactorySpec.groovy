@@ -1,7 +1,6 @@
 package no.fint.oneroster.factory.clazz
 
 import no.novari.fint.model.felles.kompleksedatatyper.Identifikator
-import no.novari.fint.model.felles.kompleksedatatyper.Periode
 import no.novari.fint.model.resource.utdanning.elev.KlasseResource
 import no.novari.fint.model.resource.utdanning.timeplan.FagResource
 import no.novari.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource
@@ -11,15 +10,12 @@ import no.fint.oneroster.model.vocab.ClazzType
 import no.fint.oneroster.FintObjectFactory
 import spock.lang.Specification
 
-import java.time.LocalDate
-import java.time.ZoneId
-
 class MrfylkeClazzFactorySpec extends Specification {
     MrfylkeClazzFactory mrFylkeClazzFactory = new MrfylkeClazzFactory()
 
     def "basisGroupNameConverter() returns modified name"() {
         when:
-        def name = mrFylkeClazzFactory.basisGroupNameConverter(getBasisGroup(), getSchool())
+        def name = mrFylkeClazzFactory.klasseNameConverter(getBasisGroup(), getSchool())
 
         then:
         name == '1TP2 VMOL'

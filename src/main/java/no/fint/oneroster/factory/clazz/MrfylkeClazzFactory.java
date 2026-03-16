@@ -12,7 +12,7 @@ import java.util.Optional;
 public class MrfylkeClazzFactory implements ClazzFactory {
 
     @Override
-    public String basisGroupNameConverter(KlasseResource klasse, SkoleResource school) {
+    public String klasseNameConverter(KlasseResource klasse, SkoleResource school) {
         return klasse.getNavn() + " " +
                 schoolAbbreviations.getOrDefault(school.getSkolenummer().getIdentifikatorverdi(), getValue(school));
     }

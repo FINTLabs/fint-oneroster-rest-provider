@@ -25,7 +25,7 @@ public interface ClazzFactory {
     default Clazz basisGroup(KlasseResource klasseResource, ArstrinnResource arstrinnResource, SkoleResource skoleResource, List<TerminResource> terms) {
         Clazz basisGroup = new Clazz(
                 normalize(klasseResource.getSystemId().getIdentifikatorverdi()),
-                basisGroupNameConverter(klasseResource, skoleResource),
+                klasseNameConverter(klasseResource, skoleResource),
                 ClazzType.HOMEROOM,
                 GUIDRef.of(GUIDType.COURSE, normalize(arstrinnResource.getSystemId().getIdentifikatorverdi())),
                 GUIDRef.of(GUIDType.ORG, normalize(skoleResource.getSystemId().getIdentifikatorverdi())),
@@ -87,7 +87,7 @@ public interface ClazzFactory {
         return contactTeacherGroup;
     }
 
-    default String basisGroupNameConverter(KlasseResource basisGroup, SkoleResource school) {
+    default String klasseNameConverter(KlasseResource basisGroup, SkoleResource school) {
         return basisGroup.getNavn();
     }
 
