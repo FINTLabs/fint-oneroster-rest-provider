@@ -182,6 +182,7 @@ public class FintRepository {
     }
 
     public void update() {
+        log.debug("Fetching resources");
         Flux.concat(fintClient.getEducationResources(SkoleResources.class, FintEndpoint.SCHOOL.getKey()),
                         fintClient.getEducationResources(PersonResources.class, FintEndpoint.PERSON.getKey()),
                         fintClient.getEducationResources(ElevResources.class, FintEndpoint.STUDENT.getKey()),

@@ -62,3 +62,7 @@ spring:
   profiles:
     include:
       - oauth
+
+logging:
+  level:
+    no.fint.oneroster: Debug

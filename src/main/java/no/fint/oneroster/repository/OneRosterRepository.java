@@ -526,6 +526,7 @@ public class OneRosterRepository {
 
         Org schoolOwner = OrgFactory.schoolOwner(oneRosterProperties.getOrg());
 
+        log.debug("Updating schools");
         fintRepository.getSchools().forEach(schoolResource -> {
             updateSchools(schoolOwner)
                     .andThen(updateBasisGroups())
