@@ -1,6 +1,5 @@
 package no.fint.oneroster.factory;
 
-import no.novari.fint.model.resource.utdanning.basisklasser.GruppeResource;
 import no.novari.fint.model.resource.utdanning.elev.ElevResource;
 import no.novari.fint.model.resource.utdanning.elev.ElevforholdResource;
 import no.novari.fint.model.resource.utdanning.elev.SkoleressursResource;
@@ -20,22 +19,26 @@ public final class EnrollmentFactory {
     }
 
     public static <T extends Gruppe> Enrollment student(ElevforholdResource elevforholdResource, ElevResource elevResource, T gruppe, SkoleResource skoleResource) {
-        return new Enrollment(
+        Enrollment enrollment = new Enrollment(
                 normalize(elevforholdResource.getSystemId().getIdentifikatorverdi() + "_" + gruppe.getSystemId().getIdentifikatorverdi()),
                 GUIDRef.of(GUIDType.USER, normalize(elevResource.getSystemId().getIdentifikatorverdi())),
                 GUIDRef.of(GUIDType.CLASS, normalize(gruppe.getSystemId().getIdentifikatorverdi())),
                 GUIDRef.of(GUIDType.ORG, normalize(skoleResource.getSystemId().getIdentifikatorverdi())),
                 RoleType.STUDENT
         );
+        enrollment.setPrimary(elevforholdResource.getHovedskole());
+        return enrollment;
     }
 
     public static <T extends Gruppe> Enrollment teacher(UndervisningsforholdResource undervisningsforholdResource, SkoleressursResource skoleressursResource, T gruppe, SkoleResource skoleResource) {
-        return new Enrollment(
+        Enrollment enrollment = new Enrollment(
                 normalize(undervisningsforholdResource.getSystemId().getIdentifikatorverdi() + "_" + gruppe.getSystemId().getIdentifikatorverdi()),
                 GUIDRef.of(GUIDType.USER, normalize(skoleressursResource.getSystemId().getIdentifikatorverdi())),
                 GUIDRef.of(GUIDType.CLASS, normalize(gruppe.getSystemId().getIdentifikatorverdi())),
                 GUIDRef.of(GUIDType.ORG, normalize(skoleResource.getSystemId().getIdentifikatorverdi())),
                 RoleType.TEACHER
         );
+        enrollment.setPrimary(undervisningsforholdResource.getHovedskole());
+        return enrollment;
     }
 }
