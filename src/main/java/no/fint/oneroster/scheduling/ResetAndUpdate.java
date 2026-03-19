@@ -55,20 +55,20 @@ public class ResetAndUpdate {
 
     private boolean emptyCaches() {
         Map<String, Integer> cacheSizes = new LinkedHashMap<>();
-        cacheSizes.put("schools", fintRepository.getSchools().size());
-        cacheSizes.put("students", fintRepository.getStudents().size());
-        cacheSizes.put("teachers", fintRepository.getTeachers().size());
-        cacheSizes.put("studentRelations", fintRepository.getStudentRelations().size());
-        cacheSizes.put("teachingRelations", fintRepository.getTeachingRelations().size());
-        cacheSizes.put("classes", fintRepository.getClasses().size());
-        cacheSizes.put("teachingGroups", fintRepository.getTeachingGroups().size());
-        cacheSizes.put("contactTeacherGroups", fintRepository.getContactTeacherGroups().size());
-        cacheSizes.put("subjects", fintRepository.getSubjects().size());
-        cacheSizes.put("levels", fintRepository.getLevels().size());
-        cacheSizes.put("persons", fintRepository.getPersons().size());
-        cacheSizes.put("personnel", fintRepository.getPersonnel().size());
-        cacheSizes.put("terms", fintRepository.getTerms().size());
-        cacheSizes.put("schoolYears", fintRepository.getSchoolYears().size());
+        cacheSizes.put("skole", fintRepository.getSchools().size());
+        cacheSizes.put("elev", fintRepository.getStudents().size());
+        cacheSizes.put("skoleressurs", fintRepository.getTeachers().size());
+        cacheSizes.put("elevforhold", fintRepository.getStudentRelations().size());
+        cacheSizes.put("undervisningsforhold", fintRepository.getTeachingRelations().size());
+        cacheSizes.put("klasse", fintRepository.getClasses().size());
+        cacheSizes.put("undervisningsgruppe", fintRepository.getTeachingGroups().size());
+        cacheSizes.put("kontaktlarergruppe", fintRepository.getContactTeacherGroups().size());
+        cacheSizes.put("fag", fintRepository.getSubjects().size());
+        cacheSizes.put("arstrinn", fintRepository.getLevels().size());
+        cacheSizes.put("person", fintRepository.getPersons().size());
+        cacheSizes.put("personalressurs", fintRepository.getPersonnel().size());
+        cacheSizes.put("termin", fintRepository.getTerms().size());
+        cacheSizes.put("skolear", fintRepository.getSchoolYears().size());
 
         log.debug("FINT cache sizes: {}", cacheSizes);
 
