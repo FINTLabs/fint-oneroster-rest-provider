@@ -1,8 +1,8 @@
 package no.fint.oneroster.factory;
 
-import no.fint.model.felles.kompleksedatatyper.Periode;
-import no.fint.model.resource.utdanning.kodeverk.SkolearResource;
-import no.fint.model.resource.utdanning.kodeverk.TerminResource;
+import no.novari.fint.model.felles.kompleksedatatyper.Periode;
+import no.novari.fint.model.resource.utdanning.kodeverk.SkolearResource;
+import no.novari.fint.model.resource.utdanning.kodeverk.TerminResource;
 import no.fint.oneroster.model.AcademicSession;
 import no.fint.oneroster.model.vocab.SessionType;
 

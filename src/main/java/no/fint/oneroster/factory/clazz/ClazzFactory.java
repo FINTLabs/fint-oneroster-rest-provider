@@ -1,13 +1,13 @@
 package no.fint.oneroster.factory.clazz;
 
-import no.fint.model.resource.Link;
-import no.fint.model.resource.utdanning.elev.BasisgruppeResource;
-import no.fint.model.resource.utdanning.elev.KontaktlarergruppeResource;
-import no.fint.model.resource.utdanning.kodeverk.TerminResource;
-import no.fint.model.resource.utdanning.timeplan.FagResource;
-import no.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource;
-import no.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResource;
-import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
+import no.novari.fint.model.resource.Link;
+import no.novari.fint.model.resource.utdanning.elev.KlasseResource;
+import no.novari.fint.model.resource.utdanning.elev.KontaktlarergruppeResource;
+import no.novari.fint.model.resource.utdanning.kodeverk.TerminResource;
+import no.novari.fint.model.resource.utdanning.timeplan.FagResource;
+import no.novari.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource;
+import no.novari.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResource;
+import no.novari.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
 import no.fint.oneroster.model.Clazz;
 import no.fint.oneroster.model.GUIDRef;
 import no.fint.oneroster.model.vocab.ClazzType;
@@ -22,10 +22,10 @@ import java.util.stream.Stream;
 import static no.fint.oneroster.util.StringNormalizer.normalize;
 
 public interface ClazzFactory {
-    default Clazz basisGroup(BasisgruppeResource basisgruppeResource, ArstrinnResource arstrinnResource, SkoleResource skoleResource, List<TerminResource> terms) {
+    default Clazz basisGroup(KlasseResource klasseResource, ArstrinnResource arstrinnResource, SkoleResource skoleResource, List<TerminResource> terms) {
         Clazz basisGroup = new Clazz(
-                normalize(basisgruppeResource.getSystemId().getIdentifikatorverdi()),
-                basisGroupNameConverter(basisgruppeResource, skoleResource),
+                normalize(klasseResource.getSystemId().getIdentifikatorverdi()),
+                klasseNameConverter(klasseResource, skoleResource),
                 ClazzType.HOMEROOM,
                 GUIDRef.of(GUIDType.COURSE, normalize(arstrinnResource.getSystemId().getIdentifikatorverdi())),
                 GUIDRef.of(GUIDType.ORG, normalize(skoleResource.getSystemId().getIdentifikatorverdi())),
@@ -87,7 +87,7 @@ public interface ClazzFactory {
         return contactTeacherGroup;
     }
 
-    default String basisGroupNameConverter(BasisgruppeResource basisGroup, SkoleResource school) {
+    default String klasseNameConverter(KlasseResource basisGroup, SkoleResource school) {
         return basisGroup.getNavn();
     }
 

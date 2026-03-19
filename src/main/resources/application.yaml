@@ -20,19 +20,24 @@ fint:
           username:
           password:
       endpoint:
-        school: https://api.felleskomponent.no/utdanning/utdanningsprogram/skole
-        person: https://api.felleskomponent.no/utdanning/elev/person
-        student: https://api.felleskomponent.no/utdanning/elev/elev
-        student-relation: https://api.felleskomponent.no/utdanning/elev/elevforhold
-        teacher: https://api.felleskomponent.no/utdanning/elev/skoleressurs
-        teaching-relation: https://api.felleskomponent.no/utdanning/elev/undervisningsforhold
-        basis-group: https://api.felleskomponent.no/utdanning/elev/basisgruppe
-        level: https://api.felleskomponent.no/utdanning/utdanningsprogram/arstrinn
-        teaching-group: https://api.felleskomponent.no/utdanning/timeplan/undervisningsgruppe
-        subject: https://api.felleskomponent.no/utdanning/timeplan/fag
-        contact-teacher-group: https://api.felleskomponent.no/utdanning/elev/kontaktlarergruppe
-        term: https://api.felleskomponent.no/utdanning/kodeverk/termin
-        school-year: https://api.felleskomponent.no/utdanning/kodeverk/skolear
+        # TODO: Had to change from prod to beta links for this to work during 4.0 migration
+        # Verify that this is OK and maybe change back to prod links after 4.0 migration
+        school: https://beta.felleskomponent.no/utdanning/utdanningsprogram/skole
+        person: https://beta.felleskomponent.no/utdanning/elev/person
+        student: https://beta.felleskomponent.no/utdanning/elev/elev
+        student-relation: https://beta.felleskomponent.no/utdanning/elev/elevforhold
+        teacher: https://beta.felleskomponent.no/utdanning/elev/skoleressurs
+        teaching-relation: https://beta.felleskomponent.no/utdanning/elev/undervisningsforhold
+        basis-group: https://beta.felleskomponent.no/utdanning/elev/klasse
+        basis-group-membership: https://beta.felleskomponent.no/utdanning/elev/klassemedlemskap
+        level: https://beta.felleskomponent.no/utdanning/utdanningsprogram/arstrinn
+        teaching-group: https://beta.felleskomponent.no/utdanning/timeplan/undervisningsgruppe
+        teaching-group-membership: https://beta.felleskomponent.no/utdanning/timeplan/undervisningsgruppemedlemskap
+        subject: https://beta.felleskomponent.no/utdanning/timeplan/fag
+        contact-teacher-group: https://beta.felleskomponent.no/utdanning/elev/kontaktlarergruppe
+        contact-teacher-group-membership: https://beta.felleskomponent.no/utdanning/elev/kontaktlarergruppemedlemskap
+        term: https://beta.felleskomponent.no/utdanning/kodeverk/termin
+        school-year: https://beta.felleskomponent.no/utdanning/kodeverk/skolear
     administration:
       registration:
         1:
@@ -40,8 +45,8 @@ fint:
           username:
           password:
       endpoint:
-        person: https://api.felleskomponent.no/administrasjon/personal/person
-        personnel: https://api.felleskomponent.no/administrasjon/personal/personalressurs
+        person: https://beta.felleskomponent.no/administrasjon/personal/person
+        personnel: https://beta.felleskomponent.no/administrasjon/personal/personalressurs
 
 scheduling:
   initial-delay: 10000
@@ -57,3 +62,7 @@ spring:
   profiles:
     include:
       - oauth
+
+logging:
+  level:
+    no.fint.oneroster: Debug

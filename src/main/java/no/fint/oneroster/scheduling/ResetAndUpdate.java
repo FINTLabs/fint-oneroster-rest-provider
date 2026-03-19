@@ -8,6 +8,9 @@ import org.springframework.security.oauth2.core.OAuth2AuthorizationException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClientException;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 @Slf4j
 @Component
 public class ResetAndUpdate {
@@ -32,10 +35,7 @@ public class ResetAndUpdate {
             fintRepository.update();
 
             if (emptyCaches()) {
-                log.warn("One or more empty FINT caches");
-
                 fintRepository.reset();
-
                 return;
             }
 
@@ -54,19 +54,33 @@ public class ResetAndUpdate {
     }
 
     private boolean emptyCaches() {
-        return fintRepository.getSchools().isEmpty() ||
-                fintRepository.getStudents().isEmpty() ||
-                fintRepository.getTeachers().isEmpty() ||
-                fintRepository.getStudentRelations().isEmpty() ||
-                fintRepository.getTeachingRelations().isEmpty() ||
-                fintRepository.getBasisGroups().isEmpty() ||
-                fintRepository.getTeachingGroups().isEmpty() ||
-                fintRepository.getContactTeacherGroups().isEmpty() ||
-                fintRepository.getSubjects().isEmpty() ||
-                fintRepository.getLevels().isEmpty() ||
-                fintRepository.getPersons().isEmpty() ||
-                fintRepository.getPersonnel().isEmpty() ||
-                fintRepository.getTerms().isEmpty() ||
-                fintRepository.getSchoolYears().isEmpty();
+        Map<String, Integer> cacheSizes = new LinkedHashMap<>();
+        cacheSizes.put("skole", fintRepository.getSchools().size());
+        cacheSizes.put("elev", fintRepository.getStudents().size());
+        cacheSizes.put("skoleressurs", fintRepository.getTeachers().size());
+        cacheSizes.put("elevforhold", fintRepository.getStudentRelations().size());
+        cacheSizes.put("undervisningsforhold", fintRepository.getTeachingRelations().size());
+        cacheSizes.put("klasse", fintRepository.getClasses().size());
+        cacheSizes.put("undervisningsgruppe", fintRepository.getTeachingGroups().size());
+        cacheSizes.put("kontaktlarergruppe", fintRepository.getContactTeacherGroups().size());
+        cacheSizes.put("fag", fintRepository.getSubjects().size());
+        cacheSizes.put("arstrinn", fintRepository.getLevels().size());
+        cacheSizes.put("person", fintRepository.getPersons().size());
+        cacheSizes.put("personalressurs", fintRepository.getPersonnel().size());
+        cacheSizes.put("termin", fintRepository.getTerms().size());
+        cacheSizes.put("skolear", fintRepository.getSchoolYears().size());
+
+        log.debug("FINT cache sizes: {}", cacheSizes);
+
+        boolean empty = false;
+
+        for (Map.Entry<String, Integer> entry : cacheSizes.entrySet()) {
+            if (entry.getValue() == 0) {
+                log.error("FINT cache is empty: {}", entry.getKey());
+                empty = true;
+            }
+        }
+
+        return empty;
     }
 }

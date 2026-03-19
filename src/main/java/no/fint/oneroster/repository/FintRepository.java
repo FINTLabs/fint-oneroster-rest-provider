@@ -1,25 +1,22 @@
 package no.fint.oneroster.repository;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fint.model.resource.FintLinks;
-import no.fint.model.resource.Link;
-import no.fint.model.resource.administrasjon.personal.PersonalressursResource;
-import no.fint.model.resource.administrasjon.personal.PersonalressursResources;
-import no.fint.model.resource.felles.PersonResource;
-import no.fint.model.resource.felles.PersonResources;
-import no.fint.model.resource.utdanning.elev.*;
-import no.fint.model.resource.utdanning.kodeverk.SkolearResource;
-import no.fint.model.resource.utdanning.kodeverk.SkolearResources;
-import no.fint.model.resource.utdanning.kodeverk.TerminResource;
-import no.fint.model.resource.utdanning.kodeverk.TerminResources;
-import no.fint.model.resource.utdanning.timeplan.FagResource;
-import no.fint.model.resource.utdanning.timeplan.FagResources;
-import no.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResource;
-import no.fint.model.resource.utdanning.timeplan.UndervisningsgruppeResources;
-import no.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResource;
-import no.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResources;
-import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
-import no.fint.model.resource.utdanning.utdanningsprogram.SkoleResources;
+import no.novari.fint.model.resource.FintLinks;
+import no.novari.fint.model.resource.Link;
+import no.novari.fint.model.resource.administrasjon.personal.PersonalressursResource;
+import no.novari.fint.model.resource.administrasjon.personal.PersonalressursResources;
+import no.novari.fint.model.resource.felles.PersonResource;
+import no.novari.fint.model.resource.felles.PersonResources;
+import no.novari.fint.model.resource.utdanning.elev.*;
+import no.novari.fint.model.resource.utdanning.kodeverk.SkolearResource;
+import no.novari.fint.model.resource.utdanning.kodeverk.SkolearResources;
+import no.novari.fint.model.resource.utdanning.kodeverk.TerminResource;
+import no.novari.fint.model.resource.utdanning.kodeverk.TerminResources;
+import no.novari.fint.model.resource.utdanning.timeplan.*;
+import no.novari.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResource;
+import no.novari.fint.model.resource.utdanning.utdanningsprogram.ArstrinnResources;
+import no.novari.fint.model.resource.utdanning.utdanningsprogram.SkoleResource;
+import no.novari.fint.model.resource.utdanning.utdanningsprogram.SkoleResources;
 import no.fint.oneroster.client.FintClient;
 import no.fint.oneroster.client.FintEndpoint;
 import org.springframework.stereotype.Repository;
@@ -80,12 +77,16 @@ public class FintRepository {
         return getResourceByTypeAndId(UndervisningsforholdResource.class, id);
     }
 
-    public List<BasisgruppeResource> getBasisGroups() {
-        return getResourcesByType(BasisgruppeResource.class);
+    public List<KlasseResource> getClasses() {
+        return getResourcesByType(KlasseResource.class);
     }
 
-    public BasisgruppeResource getBasisGroupById(String id) {
-        return getResourceByTypeAndId(BasisgruppeResource.class, id);
+    public KlasseResource getClassesById(String id) {
+        return getResourceByTypeAndId(KlasseResource.class, id);
+    }
+
+    public KlassemedlemskapResource getClassMembershipById(String id) {
+        return getResourceByTypeAndId(KlassemedlemskapResource.class, id);
     }
 
     public List<KontaktlarergruppeResource> getContactTeacherGroups() {
@@ -96,12 +97,20 @@ public class FintRepository {
         return getResourceByTypeAndId(KontaktlarergruppeResource.class, id);
     }
 
+    public KontaktlarergruppemedlemskapResource getContactTeacherGroupMembershipById(String id) {
+        return getResourceByTypeAndId(KontaktlarergruppemedlemskapResource.class, id);
+    }
+
     public List<UndervisningsgruppeResource> getTeachingGroups() {
         return getResourcesByType(UndervisningsgruppeResource.class);
     }
 
     public UndervisningsgruppeResource getTeachingGroupById(String id) {
         return getResourceByTypeAndId(UndervisningsgruppeResource.class, id);
+    }
+
+    public UndervisningsgruppemedlemskapResource getTeachingGroupMembershipById(String id) {
+        return getResourceByTypeAndId(UndervisningsgruppemedlemskapResource.class, id);
     }
 
     public List<ArstrinnResource> getLevels() {
@@ -173,15 +182,19 @@ public class FintRepository {
     }
 
     public void update() {
+        log.debug("Fetching resources");
         Flux.concat(fintClient.getEducationResources(SkoleResources.class, FintEndpoint.SCHOOL.getKey()),
                         fintClient.getEducationResources(PersonResources.class, FintEndpoint.PERSON.getKey()),
                         fintClient.getEducationResources(ElevResources.class, FintEndpoint.STUDENT.getKey()),
                         fintClient.getEducationResources(SkoleressursResources.class, FintEndpoint.TEACHER.getKey()),
                         fintClient.getEducationResources(ElevforholdResources.class, FintEndpoint.STUDENT_RELATION.getKey()),
                         fintClient.getEducationResources(UndervisningsforholdResources.class, FintEndpoint.TEACHING_RELATION.getKey()),
-                        fintClient.getEducationResources(BasisgruppeResources.class, FintEndpoint.BASIS_GROUP.getKey()),
+                        fintClient.getEducationResources(KlasseResources.class, FintEndpoint.BASIS_GROUP.getKey()),
+                        fintClient.getEducationResources(KlassemedlemskapResources.class, FintEndpoint.BASIS_GROUP_MEMBERSHIP.getKey()),
                         fintClient.getEducationResources(UndervisningsgruppeResources.class, FintEndpoint.TEACHING_GROUP.getKey()),
+                        fintClient.getEducationResources(UndervisningsgruppemedlemskapResources.class, FintEndpoint.TEACHING_GROUP_MEMBERSHIP.getKey()),
                         fintClient.getEducationResources(KontaktlarergruppeResources.class, FintEndpoint.CONTACT_TEACHER_GROUP.getKey()),
+                        fintClient.getEducationResources(KontaktlarergruppemedlemskapResources.class, FintEndpoint.CONTACT_TEACHER_GROUP_MEMBERSHIP.getKey()),
                         fintClient.getEducationResources(ArstrinnResources.class, FintEndpoint.LEVEL.getKey()),
                         fintClient.getEducationResources(FagResources.class, FintEndpoint.SUBJECT.getKey()),
                         fintClient.getEducationResources(TerminResources.class, FintEndpoint.TERM.getKey()),
